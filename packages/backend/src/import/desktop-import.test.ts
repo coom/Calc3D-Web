@@ -75,4 +75,21 @@ describe('importDesktopData', () => {
     expect(r.purchases.rejected).toContainEqual({ line: 5, reason: 'duplicate Id' });
     expect((await prisma.purchase.findFirst({ where: { userId: u.id, legacyId: 'a1' } }))?.description).toBe('Buse 0.4');
   });
+  it('config.json hors bornes (marge cible >= 100, TVA negative) : 400 validation, rien ecrit (I2)', async () => {
+    const u = await createTestUser(prisma, 'alice');
+    await expect(importDesktopData(prisma, u.id, { config: JSON.stringify({ ModeTarification: 'MargeCible', PourcentageTarification: 150 }) }, 'UTC')).rejects.toMatchObject({ statusCode: 400, code: 'validation' });
+    await expect(importDesktopData(prisma, u.id, { config: JSON.stringify({ TvaPct: -20, PrixPlancherEUR: 1e300 }) }, 'UTC')).rejects.toMatchObject({ statusCode: 400, code: 'validation' });
+    const s = await prisma.userSettings.findUnique({ where: { userId: u.id } });
+    expect(s).toMatchObject({ pricingMode: 'MARKUP', vatPct: 0 });
+  });
+  it('reimport de 2 000 achats : tous mis a jour, sans erreur (I5)', async () => {
+    const u = await createTestUser(prisma, 'alice');
+    const NL = String.fromCharCode(10);
+    const rows = (sup: string) => '"Id","Date","Categorie","Description","Montant","Fournisseur","Commentaire"' + NL + Array.from({ length: 2000 }, (_, i) => `"m${i}","2026-09-05","Outillage","Ligne ${i}","1","${sup}",""`).join(NL) + NL;
+    const r1 = await importDesktopData(prisma, u.id, { achats: rows('A') }, 'UTC');
+    expect(r1.purchases).toMatchObject({ created: 2000, updated: 0 });
+    const r2 = await importDesktopData(prisma, u.id, { achats: rows('B') }, 'UTC');
+    expect(r2.purchases).toMatchObject({ created: 0, updated: 2000, rejected: [] });
+    expect(await prisma.purchase.count({ where: { userId: u.id, supplier: 'B' } })).toBe(2000);
+  }, 120_000);
 });

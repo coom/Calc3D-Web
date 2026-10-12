@@ -2,6 +2,7 @@ import type { Prisma, PrismaClient } from '../../generated/prisma/index.js';
 import { DEFAULT_PRICING_SETTINGS, DESKTOP_CATEGORY, DESKTOP_KIND, DESKTOP_PRICING_MODE, DESKTOP_STATUS, unprotectCsvText, type DesktopImportBody, type DesktopImportReport, type FilamentLine, type ImportRejection, type PricingSettings } from '@calc3d/common';
 import { AppError } from '../middleware/error-handler.js';
 import { getOrCreateSettings } from '../settings/settings-service.js';
+import { userSettingsSchema } from '../settings/settings.schema.js';
 import { parseCsv, type CsvRow } from './csv.js';
 import { zonedLocalToUtc } from './zoned-time.js';
 
@@ -120,7 +121,7 @@ const isRejection = (x: unknown): x is ImportRejection => typeof (x as ImportRej
 interface UpsertOps<D> {
   existingIds: () => Promise<{ id: number; legacyId: string | null }[]>;
   createMany: (rows: { legacyId: string; data: D }[]) => Promise<unknown>;
-  update: (id: number, data: D) => Promise<unknown>;
+  updateMany: (rows: { id: number; data: D }[]) => Promise<unknown>;
   /** Taille des lots : SQLite limite le nombre de paramètres liés par requête (~32 000). */
   chunk: number;
 }
@@ -142,7 +143,8 @@ async function upsertByLegacyId<D>(parsed: ({ line: number; legacyId: string; da
     if (id !== undefined) updates.push({ id, data: r.data }); else creates.push(r);
   }
   for (let i = 0; i < creates.length; i += ops.chunk) await ops.createMany(creates.slice(i, i + ops.chunk));
-  for (let i = 0; i < updates.length; i += 100) await Promise.all(updates.slice(i, i + 100).map((u) => ops.update(u.id, u.data)));
+  // Par transaction : séquentiel sur une seule connexion (SQLite n'a qu'un writer) et atomique par lot.
+  for (let i = 0; i < updates.length; i += 100) await ops.updateMany(updates.slice(i, i + 100));
   return { created: creates.length, updated: updates.length };
 }
 
@@ -162,7 +164,10 @@ export async function importDesktopData(prisma: PrismaClient, userId: number, bo
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('not an object');
       cfg = parsed as Record<string, unknown>;
     } catch { throw new AppError(400, 'Invalid config.json', undefined, 'validation'); }
-    await prisma.userSettings.update({ where: { userId }, data: settingsFromConfig(cfg) });
+    // Mêmes bornes que PUT /api/settings : les paramètres pilotent tous les calculs futurs (spec §9), contrairement aux montants historiques repris tels quels.
+    const checked = userSettingsSchema.safeParse(settingsFromConfig(cfg));
+    if (!checked.success) throw new AppError(400, 'Invalid config.json', checked.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; '), 'validation');
+    await prisma.userSettings.update({ where: { userId }, data: checked.data });
     report.settings.imported = true;
     const catalog = cfg.PrixParMatiere;
     if (catalog && typeof catalog === 'object' && !Array.isArray(catalog)) {
@@ -187,7 +192,7 @@ export async function importDesktopData(prisma: PrismaClient, userId: number, bo
     const { created, updated } = await upsertByLegacyId(parsed, report.quotes.rejected, {
       existingIds: async () => prisma.quote.findMany({ where: { userId, legacyId: { not: null } }, select: { id: true, legacyId: true } }),
       createMany: (rows) => prisma.quote.createMany({ data: rows.map((r) => ({ userId, legacyId: r.legacyId, ...r.data })) }),
-      update: (id, data) => prisma.quote.update({ where: { id }, data }),
+      updateMany: (rows) => prisma.$transaction(rows.map((u) => prisma.quote.update({ where: { id: u.id }, data: u.data }))),
       chunk: 300,
     });
     report.quotes.created = created; report.quotes.updated = updated;
@@ -200,7 +205,7 @@ export async function importDesktopData(prisma: PrismaClient, userId: number, bo
     const { created, updated } = await upsertByLegacyId(parsed, report.purchases.rejected, {
       existingIds: async () => prisma.purchase.findMany({ where: { userId, legacyId: { not: null } }, select: { id: true, legacyId: true } }),
       createMany: (rows) => prisma.purchase.createMany({ data: rows.map((r) => ({ userId, legacyId: r.legacyId, ...r.data })) }),
-      update: (id, data) => prisma.purchase.update({ where: { id }, data }),
+      updateMany: (rows) => prisma.$transaction(rows.map((u) => prisma.purchase.update({ where: { id: u.id }, data: u.data }))),
       chunk: 2000,
     });
     report.purchases.created = created; report.purchases.updated = updated;

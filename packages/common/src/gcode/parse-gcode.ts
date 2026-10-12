@@ -5,7 +5,8 @@ export interface GcodeMetadata { printMinutes: number | null; materials: { mater
 
 const DENSITIES: [string, number][] = [['PLA', 1.24], ['PETG', 1.27], ['ABS', 1.04], ['ASA', 1.07], ['TPU', 1.21], ['NYLON', 1.14], ['PA', 1.14], ['PC', 1.2], ['PVB', 1.09]];
 const num = (s: string) => { const n = Number(s.trim().replace(',', '.')); return Number.isFinite(n) ? n : 0; };
-const list = (s: string, sep: RegExp) => s.split(sep).map((x) => num(x)).filter((x) => x > 0);
+/** Une valeur par position d'extrudeur, zéros compris : l'appariement avec filament_type se fait par index, le filtrage des poids nuls vient après. */
+const list = (s: string, sep: RegExp) => s.split(sep).map((x) => num(x));
 
 /**
  * Portage de Import-GcodeMetadonnees (Calculateur3D.ps1) : durée et poids par matière depuis les commentaires
@@ -37,13 +38,13 @@ export function parseGcodeMetadata(text: string): GcodeMetadata {
   let weights: number[] = [];
   const w = /^;\s*(?:total\s+filament\s+weight|(?:total\s+)?filament\s+used)\s*\[g\]\s*[:=]\s*(.+)$/im.exec(text);
   if (w) weights = list(w[1], /[,;]/);
-  if (weights.length === 0) {
+  if (weights.every((x) => x <= 0)) {
     let lengthsMm: number[] = [];
     const lmm = /^;\s*(?:total\s+filament\s+length|(?:total\s+)?filament\s+used)\s*\[mm\]\s*[:=]\s*(.+)$/im.exec(text);
     if (lmm) lengthsMm = list(lmm[1], /[,;]/);
     else {
       const lm = /^;\s*Filament\s+used\s*:\s*(.+)$/im.exec(text);
-      if (lm) lengthsMm = lm[1].split(',').map((p) => { const mm = /([\d.]+)\s*m\b/.exec(p); return mm ? Number(mm[1]) * 1000 : 0; }).filter((x) => x > 0);
+      if (lm) lengthsMm = lm[1].split(',').map((p) => { const mm = /([\d.]+)\s*m\b/.exec(p); return mm ? Number(mm[1]) * 1000 : 0; });
     }
     weights = lengthsMm.map((mm, i) => {
       let density = 1.24;
@@ -54,6 +55,6 @@ export function parseGcodeMetadata(text: string): GcodeMetadata {
     });
   }
 
-  const materials = weights.map((weightG, i) => ({ material: types[i] ?? (types.length === 1 ? types[0] : 'PLA'), weightG }));
+  const materials = weights.map((weightG, i) => ({ material: types[i] ?? (types.length === 1 ? types[0] : 'PLA'), weightG })).filter((m) => m.weightG > 0);
   return { printMinutes, materials };
 }

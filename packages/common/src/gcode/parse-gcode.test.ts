@@ -29,4 +29,15 @@ describe('parseGcodeMetadata', () => {
     expect(parseGcodeMetadata('G1 X10 Y10\n')).toEqual({ printMinutes: null, materials: [] });
     expect(parseGcodeMetadata('; model printing time: 45m\n')).toEqual({ printMinutes: 45, materials: [] });
   });
+  it('multi-extrudeur avec un poids nul en tête : les matières restent appariées par position (I3)', () => {
+    const t = `; filament used [g] = 0.00, 12.30, 4.50
+; filament used [mm] = 0.00, 4000.00, 1500.00
+; filament_type = PLA;PETG;ABS
+`;
+    expect(parseGcodeMetadata(t).materials).toEqual([{ material: 'PETG', weightG: 12.3 }, { material: 'ABS', weightG: 4.5 }]);
+    const lengthsOnly = `; filament used [mm] = 0.00, 1000.00
+; filament_type = PLA;PETG
+`;
+    expect(parseGcodeMetadata(lengthsOnly).materials).toEqual([{ material: 'PETG', weightG: 3.1 }]);
+  });
 });

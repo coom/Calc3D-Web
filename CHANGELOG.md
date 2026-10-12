@@ -14,6 +14,10 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ### Corrigé
 - Un corps de requête trop volumineux ou un JSON invalide renvoyait 500 : l'API répond maintenant 413 (`payload_too_large`) et 400 (`validation`).
+- Parseur G-code : en multi-extrudeur, un poids nul en tête (`filament used [g] = 0.00, 12.30, 4.50`) décalait les matières ; l'appariement se fait maintenant par position avant le filtrage des poids nuls. Le même défaut existe dans `Import-GcodeMetadonnees` de l'application bureau.
+- Les paramètres importés depuis `config.json` passent par les mêmes bornes que `PUT /api/settings` (400 `validation` avec le détail des champs).
+- nginx (Docker) aligné sur la route d'import : corps jusqu'à 20 Mo, délais de 120 s.
+- Page Devis : sur un devis chargé puis modifié, le bouton Exporter est désactivé tant que la mise à jour n'est pas enregistrée (le PDF reflète toujours l'état enregistré).
 
 ## [0.2.0] - 2026-10-12 — lot 2
 

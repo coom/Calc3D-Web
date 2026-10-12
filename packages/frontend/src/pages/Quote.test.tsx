@@ -96,4 +96,15 @@ describe('page Devis', () => {
     renderPage('/?quote=9');
     expect(await screen.findByText(/Impossible de charger ce devis/)).toBeInTheDocument();
   });
+  it("devis chargé puis modifié : Exporter désactivé tant que la mise à jour n'est pas enregistrée (I4)", async () => {
+    get.mockResolvedValue(loaded); update.mockResolvedValue({ ...loaded, quantity: 10 });
+    renderPage('/?quote=7');
+    await screen.findByText(/Ce devis utilise les paramètres/);
+    expect(screen.getByRole('button', { name: /Exporter/ })).toBeEnabled();
+    type(/Quantité/, '10');
+    expect(screen.getByRole('button', { name: /Exporter/ })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /Mettre à jour ce devis/ }));
+    await waitFor(() => expect(update).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByRole('button', { name: /Exporter/ })).toBeEnabled());
+  });
 });
