@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: { context: ., dockerfile: Dockerfile.backend }
+    container_name: calc3d-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=file:/app/packages/backend/data/calc3d.db
+      - "JWT_SECRET=${JWT_SECRET:?set JWT_SECRET in .env - openssl rand -hex 32}"
+      - "ENCRYPTION_KEY=${ENCRYPTION_KEY:?set ENCRYPTION_KEY in .env, different from JWT_SECRET}"
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+    volumes:
+      - calc3d-data:/app/packages/backend/data
+    networks: [calc3d-network]
+  frontend:
+    build: { context: ., dockerfile: Dockerfile.frontend }
+    container_name: calc3d-frontend
+    restart: unless-stopped
+    ports: ["${FRONTEND_PORT:-3000}:8080"]
+    depends_on: [backend]
+    networks: [calc3d-network]
+volumes:
+  calc3d-data:
+networks:
+  calc3d-network:
