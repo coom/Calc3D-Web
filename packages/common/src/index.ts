@@ -9,3 +9,6 @@ export * from './types/quotes.js';
 export * from './types/purchases.js';
 export * from './finances/types.js';
 export * from './finances/compute-finances.js';
+export * from './gcode/parse-gcode.js';
+export * from './desktop/mappings.js';
+export * from './types/import.js';
