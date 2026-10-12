@@ -1,6 +1,6 @@
 /** Nombre saisi par un humain : virgule ou point décimal, espaces (fine ou insécable) comme séparateurs de milliers. null si vide ou invalide. */
 export function parseLocaleNumber(text: string): number | null {
-  const cleaned = text.replace(/[\s  ]/g, '').replace(',', '.');
+  const cleaned = text.replace(/[\s\u202f\u00a0]/g, '').replace(',', '.');
   if (cleaned === '' || (cleaned.match(/\./g) ?? []).length > 1) return null;
   if (!/^-?\d*\.?\d+$|^-?\d+\.?$/.test(cleaned)) return null;
   const n = Number(cleaned);
