@@ -12,7 +12,7 @@ const config = JSON.stringify({ Langue: 'fr', DeviseSymbole: '€', PrixElectric
 // Format 1.2 (sans les colonnes 1.3) + protection CSV + valeur française + Type vide
 const historique = `"Id","Date","DateSouhaitee","Projet","Client","Statut","Type","Quantite","LignesFilamentJson","PoidsFilamentG","CoutFilamentEUR","DureeHeuresInput","DureeMinutesInput","DureeImpressionH","CoutElecEUR","TempsPreparationH","MOPrepaEUR","TempsPostTraitementH","MOPostEUR","AmortissementEUR","MaintenanceEUR","ConsommablesInputEUR","AutresCoutsFixesEUR","SousTotalEUR","MajorationAleasEUR","CoutApresMajorationEUR","ModeTarification","PourcentageTarification","PrixVenteHTUnitaireEUR","PrixVenteHTTotalEUR","RemisePct","RemiseEUR","FraisPortEUR","TvaPct","TvaEUR","PrixFinalEUR","PrixParGrammeEUR","PrixParHeureEUR","Commentaire","CfgPrixElectriciteKwh","CfgPuissanceImprimanteW","CfgChargeMoyennePct","CfgTarifHorairePreparation","CfgTarifHorairePostTraitement","CfgTauxAleasPct","CfgAmortissementPrixAchat","CfgAmortissementDureeVieHeures","CfgMaintenancePct","CfgPrixPlancherEUR"
 "11111111-1111-1111-1111-111111111111","2026-09-01 10:00","2026-09-10","'=Piège","Client A","Termine","Commande","2","[{""Matiere"":""PLA"",""PoidsG"":100,""PrixKg"":18,""PertesPct"":10}]","100","1,98","5","0","5","0,53","1","12,31","0,5","6,16","2,26","0,11","0","0","23,35","2,34","25,69","Markup","20","30,82","61,64","0","0","0","0","0","61,64","0,3082","6,16","","0,1952","1350","40","12,31","12,31","10","2717","6000","5","5"
-"22222222-2222-2222-2222-222222222222","2026-09-02 11:00","","Sans type","","En attente","","1","[]","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","Markup","20","0","0","0","0","0","0","0","5","0","0","note","0,1952","1350","40","12,31","12,31","10","2717","6000","5","5"
+"22222222-2222-2222-2222-222222222222","2026-09-02 11:00","","Sans type","","En attente","","1","[]","0","0","0","0","0","0","0","0","0","0","0","0","0,5","1,5","0","0","0","Markup","20","0","0","0","0","0","0","0","5","0","0","note","0,1952","1350","40","12,31","12,31","10","2717","6000","5","5"
 "33333333-3333-3333-3333-333333333333","pas une date","","Date invalide","","En attente","Devis","1","[]","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0","Markup","20","0","0","0","0","0","0","0","5","0","0","","0,1952","1350","40","12,31","12,31","10","2717","6000","5","5"
 `;
 const achats = `"Id","Date","Categorie","Description","Montant","Fournisseur","Commentaire"
@@ -42,6 +42,9 @@ describe('importDesktopData', () => {
     expect(snap).toMatchObject({ hourlyRatePreparation: 12.31, pricingMode: 'MARKUP', pricingPct: 20, vatPct: 0, wearCostPerHour: 0, hourlyRateDesign: 0, roundToEuro: false, currencySymbol: '€' });
     const q2 = await prisma.quote.findFirst({ where: { userId: u.id, legacyId: '22222222-2222-2222-2222-222222222222' } });
     expect(q2).toMatchObject({ kind: 'QUOTE', dueDate: null, comment: 'note' });
+    // Le CSV ne stocke pas CfgAutresCoutsFixesDefaut : il se déduit de AutresCoutsFixesEUR − ConsommablesInputEUR (fidélité du recalcul).
+    expect(q2).toMatchObject({ consumables: 0.5, fixedCosts: 1.5 });
+    expect(JSON.parse(q2!.settingsSnapshot).defaultFixedCosts).toBe(1);
     const p = await prisma.purchase.findFirst({ where: { userId: u.id, legacyId: 'a1' } });
     expect(p).toMatchObject({ category: 'SPARE_PARTS', amount: 12.5, supplier: '-Amazon', description: 'Buse 0.4' });
     expect(p?.date.toISOString().slice(0, 10)).toBe('2026-09-05');

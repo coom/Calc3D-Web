@@ -18,7 +18,9 @@ Multi-user web port of [CalculateurPrix](../CalculateurPrix), the 3D printing pr
 - **Purchases** (lot 2): register of actual purchases by category, grouped by month.
 - **Finances** (lot 2): revenue, printing costs, net margin and actual purchases over the chosen period; breakdown by item, monthly trend, purchases by category, modeled cost vs actual purchases. Only quotes converted to orders count as revenue.
 
-Coming next: lot 3 (G-code import, PDF printing, import of the desktop app data).
+- **G-code import** (lot 3): on the Quote page, pick one or more G-code files (PrusaSlicer, OrcaSlicer, Bambu Studio, Cura): print time and filament weight are filled in, added up per material across files; an unknown material is added to the catalog at 20 per kg. Files are read in the browser and never uploaded.
+- **Print / PDF** (lot 3): after saving, the Export button opens `/quotes/<id>/print`, a printable page with the same sections as the desktop PDF (customer, item breakdown, cost price breakdown if the option is enabled, pricing, final price). Pricing mode and margin are never shown. Amounts are the saved ones, never recomputed.
+- **Import from the desktop app** (lot 3): Settings > Import takes `config.json`, `historique.csv` (1.2 and 1.3 formats) and `achats.csv`. Settings and the catalog are replaced; quotes and purchases are matched by their desktop Id, so importing twice never creates duplicates. Amounts are kept as is. A report lists created, updated and rejected lines with the reason.
 
 ## Installation
 
@@ -33,6 +35,8 @@ docker compose up -d --build
 ```
 
 Open `http://localhost:3000` (port configurable with `FRONTEND_PORT`) and create the first administrator account. Other accounts are created by an admin in Settings → Users; there is no self-registration.
+
+To bring your desktop history over: Settings → Import, then pick the `config.json`, `historique.csv` and `achats.csv` files from your CalculateurPrix folder.
 
 ## Development
 

@@ -21,4 +21,17 @@ describe('errorHandler', () => {
     errorHandler(new AppError(400, 'bad'), {} as Request, res, (() => undefined) as NextFunction);
     expect(res.body).toEqual({ error: 'bad', details: undefined });
   });
+  it('maps body-parser errors (payload too large, malformed JSON) to their HTTP status instead of 500', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const tooLarge = Object.assign(new Error('request entity too large'), { status: 413, type: 'entity.too.large', expose: true });
+    const res = fakeRes();
+    errorHandler(tooLarge, {} as Request, res, (() => undefined) as NextFunction);
+    expect(res.statusCode).toBe(413);
+    expect(res.body).toEqual({ error: 'Request body too large', code: 'payload_too_large' });
+    const bad = Object.assign(new SyntaxError('Unexpected token'), { status: 400, type: 'entity.parse.failed', expose: true });
+    const res2 = fakeRes();
+    errorHandler(bad, {} as Request, res2, (() => undefined) as NextFunction);
+    expect(res2.statusCode).toBe(400);
+    expect(res2.body).toEqual({ error: 'Malformed JSON body', code: 'validation' });
+  });
 });

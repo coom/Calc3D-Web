@@ -41,7 +41,10 @@ function snapshotFromRow(get: (col: string) => string, currency: string): Pricin
     pricingMode: DESKTOP_PRICING_MODE[get('ModeTarification')] ?? 'MARKUP', pricingPct: n('PourcentageTarification'),
     contingencyPct: n('CfgTauxAleasPct'), vatPct: n('TvaPct'),
     printerPurchasePrice: n('CfgAmortissementPrixAchat'), printerLifetimeHours: n('CfgAmortissementDureeVieHeures'), maintenancePct: n('CfgMaintenancePct'),
-    wearCostPerHour: n('CfgUsureParHeureEUR'), defaultFixedCosts: 0, floorPrice: n('CfgPrixPlancherEUR'), roundToEuro: bool(get('CfgArrondirEuro')),
+    wearCostPerHour: n('CfgUsureParHeureEUR'),
+    // Pas de colonne Cfg pour ce défaut : il se déduit du montant utilisé moins la saisie (AutresCoutsFixes = Defaut + Consommables dans Invoke-Calcul).
+    defaultFixedCosts: Math.max(0, Math.round((n('AutresCoutsFixesEUR') - n('ConsommablesInputEUR')) * 100) / 100),
+    floorPrice: n('CfgPrixPlancherEUR'), roundToEuro: bool(get('CfgArrondirEuro')),
   };
 }
 
