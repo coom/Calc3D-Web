@@ -1,4 +1,4 @@
-import type { CreateQuoteBody, QuoteInput, QuoteKind, QuoteStatus } from '@calc3d/common';
+import type { CreateQuoteBody, QuoteDto, QuoteInput, QuoteKind, QuoteStatus } from '@calc3d/common';
 import { parseLocaleNumber } from '@/lib/number';
 
 export interface FilamentLineText { material: string; weightG: string; pricePerKg: string; wastePct: string }
@@ -62,5 +62,16 @@ export function toCreateBody(f: QuoteFormState): CreateQuoteBody {
     ...input,
     projectName: f.projectName.trim(), customer: f.customer.trim(), kind: f.kind, status: f.status,
     dueDate: f.dueDate ? f.dueDate : null, comment: f.comment,
+  };
+}
+
+const s = (n: number) => String(n);
+/** Formulaire (texte) à partir d'un devis enregistré ; `String(n)` garde le point décimal, accepté par parseLocaleNumber. */
+export function quoteFormFromDto(q: QuoteDto): QuoteFormState {
+  return {
+    projectName: q.projectName, customer: q.customer, kind: q.kind, status: q.status, dueDate: q.dueDate ?? '', comment: q.comment,
+    quantity: s(q.quantity), lines: q.filamentLines.map((l) => ({ material: l.material, weightG: s(l.weightG), pricePerKg: s(l.pricePerKg), wastePct: s(l.wastePct) })),
+    printHours: s(q.printHours), printMinutes: s(q.printMinutes), prepHours: s(q.prepHours), postHours: s(q.postHours), designHours: s(q.designHours), packagingHours: s(q.packagingHours),
+    consumables: s(q.consumables), discountPct: s(q.discountPct), shippingCost: s(q.shippingCost),
   };
 }

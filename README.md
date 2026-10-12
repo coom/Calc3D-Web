@@ -14,7 +14,11 @@ Multi-user web port of [CalculateurPrix](../CalculateurPrix), the 3D printing pr
 - **Per-user material catalog** (price per kg).
 - **Quote page**: multi-material filament, four labor tasks, order options, result recomputed live on every keystroke by the shared engine, save with a snapshot of the settings. The price is **identical to the cent** to the desktop app with the same settings (see [How the price is calculated](../CalculateurPrix/README.en.md#how-the-price-is-calculated)).
 
-Coming next: lot 2 (history, purchases, finances), lot 3 (G-code import, PDF printing, import of the desktop app data).
+- **History** (lot 2): quotes and orders grouped by month, search and filters, reload a quote with the settings it was created with and update it without duplicates, recompute with current settings on demand, convert to order, delete.
+- **Purchases** (lot 2): register of actual purchases by category, grouped by month.
+- **Finances** (lot 2): revenue, printing costs, net margin and actual purchases over the chosen period; breakdown by item, monthly trend, purchases by category, modeled cost vs actual purchases. Only quotes converted to orders count as revenue.
+
+Coming next: lot 3 (G-code import, PDF printing, import of the desktop app data).
 
 ## Installation
 

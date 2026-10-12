@@ -244,19 +244,19 @@ Toutes les routes sous `/api`, JSON, validées par zod. Routes publiques : `/hea
 | `POST /quotes` | user | 1 | Crée : entrées + instantané des paramètres courants, calcul serveur |
 | `GET /quotes/:id` | user | 2 | Détail avec instantané |
 | `PUT /quotes/:id` | user | 2 | Met à jour les entrées ; recalcul **avec l'instantané du devis**, sauf `?useCurrentSettings=1` |
-| `PUT /quotes/:id/settings` | user | 2 | Modifie l'instantané des paramètres du devis et recalcule (« mode devis chargé » de la page Paramètres) |
+| `PUT /quotes/:id?useCurrentSettings=1` | user | 2 | Variante de la mise à jour : remplace l'instantané par les paramètres courants (couvre le besoin de `PUT /quotes/:id/settings`, reporté : une édition champ par champ de l'instantané sera ajoutée si le besoin apparaît) |
 | `POST /quotes/:id/convert` | user | 2 | `QUOTE` → `ORDER` (409 si déjà une commande) |
 | `DELETE /quotes/:id` | user | 2 | Suppression |
 | `GET/POST /purchases`, `PUT/DELETE /purchases/:id` | user | 2 | Achats, filtres `q`, `category` |
 | `GET /finances?period=all\|12m\|year\|month` | user | 2 | Indicateurs, répartition par poste, évolution mensuelle (12 derniers mois), répartition des achats, comparatif |
 | `POST /import/desktop` | user | 3 | Import de `config.json`, `historique.csv`, `achats.csv` (multipart, 5 Mo max par fichier) |
-| `GET/PUT /me/language` | user | 1 | Langue de l'interface |
+| `PUT /auth/language` | user | 1 | Langue de l'interface (route héritée de MC Manager) |
 | `/users`, `/audit`, `/journal`, `/settings/security` | admin | 1 | Repris de MC Manager |
 
 Le `PUT /quotes/:id` conserve la sémantique bureau : un devis rechargé est recalculé
 avec les tarifs de sa création, pas ceux d'aujourd'hui, et le bouton devient « Mettre à
 jour ». L'instantané lui-même peut être modifié par la page Paramètres en « mode devis
-chargé » (`PUT /quotes/:id/settings`), comme dans l'application bureau.
+chargé » : reporté, remplacé par l'interrupteur « Recalculer avec mes paramètres actuels » (`?useCurrentSettings=1`) de la page Devis.
 
 ## 7. Frontend
 
@@ -274,7 +274,8 @@ Audit, Journal pour l'admin), `/quotes/:id/print` (page PDF).
   contre le catalogue (même logique que `Resolve-MatiereGcode`).
 - **Historique** et **Achats** : tableaux groupés par mois, repliables, recherche et
   filtres, actions (charger, convertir, supprimer avec confirmation). Pagination côté
-  serveur par mois.
+  serveur par pages de 50 lignes (un mois peut chevaucher deux pages ; le compteur
+  d'un groupe est celui de la page affichée).
 - **Finances** : indicateurs et barres proportionnelles reprenant les cinq blocs de la
   page bureau ; graphiques en composants shadcn/Tailwind simples (barres horizontales),
   pas de bibliothèque de graphiques.
@@ -354,7 +355,7 @@ comptes. Page Paramètres et catalogue. Page Devis complète avec calcul en dire
 enregistrement et bouton Nouveau. Critère : un devis saisi dans Calc3D-Web et dans
 l'application bureau avec les mêmes paramètres donne le même prix au centime.
 
-**Lot 2 : historique, achats, finances.** Liste, filtres, chargement d'un devis avec
+**Lot 2 : historique, achats, finances** (implémenté, branche `lot2-historique-finances`). Liste, filtres, chargement d'un devis avec
 ses paramètres d'origine, mise à jour sans doublon, conversion en commande, suppression.
 Achats. Finances avec les cinq blocs. Critère : les indicateurs Finances d'un jeu de
 données importé correspondent à ceux de l'application bureau.

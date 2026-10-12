@@ -15,7 +15,9 @@ const Audit = lazy(() => import('@/pages/Audit'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const Quote = lazy(() => import('@/pages/Quote'));
-// Lot 2 : /history, /purchases, /finances
+const History = lazy(() => import('@/pages/History'));
+const Purchases = lazy(() => import('@/pages/Purchases'));
+const Finances = lazy(() => import('@/pages/Finances'));
 
 export function App() {
   useEffect(() => { applyUserLanguage(useAuthStore.getState().user); }, []);
@@ -28,6 +30,9 @@ export function App() {
             <Route path="/setup" element={<SetupPage />} />
             <Route element={<AppLayout />}>
               <Route path="/" element={<Quote />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/purchases" element={<Purchases />} />
+              <Route path="/finances" element={<Finances />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/audit" element={<Audit />} />
               <Route path="/settings" element={<Settings />} />

@@ -14,7 +14,11 @@ Portage web multi-utilisateur de [CalculateurPrix](../CalculateurPrix), le calcu
 - **Catalogue de matières par utilisateur** (prix au kg).
 - **Page Devis** : filament multi-matière, quatre postes de main d'œuvre, options de commande, résultat recalculé en direct à chaque frappe par le moteur partagé, enregistrement avec instantané des paramètres. Le prix est **identique au centime** à celui de l'application bureau avec les mêmes paramètres (voir [Comment le prix est calculé](../CalculateurPrix/README.md#comment-le-prix-est-calculé)).
 
-À venir : lot 2 (historique, achats, finances), lot 3 (import G-code, impression PDF, import des données de l'application bureau).
+- **Historique** (lot 2) : devis et commandes groupés par mois, recherche et filtres, rechargement d'un devis avec les paramètres de sa création et mise à jour sans doublon, recalcul avec les paramètres actuels sur demande, conversion en commande, suppression.
+- **Achats** (lot 2) : registre des achats réels par catégorie, groupé par mois.
+- **Finances** (lot 2) : revenu, coûts d'impression, marge nette, achats réels sur la période choisie ; répartition par poste, évolution mensuelle, achats par catégorie, comparatif coût modélisé / achats réels. Seuls les devis convertis en commande comptent comme revenu.
+
+À venir : lot 3 (import G-code, impression PDF, import des données de l'application bureau).
 
 ## Installation
 

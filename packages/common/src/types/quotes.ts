@@ -11,3 +11,5 @@ export interface QuoteDto extends QuoteProjectFields, QuoteInput, QuoteResult {
   id: number; createdAt: string; updatedAt: string; legacyId: string | null;
   settingsSnapshot: PricingSettings;
 }
+export interface QuoteListQuery { q?: string; kind?: QuoteKind; status?: QuoteStatus; page: number; limit: number }
+export interface QuotePage { items: QuoteDto[]; total: number; page: number; limit: number }

@@ -1,6 +1,21 @@
-import { emptyQuoteForm, toQuoteInput, toCreateBody } from './quote-form-state';
+import { emptyQuoteForm, toQuoteInput, toCreateBody, quoteFormFromDto } from './quote-form-state';
+import type { QuoteDto } from '@calc3d/common';
 
 describe('quote-form-state', () => {
+  it('quoteFormFromDto remplit le formulaire en texte depuis un devis, et l\'aller-retour redonne les mêmes entrées', () => {
+    const dto = {
+      id: 7, createdAt: '', updatedAt: '', legacyId: null, settingsSnapshot: {} as QuoteDto['settingsSnapshot'],
+      projectName: 'Boîtier', customer: 'ACME', kind: 'ORDER', status: 'DONE', dueDate: '2026-11-01', comment: 'rush',
+      filamentLines: [{ material: 'PETG', weightG: 42.5, pricePerKg: 20, wastePct: 5 }],
+      printHours: 2, printMinutes: 45, prepHours: 0.25, postHours: 0, designHours: 0, packagingHours: 0.5,
+      quantity: 3, consumables: 1.5, discountPct: 10, shippingCost: 6.5,
+    } as unknown as QuoteDto;
+    const f = quoteFormFromDto(dto);
+    expect(f.lines[0]).toEqual({ material: 'PETG', weightG: '42.5', pricePerKg: '20', wastePct: '5' });
+    expect(f.printMinutes).toBe('45'); expect(f.quantity).toBe('3'); expect(f.dueDate).toBe('2026-11-01'); expect(f.kind).toBe('ORDER');
+    const body = toCreateBody(f);
+    expect(body).toMatchObject({ projectName: 'Boîtier', customer: 'ACME', kind: 'ORDER', status: 'DONE', dueDate: '2026-11-01', comment: 'rush', printHours: 2, printMinutes: 45, prepHours: 0.25, packagingHours: 0.5, quantity: 3, consumables: 1.5, discountPct: 10, shippingCost: 6.5, filamentLines: dto.filamentLines });
+  });
   it('convertit les textes (virgule acceptée) en QuoteInput', () => {
     const f = emptyQuoteForm('PLA');
     f.lines[0] = { material: 'PLA', weightG: '100', pricePerKg: '18', wastePct: '10' };

@@ -5,6 +5,17 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+## [0.2.0] - 2026-10-12 — lot 2
+
+### Ajouté
+- **Historique** : liste des devis et commandes groupée par mois (sections repliables), recherche projet/client, filtres par type et statut, pagination. Chargement d'un devis dans la page Devis avec **les paramètres de sa création** (bandeau, bouton « Mettre à jour ce devis » sans doublon), interrupteur « Recalculer avec mes paramètres actuels », conversion en commande, suppression avec confirmation.
+- **Achats** : registre des achats réels (date, catégorie, description, montant, fournisseur, commentaire), liste groupée par mois avec recherche et filtre par catégorie, suppression.
+- **Finances** : les cinq blocs de l'application bureau (indicateurs sur la période, répartition du coût d'impression par poste, évolution mensuelle, achats par catégorie, comparatif coût modélisé / achats réels), sur les commandes et les achats de l'utilisateur. Agrégats calculés par `computeFinances` dans `@calc3d/common`, à partir des montants enregistrés.
+- API : `GET/PUT/DELETE /api/quotes/:id`, `GET /api/quotes` (filtres, pagination), `POST /api/quotes/:id/convert`, `/api/purchases`, `GET /api/finances?period=`.
+
+### Modifié
+- Différence assumée avec la version bureau : le poste « consommables / coûts fixes » des Finances ne compte plus les consommables deux fois.
+
 ## [0.1.0] - 2026-10-12 — lot 1
 
 ### Ajouté

@@ -1,5 +1,5 @@
 import type { Quote } from '../../generated/prisma/index.js';
-import type { CreateQuoteBody, PricingSettings, QuoteResult, QuoteDto, QuoteKind, QuoteStatus, FilamentLine } from '@calc3d/common';
+import type { CreateQuoteBody, PricingSettings, QuoteResult, QuoteDto, QuoteKind, QuoteStatus, FilamentLine, FinanceQuoteRow } from '@calc3d/common';
 
 /** Données Prisma d'un devis à partir des entrées validées, de l'instantané de paramètres et du résultat serveur. */
 export function buildQuoteData(userId: number, body: CreateQuoteBody, settings: PricingSettings, result: QuoteResult) {
@@ -35,4 +35,10 @@ export function toQuoteDto(row: Quote): QuoteDto {
     filamentLines: JSON.parse(filamentLines) as FilamentLine[],
     settingsSnapshot: JSON.parse(settingsSnapshot) as PricingSettings,
   };
+}
+
+/** Colonnes nécessaires aux agrégats Finances (jamais recalculées). */
+export function toFinanceRow(row: Pick<Quote, 'kind' | 'createdAt' | 'finalPrice' | 'costAfterContingency' | 'filamentCost' | 'electricityCost' | 'laborPrep' | 'laborPost' | 'laborDesign' | 'laborPackaging' | 'depreciation' | 'maintenance' | 'wear' | 'fixedCosts' | 'contingency'>): FinanceQuoteRow {
+  const { createdAt, kind, ...rest } = row;
+  return { ...rest, kind: kind as QuoteKind, createdAt: createdAt.toISOString() };
 }
