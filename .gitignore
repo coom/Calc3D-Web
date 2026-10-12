@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+*.db
+*.db-journal
+packages/backend/data/
+packages/backend/generated/
+packages/backend/prisma/migrations/
