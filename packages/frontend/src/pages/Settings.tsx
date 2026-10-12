@@ -17,8 +17,9 @@ import { DeleteUserDialog } from '@/components/settings/DeleteUserDialog';
 import { JournalRetentionCard } from '@/components/settings/JournalRetentionCard';
 import { PricingSettingsForm } from '@/components/settings/PricingSettingsForm';
 import { MaterialsCard } from '@/components/settings/MaterialsCard';
+import { DesktopImportCard } from '@/components/settings/DesktopImportCard';
 import { settingsApi } from '@/api/settings.api';
-import { Users, Plus, Trash2, Check, Lock, KeyRound, Calculator, Layers } from 'lucide-react';
+import { Users, Plus, Trash2, Check, Lock, KeyRound, Calculator, Layers, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES, setLanguage } from '@/i18n';
@@ -34,11 +35,13 @@ export default function Settings() {
         <TabsList>
           <TabsTrigger value="pricing"><Calculator className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.pricing')}</TabsTrigger>
           <TabsTrigger value="materials"><Layers className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.materials')}</TabsTrigger>
+          <TabsTrigger value="import"><Upload className="h-3.5 w-3.5 mr-1" /> {t('desktopImport.tab')}</TabsTrigger>
           <TabsTrigger value="account"><Lock className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.account')}</TabsTrigger>
           {isAdmin && <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.users')}</TabsTrigger>}
         </TabsList>
         <TabsContent value="pricing" className="mt-4"><PricingTab /></TabsContent>
         <TabsContent value="materials" className="mt-4"><MaterialsCard /></TabsContent>
+        <TabsContent value="import" className="mt-4"><DesktopImportCard /></TabsContent>
         <TabsContent value="account" className="mt-4"><AccountTab /></TabsContent>
         {isAdmin && <TabsContent value="users" className="mt-4"><UsersTab /></TabsContent>}
       </Tabs>

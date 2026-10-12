@@ -290,9 +290,11 @@ Audit, Journal pour l'admin), `/quotes/:id/print` (page PDF).
 - i18n : `fr.json` et `en.json` via fragments et `merge-i18n.mjs` ; `Intl.NumberFormat`
   avec la locale de l'utilisateur pour les montants (fr-FR : `1 234,56`).
 
-## 8. Import depuis l'application bureau (lot 3)
+## 8. Import depuis l'application bureau (lot 3, implémenté)
 
-- `config.json` → `UserSettings` et `Material` (remplacement, après confirmation).
+- Transport retenu : `POST /api/import/desktop?tz=<fuseau>` avec un corps **JSON** contenant le texte des fichiers (`{ config?, historique?, achats? }`, limite 20 Mo propre à la route) plutôt que du multipart : aucune dépendance supplémentaire, les fichiers bureau font quelques Mo au plus. Le fuseau du navigateur sert à convertir les dates `yyyy-MM-dd HH:mm` (heure murale) en UTC.
+
+- `config.json` → `UserSettings` et `Material` (remplacement ; l'avertissement est affiché dans la carte d'import).
 - `historique.csv` → `Quote` : correspondance colonne par colonne, valeurs françaises
   converties en clés (`Termine` → `DONE`, `Commande` → `ORDER`, `MargeCible` →
   `TARGET_MARGIN`), colonnes `Cfg*` → `settingsSnapshot` (champs 1.3 absents → 0 /
@@ -360,7 +362,7 @@ ses paramètres d'origine, mise à jour sans doublon, conversion en commande, su
 Achats. Finances avec les cinq blocs. Critère : les indicateurs Finances d'un jeu de
 données importé correspondent à ceux de l'application bureau.
 
-**Lot 3 : import G-code, impression PDF, import bureau.** Critère : `historique.csv`
+**Lot 3 : import G-code, impression PDF, import bureau** (implémenté, branche `lot3-import-impression`). Critère : `historique.csv`
 et `achats.csv` réels importés sans rejet, un devis rechargé reproduit son prix
 d'origine, le PDF reprend les mêmes sections que la version bureau.
 

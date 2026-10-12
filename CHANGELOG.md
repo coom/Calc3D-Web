@@ -5,6 +5,20 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+## [0.3.0] - 2026-10-12 — lot 3
+
+### Ajouté
+- **Import G-code** dans la page Devis : lecture dans le navigateur (tête et queue du fichier, jamais envoyé au serveur) des métadonnées PrusaSlicer, OrcaSlicer, Bambu Studio et Cura ; durée et poids cumulés par matière sur plusieurs fichiers ; matière inconnue ajoutée au catalogue à 20 par kg ; nom du projet proposé depuis le nom du fichier. Parseur `parseGcodeMetadata` dans `@calc3d/common`, portage de `Import-GcodeMetadonnees`.
+- **Page d'impression** `/quotes/:id/print` (bouton Exporter, actif après enregistrement) : même mise en page que le PDF de l'application bureau, détail du coût de revient selon l'option `pdfShowCostBreakdown`, jamais le mode de tarification ni la marge ; montants enregistrés, pas de recalcul ; impression déclenchée à l'ouverture.
+- **Import des données de l'application bureau** (Paramètres → Import, `POST /api/import/desktop`) : `config.json` (paramètres et catalogue remplacés), `historique.csv` (formats 1.2 et 1.3, montants repris tels quels, instantané des paramètres reconstitué depuis les colonnes `Cfg*`, dates converties avec le fuseau du navigateur) et `achats.csv` ; idempotent par Id bureau (`legacyId`) ; rapport des lignes créées, mises à jour et rejetées avec motif ; corps JSON jusqu'à 20 Mo propre à cette route.
+
+### Corrigé
+- Un corps de requête trop volumineux ou un JSON invalide renvoyait 500 : l'API répond maintenant 413 (`payload_too_large`) et 400 (`validation`).
+- Parseur G-code : en multi-extrudeur, un poids nul en tête (`filament used [g] = 0.00, 12.30, 4.50`) décalait les matières ; l'appariement se fait maintenant par position avant le filtrage des poids nuls. Le même défaut existe dans `Import-GcodeMetadonnees` de l'application bureau.
+- Les paramètres importés depuis `config.json` passent par les mêmes bornes que `PUT /api/settings` (400 `validation` avec le détail des champs).
+- nginx (Docker) aligné sur la route d'import : corps jusqu'à 20 Mo, délais de 120 s.
+- Page Devis : sur un devis chargé puis modifié, le bouton Exporter est désactivé tant que la mise à jour n'est pas enregistrée (le PDF reflète toujours l'état enregistré).
+
 ## [0.2.0] - 2026-10-12 — lot 2
 
 ### Ajouté

@@ -19,7 +19,7 @@
         "pricePerGram": "Unit price per g (excl. tax)", "pricePerHour": "Unit price per hour (excl. tax)", "finalPrice": "FINAL PRICE",
         "floorApplied": "Floor price applied (calculated: {{price}})", "invalid": "Fix the highlighted fields to see the price."
       },
-      "actions": { "save": "Save to history", "saving": "Saving…", "saved": "Quote saved.", "saveFailed": "Could not save the quote.", "new": "New quote", "export": "Export / Print (PDF)", "exportLater": "Available after saving (lot 3)" },
+      "actions": { "save": "Save to history", "saving": "Saving…", "saved": "Quote saved.", "saveFailed": "Could not save the quote.", "new": "New quote", "export": "Export / Print (PDF)", "exportLater": "Save the quote first." },
       "errors": { "invalidNumber": "Invalid number", "quantityMin": "Quantity must be a whole number ≥ 1", "minutesRange": "Minutes must be between 0 and 59" }
     },
     "fr": {
@@ -40,7 +40,7 @@
         "pricePerGram": "Prix unitaire au gramme (HT)", "pricePerHour": "Prix unitaire à l'heure (HT)", "finalPrice": "PRIX FINAL",
         "floorApplied": "Prix plancher appliqué (calculé : {{price}})", "invalid": "Corrige les champs en erreur pour voir le prix."
       },
-      "actions": { "save": "Enregistrer dans l'historique", "saving": "Enregistrement…", "saved": "Devis enregistré.", "saveFailed": "Impossible d'enregistrer le devis.", "new": "Nouveau devis", "export": "Exporter / Imprimer (PDF)", "exportLater": "Disponible après enregistrement (lot 3)" },
+      "actions": { "save": "Enregistrer dans l'historique", "saving": "Enregistrement…", "saved": "Devis enregistré.", "saveFailed": "Impossible d'enregistrer le devis.", "new": "Nouveau devis", "export": "Exporter / Imprimer (PDF)", "exportLater": "Enregistre d'abord le devis." },
       "errors": { "invalidNumber": "Nombre invalide", "quantityMin": "La quantité doit être un entier ≥ 1", "minutesRange": "Les minutes doivent être entre 0 et 59" }
     }
   }

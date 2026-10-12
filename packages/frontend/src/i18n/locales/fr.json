@@ -401,7 +401,7 @@
       "saveFailed": "Impossible d'enregistrer le devis.",
       "new": "Nouveau devis",
       "export": "Exporter / Imprimer (PDF)",
-      "exportLater": "Disponible après enregistrement (lot 3)"
+      "exportLater": "Enregistre d'abord le devis."
     },
     "errors": {
       "invalidNumber": "Nombre invalide",
@@ -528,6 +528,80 @@
       "description": "Renseigne une description.",
       "amount": "Le montant doit être supérieur à 0.",
       "date": "Renseigne une date."
+    }
+  },
+  "gcode": {
+    "button": "Importer un G-code",
+    "hint": "Détecte automatiquement la durée, le poids et la matière du filament. Sélectionne plusieurs fichiers pour une impression en plusieurs pièces (durée et poids cumulés).",
+    "done": "Champs complétés depuis {{count}} fichier(s) : {{items}}.",
+    "time": "durée totale",
+    "filament": "filament (cumulé par matière)",
+    "nothing": "Aucune information exploitable n'a été trouvée. Vérifie que le(s) fichier(s) ont bien été générés par un slicer standard (PrusaSlicer, OrcaSlicer, Bambu Studio, Cura…).",
+    "noData": "Sans données exploitables : {{files}}",
+    "readError": "Erreur de lecture : {{files}}",
+    "materialAdded": "Matière « {{name}} » ajoutée au catalogue à {{price}}/kg."
+  },
+  "print": {
+    "title": "Devis - {{name}}",
+    "generated": "Généré le {{date}}",
+    "customer": "Client",
+    "dueDate": "Date souhaitée",
+    "status": "Statut",
+    "quantity": "Quantité",
+    "itemBreakdown": "Détail de la pièce",
+    "material": "Matière",
+    "weight": "Poids",
+    "pricePerKg": "Prix/kg",
+    "waste": "Pertes",
+    "cost": "Coût",
+    "costBreakdown": "Détail du coût de revient (par pièce)",
+    "costPrice": "Coût de revient (par pièce)",
+    "labor": "Main d'œuvre",
+    "consumables": "Consommables / pièces additionnelles",
+    "pricing": "Tarification",
+    "unitPrice": "Prix de vente HT (unitaire)",
+    "subtotal": "Sous-total HT",
+    "discount": "Remise ({{pct}} %)",
+    "shipping": "Frais de port",
+    "vat": "TVA ({{pct}} %)",
+    "rounding": "Arrondi",
+    "finalPrice": "PRIX FINAL",
+    "floorNote": "Prix plancher appliqué (calculé avant plancher : {{price}})",
+    "comment": "Commentaire :",
+    "print": "Imprimer / Enregistrer en PDF",
+    "notFound": "Ce devis n'existe pas ou ne t'appartient pas.",
+    "lines": {
+      "filament": "Filament",
+      "electricity": "Électricité ({{hours}} h, {{kwh}} kWh)",
+      "laborPrep": "Main d'œuvre préparation",
+      "laborPost": "Main d'œuvre post-traitement",
+      "laborDesign": "Main d'œuvre conception / modélisation",
+      "laborPackaging": "Main d'œuvre emballage / expédition",
+      "depreciation": "Amortissement imprimante",
+      "maintenance": "Maintenance imprimante",
+      "wear": "Usure pièces imprimante",
+      "fixedCosts": "Consommables / pièces additionnelles",
+      "contingency": "Majoration aléas / échec ({{pct}} %)"
+    }
+  },
+  "desktopImport": {
+    "tab": "Import",
+    "title": "Importer depuis l'application bureau",
+    "intro": "Choisis les fichiers de ton dossier CalculateurPrix. Les paramètres et le catalogue sont remplacés ; les devis et achats sont reconnus par leur Id bureau, un second import ne crée donc jamais de doublon.",
+    "config": "config.json (paramètres et catalogue)",
+    "historique": "historique.csv (devis et commandes)",
+    "achats": "achats.csv (achats)",
+    "run": "Importer",
+    "running": "Import en cours…",
+    "pickOne": "Choisis au moins un fichier.",
+    "failed": "Import échoué : {{reason}}",
+    "report": {
+      "title": "Rapport d'import",
+      "settings": "Paramètres importés, {{count}} matière(s) au catalogue.",
+      "settingsSkipped": "Paramètres : aucun fichier.",
+      "quotes": "Devis : {{created}} créés, {{updated}} mis à jour, {{rejected}} rejetés.",
+      "purchases": "Achats : {{created}} créés, {{updated}} mis à jour, {{rejected}} rejetés.",
+      "rejectedLine": "ligne {{line}} : {{reason}}"
     }
   }
 }

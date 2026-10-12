@@ -16,6 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilamentGrid } from '@/components/quote/FilamentGrid';
+import { GcodeImportButton } from '@/components/quote/GcodeImportButton';
 import { QuoteResultPanel } from '@/components/quote/QuoteResultPanel';
 import { emptyQuoteForm, quoteFormFromDto, toQuoteInput, toCreateBody, type QuoteFormState, type QuoteFormError } from '@/components/quote/quote-form-state';
 
@@ -50,6 +51,8 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
   const qc = useQueryClient();
   const [form, setForm] = useState<QuoteFormState>(() => (initial ? quoteFormFromDto(initial) : emptyQuoteForm(defaultMaterial, defaultPrice)));
   const [savedId, setSavedId] = useState<number | null>(null);
+  // Modifié depuis le chargement ou le dernier enregistrement : le bouton Exporter imprime l'état enregistré, jamais un état en cours de saisie.
+  const [dirty, setDirty] = useState(false);
   const [useCurrent, setUseCurrent] = useState(false);
   // Paramètres du calcul en direct : l'instantané du devis chargé, ou les paramètres courants (toujours pour un nouveau devis, ou sur demande).
   const pricing = useMemo(() => {
@@ -67,10 +70,10 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
 
   const save = useMutation({
     mutationFn: () => (initial ? quotesApi.update(initial.id, toCreateBody(form), useCurrent) : quotesApi.create(toCreateBody(form))),
-    onSuccess: (q) => { setSavedId(q.id); qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['quote', q.id] }); qc.invalidateQueries({ queryKey: ['finances'] }); toast.success(t(initial ? 'quote.loaded.updated' : 'quote.actions.saved')); },
+    onSuccess: (q) => { setSavedId(q.id); setDirty(false); qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['quote', q.id] }); qc.invalidateQueries({ queryKey: ['finances'] }); toast.success(t(initial ? 'quote.loaded.updated' : 'quote.actions.saved')); },
     onError: () => toast.error(t('quote.actions.saveFailed')),
   });
-  const set = (patch: Partial<QuoteFormState>) => { setForm({ ...form, ...patch }); setSavedId(null); };
+  const set = (patch: Partial<QuoteFormState>) => { setForm({ ...form, ...patch }); setSavedId(null); setDirty(true); };
   const has = (k: QuoteFormError) => errors.includes(k);
   const numField = (k: NumericFormError, label: string) => (
     <div className="space-y-1">
@@ -79,15 +82,22 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
       {has(k) && <p className="text-xs text-destructive">{t(k === 'quantity' ? 'quote.errors.quantityMin' : k === 'printMinutes' ? 'quote.errors.minutesRange' : 'quote.errors.invalidNumber')}</p>}
     </div>
   );
-  const onNew = () => { if (initial) navigate('/'); else { setForm(emptyQuoteForm(defaultMaterial, defaultPrice)); setSavedId(null); } };
+  const onNew = () => { if (initial) navigate('/'); else { setForm(emptyQuoteForm(defaultMaterial, defaultPrice)); setSavedId(null); setDirty(false); } };
+  // Impression : le devis chargé ou celui qui vient d'être enregistré, et seulement si rien n'a changé depuis.
+  const printId = dirty ? null : (initial?.id ?? savedId);
 
   return (
     <div className="space-y-5">
       <div><h1 className="text-xl font-semibold">{t('quote.title')}</h1><p className="text-sm text-muted-foreground">{t('quote.subtitle')}</p></div>
+      <GcodeImportButton materials={materials} projectNameEmpty={!form.projectName.trim()} onApply={(p) => set({
+        ...(p.printHours !== undefined ? { printHours: String(p.printHours), printMinutes: String(p.printMinutes ?? 0) } : {}),
+        ...(p.lines ? { lines: p.lines } : {}),
+        ...(p.projectName !== undefined ? { projectName: p.projectName } : {}),
+      })} />
       {initial && (
         <div className="flex flex-wrap items-center gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
           <span className="min-w-[16rem] flex-1">{t('quote.loaded.banner')}</span>
-          <label className="flex items-center gap-2"><Switch checked={useCurrent} onCheckedChange={(v) => { setUseCurrent(v); setSavedId(null); }} aria-label={t('quote.loaded.useCurrent')} /><span>{t('quote.loaded.useCurrent')}</span></label>
+          <label className="flex items-center gap-2"><Switch checked={useCurrent} onCheckedChange={(v) => { setUseCurrent(v); setSavedId(null); setDirty(true); }} aria-label={t('quote.loaded.useCurrent')} /><span>{t('quote.loaded.useCurrent')}</span></label>
         </div>
       )}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
@@ -135,7 +145,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => save.mutate()} disabled={!result || save.isPending || savedId !== null}><Save className="mr-1 h-4 w-4" />{save.isPending ? t('quote.actions.saving') : t(initial ? 'quote.loaded.update' : 'quote.actions.save')}</Button>
             <Button variant="outline" onClick={onNew}><FilePlus className="mr-1 h-4 w-4" />{t('quote.actions.new')}</Button>
-            <Button variant="outline" disabled title={t('quote.actions.exportLater')}><Printer className="mr-1 h-4 w-4" />{t('quote.actions.export')}</Button>
+            <Button variant="outline" disabled={printId === null} title={printId === null ? t('quote.actions.exportLater') : undefined} onClick={() => window.open(`/quotes/${printId}/print`, '_blank', 'noopener')}><Printer className="mr-1 h-4 w-4" />{t('quote.actions.export')}</Button>
           </div>
         </div>
       </div>
