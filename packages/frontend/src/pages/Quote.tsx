@@ -16,6 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilamentGrid } from '@/components/quote/FilamentGrid';
+import { GcodeImportButton } from '@/components/quote/GcodeImportButton';
 import { QuoteResultPanel } from '@/components/quote/QuoteResultPanel';
 import { emptyQuoteForm, quoteFormFromDto, toQuoteInput, toCreateBody, type QuoteFormState, type QuoteFormError } from '@/components/quote/quote-form-state';
 
@@ -84,6 +85,11 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
   return (
     <div className="space-y-5">
       <div><h1 className="text-xl font-semibold">{t('quote.title')}</h1><p className="text-sm text-muted-foreground">{t('quote.subtitle')}</p></div>
+      <GcodeImportButton materials={materials} projectNameEmpty={!form.projectName.trim()} onApply={(p) => set({
+        ...(p.printHours !== undefined ? { printHours: String(p.printHours), printMinutes: String(p.printMinutes ?? 0) } : {}),
+        ...(p.lines ? { lines: p.lines } : {}),
+        ...(p.projectName !== undefined ? { projectName: p.projectName } : {}),
+      })} />
       {initial && (
         <div className="flex flex-wrap items-center gap-3 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
           <span className="min-w-[16rem] flex-1">{t('quote.loaded.banner')}</span>
