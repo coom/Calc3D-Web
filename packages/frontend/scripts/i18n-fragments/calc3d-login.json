@@ -1,0 +1,7 @@
+{
+  "namespace": "login",
+  "keys": {
+    "en": { "appSubtitle": "3D printing price calculator" },
+    "fr": { "appSubtitle": "Calculateur de prix impression 3D" }
+  }
+}
