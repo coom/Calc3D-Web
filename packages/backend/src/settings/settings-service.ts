@@ -16,16 +16,20 @@ export function toSettingsDto(row: UserSettings): UserSettingsDto {
   return { ...toPricingSettings(row), pdfShowCostBreakdown: row.pdfShowCostBreakdown };
 }
 
-/** Lit les paramètres de l'utilisateur ; au premier accès, crée la ligne par défaut et le catalogue de matières. */
+/**
+ * Lit les paramètres de l'utilisateur ; au premier accès, crée la ligne par défaut et le catalogue de matières.
+ * Idempotent sous concurrence : la page Devis appelle GET /settings et GET /materials en parallèle, donc deux
+ * premiers accès simultanés sont la norme pour un nouveau compte (upsert, puis catalogue seulement s'il est vide).
+ */
 export async function getOrCreateSettings(prisma: PrismaClient, userId: number): Promise<UserSettingsDto> {
   const existing = await prisma.userSettings.findUnique({ where: { userId } });
   if (existing) return toSettingsDto(existing);
-  const created = await prisma.$transaction(async (tx) => {
-    const row = await tx.userSettings.create({ data: { userId } });
+  const row = await prisma.$transaction(async (tx) => {
+    const settings = await tx.userSettings.upsert({ where: { userId }, update: {}, create: { userId } });
     if ((await tx.material.count({ where: { userId } })) === 0) {
       await tx.material.createMany({ data: DEFAULT_MATERIALS.map((m, i) => ({ userId, name: m.name, pricePerKg: m.pricePerKg, sortOrder: i })) });
     }
-    return row;
+    return settings;
   });
-  return toSettingsDto(created);
+  return toSettingsDto(row);
 }

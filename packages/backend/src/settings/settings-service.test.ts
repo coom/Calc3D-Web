@@ -18,6 +18,13 @@ describe('settings-service', () => {
     await getOrCreateSettings(prisma, u.id);
     expect(await prisma.material.count({ where: { userId: u.id } })).toBe(DEFAULT_MATERIALS.length);
   });
+  it('trois premiers accès simultanés (GET /settings et GET /materials en parallèle) réussissent tous, un seul catalogue', async () => {
+    const u = await createTestUser(prisma, 'carol');
+    const results = await Promise.all([getOrCreateSettings(prisma, u.id), getOrCreateSettings(prisma, u.id), getOrCreateSettings(prisma, u.id)]);
+    for (const r of results) expect(r.pricingMode).toBe('MARKUP');
+    expect(await prisma.userSettings.count({ where: { userId: u.id } })).toBe(1);
+    expect(await prisma.material.count({ where: { userId: u.id } })).toBe(DEFAULT_MATERIALS.length);
+  });
   it('toPricingSettings ne garde que les champs du moteur', async () => {
     const u = await createTestUser(prisma, 'bob');
     const row = await prisma.userSettings.create({ data: { userId: u.id } });

@@ -29,6 +29,10 @@ export const createQuoteSchema = quoteInputSchema.extend({
   customer: z.string().trim().max(200),
   kind: z.enum(QUOTE_KINDS),
   status: z.enum(QUOTE_STATUSES),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  // Date de calendrier réelle : « 2026-02-30 » est refusée (JavaScript la décalerait silencieusement au 2 mars).
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((s) => {
+    const d = new Date(`${s}T00:00:00.000Z`);
+    return !Number.isNaN(d.getTime()) && d.toISOString().startsWith(s);
+  }, 'dueDate must be a valid calendar date').nullable(),
   comment: z.string().max(2000),
 }).strict();

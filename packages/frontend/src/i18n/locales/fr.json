@@ -227,7 +227,10 @@
         "saved": "Adresse de la carte enregistrée",
         "failed": "Impossible d'enregistrer l'adresse de la carte"
       },
-      "roleUser": "Utilisateur"
+      "roleUser": "Utilisateur",
+      "deleteCascade": "Supprime définitivement le compte « {{name}} » et toutes ses données : paramètres de tarification, catalogue de matières, devis et commandes. Cette action est irréversible.",
+      "deleteTypeUsername": "Saisis le nom d'utilisateur « {{name}} » pour confirmer",
+      "deletePermanently": "Supprimer définitivement"
     },
     "pricing": {
       "title": "Paramètres de tarification",

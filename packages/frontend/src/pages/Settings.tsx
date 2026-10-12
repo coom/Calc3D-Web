@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { DeleteUserDialog } from '@/components/settings/DeleteUserDialog';
 import { JournalRetentionCard } from '@/components/settings/JournalRetentionCard';
 import { PricingSettingsForm } from '@/components/settings/PricingSettingsForm';
 import { MaterialsCard } from '@/components/settings/MaterialsCard';
@@ -507,13 +507,12 @@ function UsersTab() {
         </DialogContent>
       </Dialog>
 
-      <ConfirmDialog
+      <DeleteUserDialog
         open={deleteId !== null}
-        onOpenChange={() => setDeleteId(null)}
-        title={t('settings.users.deleteTitle')}
-        description={t('settings.users.deleteDescription')}
+        username={userList.find((u: any) => u.id === deleteId)?.username ?? ''}
+        onOpenChange={(o) => { if (!o) setDeleteId(null); }}
+        loading={deleteUser.isPending}
         onConfirm={() => { if (deleteId) deleteUser.mutate(deleteId, { onSuccess: () => { toast.success(t('settings.users.toastDeleted')); setDeleteId(null); } }); }}
-        destructive
       />
     </div>
   );

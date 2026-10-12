@@ -29,6 +29,14 @@ describe('Sidebar', () => {
     expect(screen.getByRole('link', { name: 'Quote' })).toBeInTheDocument();
   });
 
+  it('does not list pages that do not exist yet (history, purchases, finances come with lot 2)', () => {
+    setViewportWidth(1280);
+    setup();
+    for (const name of ['History', 'Purchases', 'Finances']) expect(screen.queryByRole('link', { name })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Quote' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Audit log' })).toBeInTheDocument();
+  });
+
   it('hides the administration section from a plain user', () => {
     setViewportWidth(1280);
     setup('user');
@@ -55,7 +63,7 @@ describe('Sidebar', () => {
 
     act(() => useUiStore.getState().setMobileNavOpen(true));
     expect(screen.getByRole('navigation', { name: 'Main menu' }).closest('aside')).not.toHaveAttribute('aria-hidden');
-    fireEvent.click(screen.getByRole('link', { name: 'History' }));
+    fireEvent.click(screen.getByRole('link', { name: 'Audit log' }));
     expect(useUiStore.getState().mobileNavOpen).toBe(false);
   });
 

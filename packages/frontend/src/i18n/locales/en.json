@@ -227,7 +227,10 @@
         "saved": "Map address saved",
         "failed": "Could not save the map address"
       },
-      "roleUser": "User"
+      "roleUser": "User",
+      "deleteCascade": "This permanently deletes the account \"{{name}}\" together with all its data: pricing settings, material catalog, quotes and orders. This cannot be undone.",
+      "deleteTypeUsername": "Type the username \"{{name}}\" to confirm",
+      "deletePermanently": "Delete permanently"
     },
     "pricing": {
       "title": "Pricing settings",

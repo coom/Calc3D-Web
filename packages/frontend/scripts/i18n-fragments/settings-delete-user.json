@@ -1,0 +1,15 @@
+{
+  "namespace": "settings",
+  "keys": {
+    "en": { "users": {
+      "deleteCascade": "This permanently deletes the account \"{{name}}\" together with all its data: pricing settings, material catalog, quotes and orders. This cannot be undone.",
+      "deleteTypeUsername": "Type the username \"{{name}}\" to confirm",
+      "deletePermanently": "Delete permanently"
+    } },
+    "fr": { "users": {
+      "deleteCascade": "Supprime définitivement le compte « {{name}} » et toutes ses données : paramètres de tarification, catalogue de matières, devis et commandes. Cette action est irréversible.",
+      "deleteTypeUsername": "Saisis le nom d'utilisateur « {{name}} » pour confirmer",
+      "deletePermanently": "Supprimer définitivement"
+    } }
+  }
+}

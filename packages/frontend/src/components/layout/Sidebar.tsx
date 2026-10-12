@@ -10,13 +10,14 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-type NavItem = { to: string; icon: React.ComponentType<{ className?: string }>; label: string; adminOnly?: boolean };
+type NavItem = { to: string; icon: React.ComponentType<{ className?: string }>; label: string; adminOnly?: boolean; comingSoon?: boolean };
 const navSections: { label: string; adminOnly?: boolean; items: NavItem[] }[] = [
   { label: 'nav.work', items: [
     { to: '/', icon: FileText, label: 'nav.quote' },
-    { to: '/history', icon: History, label: 'nav.history' },
-    { to: '/purchases', icon: ShoppingCart, label: 'nav.purchases' },
-    { to: '/finances', icon: PieChart, label: 'nav.finances' },
+    // Lot 2 : masqués tant que les pages n'existent pas (un lien de menu doit mener quelque part).
+    { to: '/history', icon: History, label: 'nav.history', comingSoon: true },
+    { to: '/purchases', icon: ShoppingCart, label: 'nav.purchases', comingSoon: true },
+    { to: '/finances', icon: PieChart, label: 'nav.finances', comingSoon: true },
   ] },
   { label: 'nav.admin', adminOnly: true, items: [
     { to: '/journal', icon: BookOpenText, label: 'nav.journal', adminOnly: true },
@@ -86,7 +87,7 @@ export function Sidebar() {
             {navSections
               .filter((section) => !section.adminOnly || isAdmin)
               .map((section, si) => {
-                const visibleItems = section.items.filter((item) => !item.adminOnly || isAdmin);
+                const visibleItems = section.items.filter((item) => !item.comingSoon && (!item.adminOnly || isAdmin));
                 if (visibleItems.length === 0) return null;
                 return (
                   <div key={section.label}>

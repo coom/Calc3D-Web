@@ -51,6 +51,16 @@ describe('/api/quotes', () => {
     const r = await request(app).post('/api/quotes/preview').send(body);
     expect(r.status).toBe(400); expect(r.body.code).toBe('pricing');
   });
+  it('rejette une date souhaitée hors calendrier (400, jamais 500 ni date décalée)', async () => {
+    const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);
+    for (const dueDate of ['2026-13-45', '2026-02-30', '2026-00-10', '2026-04-31']) {
+      const r = await request(app).post('/api/quotes').send({ ...body, dueDate });
+      expect(r.status, dueDate).toBe(400);
+    }
+    const ok = await request(app).post('/api/quotes').send({ ...body, dueDate: '2028-02-29' });
+    expect(ok.status).toBe(201); expect(ok.body.dueDate).toBe('2028-02-29');
+    expect(await prisma.quote.count()).toBe(1);
+  });
   it('un devis créé par A n\'est pas visible de B ni d\'un admin via la base filtrée', async () => {
     const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b');
     await request(appAs(prisma, a, '/api/quotes', quotesRoutes)).post('/api/quotes').send(body);
