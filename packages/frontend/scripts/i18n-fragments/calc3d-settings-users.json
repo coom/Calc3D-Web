@@ -1,0 +1,7 @@
+{
+  "namespace": "settings",
+  "keys": {
+    "en": { "users": { "roleUser": "User" }, "tabs": { "account": "Account", "users": "Users" } },
+    "fr": { "users": { "roleUser": "Utilisateur" }, "tabs": { "account": "Compte", "users": "Utilisateurs" } }
+  }
+}

@@ -1,0 +1,59 @@
+# syntax=docker/dockerfile:1.4
+# Node 22 : ligne LTS active (Node 20 est en fin de vie depuis avril 2026).
+FROM node:22-slim AS base
+# Le npm livré avec l'image est en retard et affiche des avis de mise à jour à chaque npx.
+RUN npm install -g npm@11 && corepack enable && corepack prepare pnpm@9 --activate
+
+# Dépendances système : openssl (moteurs Prisma), ca-certificates.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openssl ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+FROM base AS build
+
+# Couche dépendances : seulement les manifestes et le lockfile, pour que BuildKit la mette en cache
+# tant qu'aucun package.json ni le lockfile ne change. node_modules est exclu par .dockerignore.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/common/package.json   ./packages/common/
+COPY packages/backend/package.json  ./packages/backend/
+COPY packages/frontend/package.json ./packages/frontend/
+RUN pnpm install --frozen-lockfile
+
+# Couche sources : tout le reste, puis build.
+COPY . .
+RUN pnpm --filter @calc3d/common run build
+RUN pnpm --filter @calc3d/backend exec prisma generate
+RUN pnpm --filter @calc3d/backend run build
+
+# Image de production
+FROM base AS production
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY --from=build /app/node_modules ./node_modules
+# Sans les fichiers « city », geoip-lite se rabat sur la base pays seule (~7 Mo au lieu de ~110 Mo en mémoire).
+RUN find /app/node_modules -path '*geoip-lite/data/geoip-city*.dat' -delete
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=build /app/packages/common/dist ./packages/common/dist
+COPY --from=build /app/packages/common/package.json ./packages/common/package.json
+COPY --from=build /app/packages/backend/dist ./packages/backend/dist
+COPY --from=build /app/packages/backend/generated ./packages/backend/generated
+COPY --from=build /app/packages/backend/prisma ./packages/backend/prisma
+COPY --from=build /app/packages/backend/prisma.config.ts ./packages/backend/prisma.config.ts
+COPY --from=build /app/packages/backend/package.json ./packages/backend/package.json
+COPY --from=build /app/packages/backend/node_modules ./packages/backend/node_modules
+
+WORKDIR /app/packages/backend
+# Utilisateur non privilégié « node » de l'image de base. Seul le dossier SQLite est à lui ;
+# le code reste à root, lisible par tous.
+RUN mkdir -p data && chown -R node:node data
+USER node
+ENV HOME=/home/node
+
+EXPOSE 3001
+# La migration vers Prisma 7 est une décision délibérée, pas une affaire de démarrage de conteneur.
+ENV PRISMA_HIDE_UPDATE_MESSAGE=1
+CMD ["sh", "-c", "npx prisma db push --skip-generate && node dist/index.js"]

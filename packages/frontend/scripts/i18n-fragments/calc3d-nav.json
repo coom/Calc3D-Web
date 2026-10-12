@@ -1,0 +1,7 @@
+{
+  "namespace": "nav",
+  "keys": {
+    "en": { "work": "Workshop", "admin": "Administration", "quote": "Quote", "history": "History", "purchases": "Purchases", "finances": "Finances", "journal": "Login journal", "audit": "Audit log", "settings": "Settings", "logout": "Sign out", "collapse": "Collapse", "expand": "Expand", "openMenu": "Open menu", "closeMenu": "Close menu", "mainMenu": "Main menu" },
+    "fr": { "work": "Atelier", "admin": "Administration", "quote": "Devis", "history": "Historique", "purchases": "Achats", "finances": "Finances", "journal": "Journal de connexions", "audit": "Journal d'audit", "settings": "Paramètres", "logout": "Se déconnecter", "collapse": "Replier", "expand": "Déplier", "openMenu": "Ouvrir le menu", "closeMenu": "Fermer le menu", "mainMenu": "Menu principal" }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "namespace": "notFound",
+  "keys": {
+    "en": { "backToDashboard": "Back to quotes" },
+    "fr": { "backToDashboard": "Retour aux devis" }
+  }
+}
