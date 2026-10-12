@@ -28,6 +28,10 @@ model User {
 
   refreshTokens  RefreshToken[]
   trustedDevices TrustedDevice[]
+  settings       UserSettings?
+  materials      Material[]
+  quotes         Quote[]
+  purchases      Purchase[]
 }
 
 model RefreshToken {
@@ -84,4 +88,124 @@ model WebLogin {
 
   @@index([createdAt])
   @@index([username, createdAt])
+}
+
+/// Paramètres de tarification d'un utilisateur (un pour un avec User, créé au premier accès).
+model UserSettings {
+  userId                    Int      @id
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currencySymbol            String   @default("€")
+  electricityPricePerKwh    Float    @default(0.1952)
+  printerPowerW             Float    @default(1350)
+  averageLoadPct            Float    @default(40)
+  hourlyRatePreparation     Float    @default(12.31)
+  hourlyRatePostProcessing  Float    @default(12.31)
+  hourlyRateDesign          Float    @default(12.31)
+  hourlyRatePackaging       Float    @default(12.31)
+  pricingMode               String   @default("MARKUP")
+  pricingPct                Float    @default(20)
+  contingencyPct            Float    @default(10)
+  vatPct                    Float    @default(0)
+  printerPurchasePrice      Float    @default(2717)
+  printerLifetimeHours      Float    @default(6000)
+  maintenancePct            Float    @default(5)
+  wearCostPerHour           Float    @default(0)
+  defaultFixedCosts         Float    @default(0)
+  floorPrice                Float    @default(5)
+  roundToEuro               Boolean  @default(false)
+  pdfShowCostBreakdown      Boolean  @default(true)
+  updatedAt                 DateTime @updatedAt
+}
+
+model Material {
+  id         Int    @id @default(autoincrement())
+  userId     Int
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  pricePerKg Float
+  sortOrder  Int    @default(0)
+
+  @@unique([userId, name])
+}
+
+model Quote {
+  id               Int      @id @default(autoincrement())
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  legacyId         String?
+
+  projectName      String   @default("")
+  customer         String   @default("")
+  kind             String   @default("QUOTE")
+  status           String   @default("PENDING")
+  dueDate          DateTime?
+  quantity         Int      @default(1)
+  comment          String   @default("")
+
+  filamentLines    String // JSON FilamentLine[]
+  printHours       Int      @default(0)
+  printMinutes     Int      @default(0)
+  prepHours        Float    @default(0)
+  postHours        Float    @default(0)
+  designHours      Float    @default(0)
+  packagingHours   Float    @default(0)
+  consumables      Float    @default(0)
+  discountPct      Float    @default(0)
+  shippingCost     Float    @default(0)
+
+  filamentWeightG      Float
+  filamentCost         Float
+  printTimeH           Float
+  energyKwh            Float
+  electricityCost      Float
+  laborPrep            Float
+  laborPost            Float
+  laborDesign          Float
+  laborPackaging       Float
+  depreciation         Float
+  maintenance          Float
+  wear                 Float
+  fixedCosts           Float
+  subtotal             Float
+  contingency          Float
+  costAfterContingency Float
+  unitPriceExclTax     Float
+  totalExclTax         Float
+  discountAmount       Float
+  vatAmount            Float
+  priceBeforeFloor     Float
+  floorApplied         Boolean
+  priceBeforeRounding  Float
+  roundingAmount       Float
+  roundingApplied      Boolean
+  finalPrice           Float
+  pricePerGram         Float
+  pricePerHour         Float
+
+  settingsSnapshot String // JSON PricingSettings
+
+  @@unique([userId, legacyId])
+  @@index([userId, createdAt])
+  @@index([userId, kind])
+  @@index([userId, status])
+}
+
+/// Achats réels (lot 2) ; le modèle est créé maintenant pour figer le schéma.
+model Purchase {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime
+  category    String   @default("OTHER")
+  description String
+  amount      Float
+  supplier    String   @default("")
+  comment     String   @default("")
+  legacyId    String?
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, legacyId])
+  @@index([userId, date])
 }

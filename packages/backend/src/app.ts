@@ -12,6 +12,8 @@ import { setupRoutes } from './routes/setup.routes.js';
 import { userRoutes } from './routes/users.routes.js';
 import { auditRoutes } from './routes/audit.routes.js';
 import { journalRoutes } from './routes/journal.routes.js';
+import { settingsRoutes } from './routes/settings.routes.js';
+import { materialsRoutes } from './routes/materials.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -36,6 +38,8 @@ export function createApp(): Express {
   app.use('/api/users', userRoutes);
   app.use('/api/audit', requireRole('admin'), auditRoutes);
   app.use('/api/journal', journalRoutes);
+  app.use('/api/settings', settingsRoutes);
+  app.use('/api/materials', materialsRoutes);
 
   app.use(errorHandler);
   return app;
