@@ -401,7 +401,7 @@
       "saveFailed": "Impossible d'enregistrer le devis.",
       "new": "Nouveau devis",
       "export": "Exporter / Imprimer (PDF)",
-      "exportLater": "Disponible après enregistrement (lot 3)"
+      "exportLater": "Enregistre d'abord le devis."
     },
     "errors": {
       "invalidNumber": "Nombre invalide",
@@ -540,5 +540,48 @@
     "noData": "Sans données exploitables : {{files}}",
     "readError": "Erreur de lecture : {{files}}",
     "materialAdded": "Matière « {{name}} » ajoutée au catalogue à {{price}}/kg."
+  },
+  "print": {
+    "title": "Devis - {{name}}",
+    "generated": "Généré le {{date}}",
+    "customer": "Client",
+    "dueDate": "Date souhaitée",
+    "status": "Statut",
+    "quantity": "Quantité",
+    "itemBreakdown": "Détail de la pièce",
+    "material": "Matière",
+    "weight": "Poids",
+    "pricePerKg": "Prix/kg",
+    "waste": "Pertes",
+    "cost": "Coût",
+    "costBreakdown": "Détail du coût de revient (par pièce)",
+    "costPrice": "Coût de revient (par pièce)",
+    "labor": "Main d'œuvre",
+    "consumables": "Consommables / pièces additionnelles",
+    "pricing": "Tarification",
+    "unitPrice": "Prix de vente HT (unitaire)",
+    "subtotal": "Sous-total HT",
+    "discount": "Remise ({{pct}} %)",
+    "shipping": "Frais de port",
+    "vat": "TVA ({{pct}} %)",
+    "rounding": "Arrondi",
+    "finalPrice": "PRIX FINAL",
+    "floorNote": "Prix plancher appliqué (calculé avant plancher : {{price}})",
+    "comment": "Commentaire :",
+    "print": "Imprimer / Enregistrer en PDF",
+    "notFound": "Ce devis n'existe pas ou ne t'appartient pas.",
+    "lines": {
+      "filament": "Filament",
+      "electricity": "Électricité ({{hours}} h, {{kwh}} kWh)",
+      "laborPrep": "Main d'œuvre préparation",
+      "laborPost": "Main d'œuvre post-traitement",
+      "laborDesign": "Main d'œuvre conception / modélisation",
+      "laborPackaging": "Main d'œuvre emballage / expédition",
+      "depreciation": "Amortissement imprimante",
+      "maintenance": "Maintenance imprimante",
+      "wear": "Usure pièces imprimante",
+      "fixedCosts": "Consommables / pièces additionnelles",
+      "contingency": "Majoration aléas / échec ({{pct}} %)"
+    }
   }
 }

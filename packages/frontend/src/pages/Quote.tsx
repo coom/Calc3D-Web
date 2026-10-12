@@ -81,6 +81,8 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
     </div>
   );
   const onNew = () => { if (initial) navigate('/'); else { setForm(emptyQuoteForm(defaultMaterial, defaultPrice)); setSavedId(null); } };
+  // Impression : le devis chargé, ou celui qui vient d'être enregistré (le bouton reste inactif tant que le formulaire a changé depuis).
+  const printId = initial?.id ?? savedId;
 
   return (
     <div className="space-y-5">
@@ -141,7 +143,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => save.mutate()} disabled={!result || save.isPending || savedId !== null}><Save className="mr-1 h-4 w-4" />{save.isPending ? t('quote.actions.saving') : t(initial ? 'quote.loaded.update' : 'quote.actions.save')}</Button>
             <Button variant="outline" onClick={onNew}><FilePlus className="mr-1 h-4 w-4" />{t('quote.actions.new')}</Button>
-            <Button variant="outline" disabled title={t('quote.actions.exportLater')}><Printer className="mr-1 h-4 w-4" />{t('quote.actions.export')}</Button>
+            <Button variant="outline" disabled={printId === null} title={printId === null ? t('quote.actions.exportLater') : undefined} onClick={() => window.open(`/quotes/${printId}/print`, '_blank', 'noopener')}><Printer className="mr-1 h-4 w-4" />{t('quote.actions.export')}</Button>
           </div>
         </div>
       </div>

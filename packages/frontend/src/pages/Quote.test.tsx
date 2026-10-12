@@ -43,6 +43,7 @@ describe('page Devis', () => {
     type(/Quantité/, '0');
     expect(screen.getByRole('button', { name: /Enregistrer dans l'historique/ })).toBeDisabled();
     expect(screen.getByText(/Corrige les champs en erreur/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Exporter/ })).toBeDisabled();
     type(/Quantité/, '2'); type(/Nom du projet/, 'Boîtier'); type(/Poids \(g\)/, '50');
     fireEvent.click(screen.getByRole('button', { name: /Enregistrer dans l'historique/ }));
     await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
@@ -50,6 +51,7 @@ describe('page Devis', () => {
     expect(body).toMatchObject({ projectName: 'Boîtier', quantity: 2, kind: 'QUOTE', status: 'PENDING', filamentLines: [{ material: 'PLA', weightG: 50, pricePerKg: 18, wastePct: 10 }] });
     expect(body).not.toHaveProperty('finalPrice');
     expect(await screen.findByRole('button', { name: /Nouveau devis/ })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByRole('button', { name: /Exporter/ })).toBeEnabled());
   });
 
   const loaded = {
