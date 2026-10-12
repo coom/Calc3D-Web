@@ -17,13 +17,16 @@ import { materialsRoutes } from './routes/materials.routes.js';
 import { quotesRoutes } from './routes/quotes.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
+import { importRoutes } from './routes/import.routes.js';
 
 export function createApp(): Express {
   const app = express();
   app.set('trust proxy', 1);
   app.use(helmet());
   app.use(cors({ origin: config.frontendUrl, credentials: true }));
-  app.use(express.json({ limit: '1mb' }));
+  // Limite JSON globale de 1 Mo, sauf pour l'import des fichiers bureau qui porte sa propre limite (20 Mo) dans import.routes.ts.
+  const json1mb = express.json({ limit: '1mb' });
+  app.use((req, res, next) => { if (req.path.startsWith('/api/import/')) next(); else json1mb(req, res, next); });
   app.use(cookieParser());
 
   app.get('/api/health', (_req, res) => { res.json({ status: 'ok', timestamp: new Date().toISOString() }); });
@@ -46,6 +49,7 @@ export function createApp(): Express {
   app.use('/api/quotes', quotesRoutes);
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
+  app.use('/api/import', importRoutes);
 
   app.use(errorHandler);
   return app;
