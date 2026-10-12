@@ -21,6 +21,9 @@ Portage web multi-utilisateur de [CalculateurPrix](../CalculateurPrix), le calcu
 - **Import G-code** (lot 3) : sur la page Devis, choisis un ou plusieurs fichiers G-code (PrusaSlicer, OrcaSlicer, Bambu Studio, Cura) : durée d'impression et poids de filament sont remplis, cumulés par matière sur l'ensemble des fichiers ; une matière inconnue est ajoutée au catalogue à 20 par kg. Les fichiers sont lus dans le navigateur et ne sont jamais envoyés au serveur.
 - **Impression / PDF** (lot 3) : après enregistrement, le bouton Exporter ouvre `/quotes/<id>/print`, une page imprimable avec les mêmes sections que le PDF bureau (client, détail de la pièce, détail du coût de revient si l'option est active, tarification, prix final). Le mode de tarification et la marge n'apparaissent jamais. Les montants sont ceux enregistrés, jamais recalculés.
 - **Import depuis l'application bureau** (lot 3) : Paramètres → Import accepte `config.json`, `historique.csv` (formats 1.2 et 1.3) et `achats.csv`. Les paramètres et le catalogue sont remplacés ; les devis et achats sont reconnus par leur Id bureau, un second import ne crée donc jamais de doublon. Les montants sont repris tels quels. Un rapport liste les lignes créées, mises à jour et rejetées avec leur motif.
+- **Lien client** (lot 4) : depuis un devis enregistré, génère un lien unique `/q/<jeton>` (affiché une seule fois, stocké haché, révocable). Le client consulte le devis en lecture seule (même document que le PDF) et l'accepte ou le refuse avec un commentaire facultatif, une seule fois.
+- **Suivi des réponses** (lot 4) : badge Accepté / Refusé / En attente et filtre dans l'Historique, compteur de réponses non lues dans la navigation, réponse et commentaire sur le devis chargé avec un bouton « Convertir en commande ». Rien n'est converti automatiquement.
+- **E-mail** (lot 4) : un admin configure le serveur SMTP dans Paramètres → E-mail (mot de passe stocké chiffré, e-mail de test). Ensuite « Envoyer par e-mail » transmet le lien au client, et tu es notifié à l'adresse saisie dans Paramètres → Compte quand le client répond.
 
 ## Installation
 
@@ -37,6 +40,8 @@ docker compose up -d --build
 Ouvrir `http://localhost:3000` (port modifiable via `FRONTEND_PORT`) et créer le premier compte administrateur. Les autres comptes sont créés par un admin dans Paramètres → Utilisateurs ; il n'y a pas d'inscription libre.
 
 Pour récupérer ton historique de l'application bureau : Paramètres → Import, puis choisis les fichiers `config.json`, `historique.csv` et `achats.csv` de ton dossier CalculateurPrix.
+
+Pour envoyer les devis par e-mail : un admin renseigne Paramètres → E-mail (SMTP) et chaque utilisateur saisit son adresse de notification dans Paramètres → Compte. Sans SMTP, les liens se copient à la main.
 
 ## Développement
 

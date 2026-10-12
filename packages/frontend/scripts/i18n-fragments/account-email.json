@@ -1,0 +1,21 @@
+{
+  "namespace": "accountEmail",
+  "keys": {
+    "en": {
+      "title": "Notification e-mail",
+      "intro": "Where to send the notification when a customer answers a quote. Leave empty for none.",
+      "label": "E-mail address",
+      "save": "Save",
+      "saved": "E-mail address saved.",
+      "invalid": "Invalid e-mail address."
+    },
+    "fr": {
+      "title": "E-mail de notification",
+      "intro": "Adresse qui reçoit la notification quand un client répond à un devis. Vide : aucune notification.",
+      "label": "Adresse e-mail",
+      "save": "Enregistrer",
+      "saved": "Adresse enregistrée.",
+      "invalid": "Adresse e-mail invalide."
+    }
+  }
+}

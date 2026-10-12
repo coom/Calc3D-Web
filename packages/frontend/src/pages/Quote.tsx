@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, type QuoteDto, type QuoteKin
 import { settingsApi } from '@/api/settings.api';
 import { materialsApi } from '@/api/materials.api';
 import { quotesApi } from '@/api/quotes.api';
+import { smtpApi } from '@/api/smtp.api';
 import { PageLoader } from '@/components/shared/LoadingSpinner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilamentGrid } from '@/components/quote/FilamentGrid';
 import { GcodeImportButton } from '@/components/quote/GcodeImportButton';
+import { ClientShareCard } from '@/components/quote/ClientShareCard';
 import { QuoteResultPanel } from '@/components/quote/QuoteResultPanel';
 import { emptyQuoteForm, quoteFormFromDto, toQuoteInput, toCreateBody, type QuoteFormState, type QuoteFormError } from '@/components/quote/quote-form-state';
 
@@ -32,6 +34,12 @@ export default function Quote() {
   const materialsQ = useQuery({ queryKey: ['materials'], queryFn: materialsApi.list });
   // staleTime 0 : un devis rechargé est toujours relu (il a pu être converti ou supprimé depuis l'Historique).
   const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null, staleTime: 0, retry: false });
+  const qcTop = useQueryClient();
+  const unseenId = quoteQ.data && quoteQ.data.clientResponse && !quoteQ.data.responseSeenAt ? quoteQ.data.id : null;
+  useEffect(() => {
+    if (unseenId === null) return;
+    quotesApi.markSeen(unseenId).then(() => { void qcTop.invalidateQueries({ queryKey: ['quotes'] }); void qcTop.invalidateQueries({ queryKey: ['quote', unseenId] }); }).catch(() => undefined);
+  }, [unseenId, qcTop]);
   if (invalidParam) return <p className="text-sm text-destructive">{t('quote.loaded.notFound')}</p>;
   if (settingsQ.isLoading || materialsQ.isLoading || !settingsQ.data || !materialsQ.data || (quoteId !== null && quoteQ.isLoading)) return <PageLoader />;
   if (quoteId !== null && !quoteQ.data) {
@@ -54,6 +62,8 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
   // Modifié depuis le chargement ou le dernier enregistrement : le bouton Exporter imprime l'état enregistré, jamais un état en cours de saisie.
   const [dirty, setDirty] = useState(false);
   const [useCurrent, setUseCurrent] = useState(false);
+  // Une erreur (403, 404, réseau) vaut « SMTP désactivé » : le bouton d'envoi reste inactif.
+  const smtp = useQuery({ queryKey: ['smtp-status'], queryFn: smtpApi.status, retry: false, staleTime: 300_000 });
   // Paramètres du calcul en direct : l'instantané du devis chargé, ou les paramètres courants (toujours pour un nouveau devis, ou sur demande).
   const pricing = useMemo(() => {
     const { pdfShowCostBreakdown: _omit, ...current } = settings;
@@ -100,6 +110,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
           <label className="flex items-center gap-2"><Switch checked={useCurrent} onCheckedChange={(v) => { setUseCurrent(v); setSavedId(null); setDirty(true); }} aria-label={t('quote.loaded.useCurrent')} /><span>{t('quote.loaded.useCurrent')}</span></label>
         </div>
       )}
+      {initial && <ClientShareCard quote={initial} smtpEnabled={smtp.data?.enabled ?? false} onChanged={() => { void qc.invalidateQueries({ queryKey: ['quote', initial.id] }); void qc.invalidateQueries({ queryKey: ['quotes'] }); }} />}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-5">
           <Card>

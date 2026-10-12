@@ -15,6 +15,10 @@ import { journalRoutes } from './routes/journal.routes.js';
 import { settingsRoutes } from './routes/settings.routes.js';
 import { materialsRoutes } from './routes/materials.routes.js';
 import { quotesRoutes } from './routes/quotes.routes.js';
+import { quoteShareRoutes } from './routes/quote-share.routes.js';
+import { accountRoutes } from './routes/account.routes.js';
+import { publicRoutes } from './routes/public.routes.js';
+import { smtpRoutes } from './routes/smtp.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
 import { importRoutes } from './routes/import.routes.js';
@@ -26,7 +30,7 @@ export function createApp(): Express {
   app.use(cors({ origin: config.frontendUrl, credentials: true }));
   // Limite JSON globale de 1 Mo, sauf pour l'import des fichiers bureau qui porte sa propre limite (20 Mo) dans import.routes.ts.
   const json1mb = express.json({ limit: '1mb' });
-  app.use((req, res, next) => { if (req.path.startsWith('/api/import/')) next(); else json1mb(req, res, next); });
+  app.use((req, res, next) => { if (req.path.startsWith('/api/import/') || req.path.startsWith('/api/public/')) next(); else json1mb(req, res, next); });
   app.use(cookieParser());
 
   app.get('/api/health', (_req, res) => { res.json({ status: 'ok', timestamp: new Date().toISOString() }); });
@@ -40,16 +44,22 @@ export function createApp(): Express {
   // Routes publiques, puis authMiddleware, puis les routes protégées (les tâches 5 et 6 ajoutent les routes métier ici).
   app.use('/api/setup', setupRoutes);
   app.use('/api/auth', authRoutes);
+  // Page client (lien de partage) : sans authentification, limiteur et corps JSON propres (public.routes.ts).
+  app.use('/api/public', publicRoutes);
   app.use('/api', authMiddleware);
   app.use('/api/users', userRoutes);
   app.use('/api/audit', requireRole('admin'), auditRoutes);
   app.use('/api/journal', journalRoutes);
   app.use('/api/settings', settingsRoutes);
   app.use('/api/materials', materialsRoutes);
+  // Partage client : monté avant quotesRoutes, sinon /unseen-count serait capturé par GET /:id.
+  app.use('/api/quotes', quoteShareRoutes);
   app.use('/api/quotes', quotesRoutes);
+  app.use('/api/account', accountRoutes);
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
   app.use('/api/import', importRoutes);
+  app.use('/api/smtp', smtpRoutes);
 
   app.use(errorHandler);
   return app;

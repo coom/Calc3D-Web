@@ -6,6 +6,9 @@ import { useUiStore } from '@/stores/ui.store';
 import { setViewportWidth } from '@/test-utils/viewport';
 import { Sidebar } from './Sidebar';
 
+const unseen = vi.fn(() => 0);
+vi.mock('@/hooks/use-unseen-responses', () => ({ useUnseenResponses: () => unseen() }));
+
 function setup(role: 'admin' | 'user' = 'admin') {
   useAuthStore.setState({ accessToken: 't', refreshToken: 'r', user: { id: 1, username: 'u', displayName: 'U', role } });
   render(
@@ -82,5 +85,12 @@ describe('Sidebar', () => {
     setup();
     act(() => useUiStore.getState().setMobileNavOpen(true));
     expect(screen.queryByRole('button', { name: 'Collapse' })).not.toBeInTheDocument();
+  });
+  it('shows the unseen customer answers count on the History entry', () => {
+    setViewportWidth(1280);
+    unseen.mockReturnValueOnce(2).mockReturnValue(2);
+    setup('user');
+    expect(screen.getByTestId('unseen-badge').textContent).toBe('2');
+    unseen.mockReturnValue(0);
   });
 });

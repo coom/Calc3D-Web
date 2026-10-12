@@ -321,7 +321,7 @@ Audit, Journal pour l'admin), `/quotes/:id/print` (page PDF).
 - Import bureau : taille limitée, analyse en mémoire par un parseur CSV strict, aucune
   exécution, aucune écriture hors base.
 - helmet, CORS limité à `FRONTEND_URL`, rate limiting sur `/auth/*` et `/setup`.
-- Aucun appel réseau sortant du backend. Aucune police ni ressource externe chargée par
+- Aucun appel réseau sortant du backend, hormis SMTP vers l'hôte configuré par l'admin (lot 4). Aucune police ni ressource externe chargée par
   le frontend (à documenter dans la section Confidentialité du README).
 
 ## 10. Déploiement et CI

@@ -19,6 +19,7 @@ const History = lazy(() => import('@/pages/History'));
 const Purchases = lazy(() => import('@/pages/Purchases'));
 const Finances = lazy(() => import('@/pages/Finances'));
 const QuotePrint = lazy(() => import('@/pages/QuotePrint'));
+const PublicQuote = lazy(() => import('@/pages/PublicQuote'));
 
 /** Garde d'authentification pour les pages hors AppLayout (page d'impression, sans navigation). */
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -35,6 +36,7 @@ export function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/setup" element={<SetupPage />} />
+            <Route path="/q/:token" element={<PublicQuote />} />
             <Route path="/quotes/:id/print" element={<RequireAuth><QuotePrint /></RequireAuth>} />
             <Route element={<AppLayout />}>
               <Route path="/" element={<Quote />} />

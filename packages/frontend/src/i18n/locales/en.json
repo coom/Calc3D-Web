@@ -603,5 +603,95 @@
       "purchases": "Purchases: {{created}} created, {{updated}} updated, {{rejected}} rejected.",
       "rejectedLine": "line {{line}}: {{reason}}"
     }
+  },
+  "publicQuote": {
+    "from": "Quote from {{name}}",
+    "invalid": "This link is no longer valid.",
+    "intro": "Please review the quote below. You can accept or decline it; your answer is sent to {{name}}.",
+    "accept": "Accept the quote",
+    "refuse": "Decline the quote",
+    "commentLabel": "Comment (optional)",
+    "confirmAccept": "Confirm that you accept this quote?",
+    "confirmRefuse": "Confirm that you decline this quote?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "answered": {
+      "ACCEPTED": "You accepted this quote on {{date}}.",
+      "REFUSED": "You declined this quote on {{date}}."
+    },
+    "already": "This quote has already been answered.",
+    "failed": "Could not send your answer. Please try again.",
+    "print": "Print",
+    "unavailable": "The service is temporarily unavailable. Please try again in a few minutes."
+  },
+  "share": {
+    "title": "Customer",
+    "notShared": "Not shared yet.",
+    "sharedSince": "Link active since {{date}}.",
+    "generate": "Generate the link",
+    "regenerate": "Regenerate the link",
+    "revoke": "Revoke the link",
+    "copy": "Copy",
+    "copied": "Link copied.",
+    "showOnce": "This link is shown only once. Copy it now; regenerate it if you lose it.",
+    "regenerateConfirm": "Regenerate the link? The current link stops working and any answer already received is cleared.",
+    "revokeConfirm": "Revoke the link? The customer will no longer be able to open the quote.",
+    "email": "Send by e-mail",
+    "emailHint": "Sending generates a fresh link; the previous one stops working.",
+    "emailTo": "Customer e-mail",
+    "emailMessage": "Message (optional)",
+    "emailSend": "Send",
+    "emailSent": "E-mail sent to {{to}}.",
+    "emailDisabled": "No SMTP server configured (ask an administrator).",
+    "emailFailed": "E-mail not sent: {{reason}}",
+    "response": {
+      "title": "Customer answer",
+      "none": "No answer yet.",
+      "ACCEPTED": "Accepted",
+      "REFUSED": "Declined",
+      "PENDING": "Awaiting answer",
+      "on": "on {{date}}",
+      "comment": "Comment:",
+      "convert": "Convert to order",
+      "unseen": "New"
+    },
+    "filter": {
+      "label": "Customer answer",
+      "all": "All",
+      "ACCEPTED": "Accepted",
+      "REFUSED": "Declined",
+      "PENDING": "Awaiting answer",
+      "NONE": "Not shared"
+    }
+  },
+  "accountEmail": {
+    "title": "Notification e-mail",
+    "intro": "Where to send the notification when a customer answers a quote. Leave empty for none.",
+    "label": "E-mail address",
+    "save": "Save",
+    "saved": "E-mail address saved.",
+    "invalid": "Invalid e-mail address."
+  },
+  "smtp": {
+    "tab": "E-mail",
+    "title": "Outgoing e-mail (SMTP)",
+    "intro": "Used to send quotes to customers and to notify you of their answers. The password is stored encrypted and never shown again.",
+    "host": "SMTP host",
+    "port": "Port",
+    "secure": "Implicit TLS (port 465)",
+    "username": "Username",
+    "password": "Password",
+    "passwordKeep": "Leave empty to keep the current password.",
+    "fromAddress": "Sender address",
+    "fromName": "Sender name",
+    "enabled": "Enabled",
+    "save": "Save",
+    "saved": "SMTP settings saved.",
+    "failed": "Could not save: {{reason}}",
+    "testTo": "Send a test e-mail to",
+    "test": "Send test",
+    "testOk": "Test e-mail sent.",
+    "testFailed": "Test failed: {{reason}}"
   }
 }

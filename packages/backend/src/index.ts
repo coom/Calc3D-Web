@@ -1,6 +1,7 @@
 import { createServer } from 'http';
 import { PrismaClient } from '../generated/prisma/index.js';
 import { createApp } from './app.js';
+import { notifyOwnerOfResponse } from './mail/notify.js';
 import { config } from './config.js';
 import { logger } from './utils/logger.js';
 import { purgeWebLogins } from './journal/retention.js';
@@ -16,6 +17,8 @@ async function main() {
   const prisma = new PrismaClient();
   const app = createApp();
   app.locals.prisma = prisma;
+  // Notification du propriétaire après une réponse client (public.routes.ts) ; absent en test, remplacé par un factice.
+  app.locals.notifyOwnerOfResponse = notifyOwnerOfResponse;
   const server = createServer(app);
 
   // Purge quotidienne du journal de connexions selon la rétention configurée.

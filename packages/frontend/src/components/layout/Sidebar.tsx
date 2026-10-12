@@ -5,6 +5,7 @@ import { FileText, History, ShoppingCart, PieChart, BookOpenText, ClipboardList,
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/use-sidebar';
+import { useUnseenResponses } from '@/hooks/use-unseen-responses';
 import { useAuthStore } from '@/stores/auth.store';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
@@ -34,6 +35,7 @@ export function Sidebar() {
   const { mode, collapsed, navOpen, toggleCollapsed, closeNav } = useSidebar();
   const isMobile = mode === 'mobile';
   const isAdmin = useAuthStore((s) => s.isAdmin());
+  const unseen = useUnseenResponses();
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -106,7 +108,7 @@ export function Sidebar() {
                           onClick={onNavigate}
                           aria-label={collapsed ? t(item.label) : undefined}
                           className={cn(
-                            'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all duration-150',
+                            'relative flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all duration-150',
                             collapsed && 'justify-center px-0 py-2',
                             isActive
                               ? 'bg-sidebar-accent text-sidebar-accent-foreground'
@@ -115,6 +117,11 @@ export function Sidebar() {
                         >
                           <item.icon className={cn('h-4 w-4 shrink-0', isActive && 'text-primary')} />
                           {!collapsed && <span>{t(item.label)}</span>}
+                          {item.to === '/history' && unseen > 0 && (
+                            collapsed
+                              ? <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+                              : <span data-testid="unseen-badge" className="ml-auto rounded-full bg-primary px-1.5 text-[10px] font-semibold text-primary-foreground">{unseen}</span>
+                          )}
                         </NavLink>
                       );
 

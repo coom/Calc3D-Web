@@ -603,5 +603,95 @@
       "purchases": "Achats : {{created}} créés, {{updated}} mis à jour, {{rejected}} rejetés.",
       "rejectedLine": "ligne {{line}} : {{reason}}"
     }
+  },
+  "publicQuote": {
+    "from": "Devis de {{name}}",
+    "invalid": "Ce lien n'est plus valide.",
+    "intro": "Merci de vérifier le devis ci-dessous. Vous pouvez l'accepter ou le refuser ; votre réponse est transmise à {{name}}.",
+    "accept": "Accepter le devis",
+    "refuse": "Refuser le devis",
+    "commentLabel": "Commentaire (facultatif)",
+    "confirmAccept": "Confirmer l'acceptation de ce devis ?",
+    "confirmRefuse": "Confirmer le refus de ce devis ?",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "answered": {
+      "ACCEPTED": "Vous avez accepté ce devis le {{date}}.",
+      "REFUSED": "Vous avez refusé ce devis le {{date}}."
+    },
+    "already": "Ce devis a déjà reçu une réponse.",
+    "failed": "Impossible d'envoyer votre réponse. Réessayez.",
+    "print": "Imprimer",
+    "unavailable": "Le service est momentanément indisponible. Réessayez dans quelques minutes."
+  },
+  "share": {
+    "title": "Client",
+    "notShared": "Pas encore partagé.",
+    "sharedSince": "Lien actif depuis le {{date}}.",
+    "generate": "Générer le lien",
+    "regenerate": "Régénérer le lien",
+    "revoke": "Révoquer le lien",
+    "copy": "Copier",
+    "copied": "Lien copié.",
+    "showOnce": "Ce lien n'est affiché qu'une seule fois. Copie-le maintenant ; régénère-le si tu le perds.",
+    "regenerateConfirm": "Régénérer le lien ? Le lien actuel cesse de fonctionner et la réponse déjà reçue est effacée.",
+    "revokeConfirm": "Révoquer le lien ? Le client ne pourra plus ouvrir le devis.",
+    "email": "Envoyer par e-mail",
+    "emailHint": "L'envoi génère un nouveau lien ; le précédent cesse de fonctionner.",
+    "emailTo": "E-mail du client",
+    "emailMessage": "Message (facultatif)",
+    "emailSend": "Envoyer",
+    "emailSent": "E-mail envoyé à {{to}}.",
+    "emailDisabled": "Aucun serveur SMTP configuré (demande à un administrateur).",
+    "emailFailed": "E-mail non envoyé : {{reason}}",
+    "response": {
+      "title": "Réponse du client",
+      "none": "Pas encore de réponse.",
+      "ACCEPTED": "Accepté",
+      "REFUSED": "Refusé",
+      "PENDING": "En attente de réponse",
+      "on": "le {{date}}",
+      "comment": "Commentaire :",
+      "convert": "Convertir en commande",
+      "unseen": "Nouveau"
+    },
+    "filter": {
+      "label": "Réponse client",
+      "all": "Toutes",
+      "ACCEPTED": "Acceptés",
+      "REFUSED": "Refusés",
+      "PENDING": "En attente de réponse",
+      "NONE": "Non partagés"
+    }
+  },
+  "accountEmail": {
+    "title": "E-mail de notification",
+    "intro": "Adresse qui reçoit la notification quand un client répond à un devis. Vide : aucune notification.",
+    "label": "Adresse e-mail",
+    "save": "Enregistrer",
+    "saved": "Adresse enregistrée.",
+    "invalid": "Adresse e-mail invalide."
+  },
+  "smtp": {
+    "tab": "E-mail",
+    "title": "E-mail sortant (SMTP)",
+    "intro": "Sert à envoyer les devis aux clients et à te notifier de leurs réponses. Le mot de passe est stocké chiffré et n'est jamais réaffiché.",
+    "host": "Hôte SMTP",
+    "port": "Port",
+    "secure": "TLS implicite (port 465)",
+    "username": "Identifiant",
+    "password": "Mot de passe",
+    "passwordKeep": "Laisser vide pour conserver le mot de passe actuel.",
+    "fromAddress": "Adresse d'expédition",
+    "fromName": "Nom d'expéditeur",
+    "enabled": "Activé",
+    "save": "Enregistrer",
+    "saved": "Paramètres SMTP enregistrés.",
+    "failed": "Enregistrement impossible : {{reason}}",
+    "testTo": "Envoyer un e-mail de test à",
+    "test": "Envoyer le test",
+    "testOk": "E-mail de test envoyé.",
+    "testFailed": "Test échoué : {{reason}}"
   }
 }

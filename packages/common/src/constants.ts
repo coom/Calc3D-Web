@@ -17,3 +17,9 @@ export const DEFAULT_MATERIALS: ReadonlyArray<{ name: string; pricePerKg: number
   { name: 'PA-CF', pricePerKg: 45 }, { name: 'PETG-CF', pricePerKg: 30 }, { name: 'PC', pricePerKg: 35 },
   { name: 'PVB', pricePerKg: 20 }, { name: 'Autre', pricePerKg: 20 },
 ];
+
+export const CLIENT_RESPONSES = ['ACCEPTED', 'REFUSED'] as const;
+export type ClientResponse = (typeof CLIENT_RESPONSES)[number];
+/** Filtre « réponse client » de la liste des devis : PENDING = partagé sans réponse, NONE = non partagé. */
+export const RESPONSE_FILTERS = ['ACCEPTED', 'REFUSED', 'PENDING', 'NONE'] as const;
+export type ResponseFilter = (typeof RESPONSE_FILTERS)[number];

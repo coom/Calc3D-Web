@@ -1,5 +1,5 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
-import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, type PricingSettings, type QuoteInput, type QuoteKind, type QuoteStatus } from '@calc3d/common';
+import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, RESPONSE_FILTERS, type PricingSettings, type QuoteInput, type QuoteKind, type QuoteStatus, type ResponseFilter } from '@calc3d/common';
 import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
 import { parseListPage, parseId } from '../utils/paging.js';
@@ -60,6 +60,14 @@ function listFilters(query: Record<string, unknown>): Record<string, unknown> {
   if (query.status !== undefined) {
     if (!QUOTE_STATUSES.includes(query.status as QuoteStatus)) throw new AppError(400, 'Invalid status');
     where.status = query.status;
+  }
+  // Réponse client (lot 4) : PENDING = partagé sans réponse, NONE = non partagé.
+  if (query.response !== undefined) {
+    if (!RESPONSE_FILTERS.includes(query.response as ResponseFilter)) throw new AppError(400, 'Invalid response filter');
+    const f = query.response as ResponseFilter;
+    if (f === 'NONE') where.shareTokenHash = null;
+    else if (f === 'PENDING') { where.shareTokenHash = { not: null }; where.clientResponse = null; }
+    else where.clientResponse = f;
   }
   return where;
 }
