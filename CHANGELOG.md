@@ -5,6 +5,20 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+## [0.4.0] - 2026-10-12 — lot 4
+
+### Ajouté
+- **Lien client** : depuis un devis enregistré, carte « Client » pour générer un lien unique `/q/<jeton>` (jeton aléatoire de 32 octets, stocké haché, affiché une seule fois), le régénérer (l'ancien meurt, la réponse est effacée) ou le révoquer.
+- **Page publique** `/q/<jeton>` : le client consulte le devis en lecture seule (même document que l'impression, option « détail des coûts » respectée, jamais le mode de tarification ni la marge) et l'accepte ou le refuse avec un commentaire, une seule fois. Langue du navigateur. Routes `/api/public` sans authentification, limiteur dédié (30 requêtes / 15 min), corps ≤ 16 ko.
+- **Suivi des réponses** : badge Accepté / Refusé / En attente et filtre « Réponse client » dans l'Historique, pastille « Nouveau » et compteur de réponses non lues sur l'entrée Historique, réponse et commentaire sur le devis chargé avec bouton « Convertir en commande ». Pas de conversion automatique.
+- **SMTP** (admin, Paramètres → E-mail) : hôte, port, TLS, identifiant, mot de passe chiffré avec `ENCRYPTION_KEY` et jamais réaffiché, expéditeur, e-mail de test. Dépendance `nodemailer`.
+- **E-mails** : « Envoyer par e-mail » depuis la carte Client (génère un nouveau lien et l'envoie au client avec un message facultatif) ; notification au propriétaire quand le client répond, à l'adresse saisie dans Paramètres → Compte.
+- API : `POST/DELETE /api/quotes/:id/share`, `POST /api/quotes/:id/share/email`, `POST /api/quotes/:id/response/seen`, `GET /api/quotes/unseen-count`, filtre `response` de `GET /api/quotes`, `GET/POST /api/public/quotes/:token[/respond]`, `/api/smtp`, `PUT /api/account/email`.
+
+### Modifié
+- Invariant réseau : le backend ne fait aucun appel sortant **hormis SMTP** vers l'hôte configuré par l'admin.
+- Page d'impression : le titre du document reprend le nom du devis (nom du PDF enregistré).
+
 ### Corrigé
 - Page d'impression : fond de page blanc hors du cadre (le thème sombre de l'application rendait la note « prix plancher appliqué » illisible à l'écran).
 

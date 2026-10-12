@@ -6,6 +6,7 @@ interface UserInfo {
   username: string;
   displayName: string;
   role: 'admin' | 'user';
+  email?: string;
   language?: string | null;
 }
 

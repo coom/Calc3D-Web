@@ -18,6 +18,7 @@ import { quotesRoutes } from './routes/quotes.routes.js';
 import { quoteShareRoutes } from './routes/quote-share.routes.js';
 import { accountRoutes } from './routes/account.routes.js';
 import { publicRoutes } from './routes/public.routes.js';
+import { smtpRoutes } from './routes/smtp.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
 import { importRoutes } from './routes/import.routes.js';
@@ -58,6 +59,7 @@ export function createApp(): Express {
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
   app.use('/api/import', importRoutes);
+  app.use('/api/smtp', smtpRoutes);
 
   app.use(errorHandler);
   return app;

@@ -15,6 +15,8 @@ export const authApi = {
     api.post('/auth/logout', { refreshToken }),
 
   me: () => api.get('/auth/me').then((r) => r.data),
+  /** Adresse de notification du compte (vide = aucune). */
+  updateEmail: (email: string): Promise<{ email: string }> => api.put('/account/email', { email }).then((r) => r.data),
 
   changePassword: (currentPassword: string, newPassword: string) =>
     api.put('/auth/password', { currentPassword, newPassword }),

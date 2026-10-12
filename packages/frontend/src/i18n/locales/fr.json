@@ -663,5 +663,34 @@
       "PENDING": "En attente de réponse",
       "NONE": "Non partagés"
     }
+  },
+  "accountEmail": {
+    "title": "E-mail de notification",
+    "intro": "Adresse qui reçoit la notification quand un client répond à un devis. Vide : aucune notification.",
+    "label": "Adresse e-mail",
+    "save": "Enregistrer",
+    "saved": "Adresse enregistrée.",
+    "invalid": "Adresse e-mail invalide."
+  },
+  "smtp": {
+    "tab": "E-mail",
+    "title": "E-mail sortant (SMTP)",
+    "intro": "Sert à envoyer les devis aux clients et à te notifier de leurs réponses. Le mot de passe est stocké chiffré et n'est jamais réaffiché.",
+    "host": "Hôte SMTP",
+    "port": "Port",
+    "secure": "TLS implicite (port 465)",
+    "username": "Identifiant",
+    "password": "Mot de passe",
+    "passwordKeep": "Laisser vide pour conserver le mot de passe actuel.",
+    "fromAddress": "Adresse d'expédition",
+    "fromName": "Nom d'expéditeur",
+    "enabled": "Activé",
+    "save": "Enregistrer",
+    "saved": "Paramètres SMTP enregistrés.",
+    "failed": "Enregistrement impossible : {{reason}}",
+    "testTo": "Envoyer un e-mail de test à",
+    "test": "Envoyer le test",
+    "testOk": "E-mail de test envoyé.",
+    "testFailed": "Test échoué : {{reason}}"
   }
 }

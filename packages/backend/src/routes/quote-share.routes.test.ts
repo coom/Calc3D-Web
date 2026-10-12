@@ -73,4 +73,29 @@ describe('routes de partage (propriétaire)', () => {
     expect(await ids('NONE')).toEqual([n.id]);
     expect((await request(app(u)).get('/api/quotes?response=MAYBE')).status).toBe(400);
   });
+  it("envoi par e-mail : jeton régénéré à chaque envoi, clientEmail enregistré ; 409 sans SMTP ; 502 si le transport échoue (lien inchangé) ; 409 si déjà répondu", async () => {
+    const u = await createTestUser(prisma, 'alice'); await prisma.user.update({ where: { id: u.id }, data: { language: 'fr' } });
+    const q = await seedQuote(u.id);
+    const a = app(u);
+    expect((await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: '' })).status).toBe(409);
+    await prisma.smtpSettings.create({ data: { id: 1, host: 'smtp.x', fromAddress: 'calc@x.fr', enabled: true } });
+    const sent: { to: string; subject: string; text: string }[] = [];
+    a.locals.mailFactory = () => ({ sendMail: async (m: { to: string; subject: string; text: string }) => { sent.push(m); } });
+    const r1 = await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: 'Bonjour' });
+    expect(r1.status).toBe(200); expect(r1.body.url).toMatch(/\/q\//);
+    expect(sent[0]).toMatchObject({ to: 'c@x.fr', subject: 'Devis P – alice' }); expect(sent[0].text).toContain(r1.body.url); expect(sent[0].text).toContain('Bonjour');
+    const hash1 = (await prisma.quote.findUnique({ where: { id: q.id } }))?.shareTokenHash;
+    // Second envoi : le jeton n'étant jamais stocké en clair, le lien est régénéré (l'ancien meurt, le dernier e-mail fait foi).
+    const r2 = await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'd@x.fr', message: '' });
+    expect(r2.status).toBe(200); expect(r2.body.url).not.toBe(r1.body.url);
+    const row2 = await prisma.quote.findUnique({ where: { id: q.id } });
+    expect(row2?.shareTokenHash).not.toBe(hash1); expect(row2?.clientEmail).toBe('d@x.fr');
+    expect((await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'pas-un-mail', message: '' })).status).toBe(400);
+    a.locals.mailFactory = () => ({ sendMail: async () => { throw new Error('ECONNREFUSED'); } });
+    const r3 = await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: '' });
+    expect(r3.status).toBe(502); expect(r3.body.code).toBe('smtp_failed'); expect(r3.body.details).toBe('ECONNREFUSED');
+    expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.shareTokenHash).toBe(row2?.shareTokenHash);
+    await prisma.quote.update({ where: { id: q.id }, data: { clientResponse: 'ACCEPTED', clientRespondedAt: new Date() } });
+    expect((await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: '' })).body.code).toBe('already_answered');
+  });
 });

@@ -663,5 +663,34 @@
       "PENDING": "Awaiting answer",
       "NONE": "Not shared"
     }
+  },
+  "accountEmail": {
+    "title": "Notification e-mail",
+    "intro": "Where to send the notification when a customer answers a quote. Leave empty for none.",
+    "label": "E-mail address",
+    "save": "Save",
+    "saved": "E-mail address saved.",
+    "invalid": "Invalid e-mail address."
+  },
+  "smtp": {
+    "tab": "E-mail",
+    "title": "Outgoing e-mail (SMTP)",
+    "intro": "Used to send quotes to customers and to notify you of their answers. The password is stored encrypted and never shown again.",
+    "host": "SMTP host",
+    "port": "Port",
+    "secure": "Implicit TLS (port 465)",
+    "username": "Username",
+    "password": "Password",
+    "passwordKeep": "Leave empty to keep the current password.",
+    "fromAddress": "Sender address",
+    "fromName": "Sender name",
+    "enabled": "Enabled",
+    "save": "Save",
+    "saved": "SMTP settings saved.",
+    "failed": "Could not save: {{reason}}",
+    "testTo": "Send a test e-mail to",
+    "test": "Send test",
+    "testOk": "Test e-mail sent.",
+    "testFailed": "Test failed: {{reason}}"
   }
 }
