@@ -13,7 +13,8 @@ const item = (over: Record<string, unknown>) => ({ id: 1, createdAt: '2026-10-03
 
 function renderPage() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={['/history']}><Routes><Route path="/history" element={<History />} /><Route path="/" element={<div>QUOTE PAGE</div>} /></Routes></MemoryRouter></QueryClientProvider>);
+  render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={['/history']}><Routes><Route path="/history" element={<History />} /><Route path="/" element={<div>QUOTE PAGE</div>} /></Routes></MemoryRouter></QueryClientProvider>);
+  return qc;
 }
 
 describe('page Historique', () => {
@@ -36,6 +37,17 @@ describe('page Historique', () => {
     fireEvent.change(screen.getByLabelText(/^Type$/), { target: { value: 'ORDER' } });
     fireEvent.change(screen.getByLabelText(/^Statut$/), { target: { value: 'DONE' } });
     await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'acme', kind: 'ORDER', status: 'DONE', page: 1 })));
+  });
+  it('convertir ou supprimer invalide le détail du devis en cache (sinon la page Devis rechargerait un devis périmé et pourrait rétrograder la commande)', async () => {
+    convert.mockResolvedValue(item({ kind: 'ORDER' })); remove.mockResolvedValue(undefined);
+    const qc = renderPage();
+    await screen.findByText('Boîtier');
+    qc.setQueryData(['quote', 1], item({}));
+    qc.setQueryData(['finances', 'all'], { period: 'all' });
+    fireEvent.click(screen.getAllByRole('button', { name: /Convertir en commande/ })[0]);
+    await waitFor(() => expect(convert).toHaveBeenCalledWith(1));
+    await waitFor(() => expect(qc.getQueryState(['quote', 1])?.isInvalidated).toBe(true));
+    expect(qc.getQueryState(['finances', 'all'])?.isInvalidated).toBe(true);
   });
   it('charge un devis dans la page Devis, convertit, supprime après confirmation', async () => {
     convert.mockResolvedValue(item({ kind: 'ORDER' })); remove.mockResolvedValue(undefined);

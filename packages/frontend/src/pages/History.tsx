@@ -31,7 +31,8 @@ export default function History() {
   const { data } = useQuery({ queryKey: ['quotes', params], queryFn: () => quotesApi.list(params) });
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const currency = settings?.currencySymbol ?? '€';
-  const invalidate = () => { qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['finances'] }); };
+  // ['quote'] : le détail chargé par la page Devis ; sans cette invalidation, un devis converti ou supprimé pourrait être rechargé périmé et « mis à jour » avec son ancien type.
+  const invalidate = () => { qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['quote'] }); qc.invalidateQueries({ queryKey: ['finances'] }); };
   const convert = useMutation({ mutationFn: quotesApi.convert, onSuccess: () => { toast.success(t('history.converted')); invalidate(); }, onError: (e: { response?: { data?: { code?: string } } }) => toast.error(t(e?.response?.data?.code === 'already_order' ? 'history.alreadyOrder' : 'history.actionFailed')) });
   const remove = useMutation({ mutationFn: quotesApi.remove, onSuccess: () => { toast.success(t('history.deleted')); setToDelete(null); invalidate(); }, onError: () => toast.error(t('history.actionFailed')) });
   const pages = Math.max(1, Math.ceil((data?.total ?? 0) / LIMIT));

@@ -46,6 +46,20 @@ describe('computeFinances', () => {
     expect(r.comparison).toEqual({ modeledCost: 60, actualPurchases: 40 });
     expect(r.purchases.gapVsPrintingCost).toBe(-20);
   });
+  it('regroupe et filtre selon le fuseau horaire demandé (celui du navigateur), pas celui du serveur', () => {
+    // 31 octobre 23:30 UTC = 1er novembre 00:30 à Paris (heure d'hiver, UTC+1)
+    const quotes = [q({ createdAt: '2026-10-31T23:30:00Z' })];
+    const purchases = [p({ date: '2026-11-01' })];
+    const now = new Date('2026-11-01T01:00:00Z'); // 1er novembre 02:00 à Paris, encore le 1er à 01:00 UTC
+    const paris = computeFinances(quotes, purchases, 'month', now, 'Europe/Paris');
+    expect(paris.orders.count).toBe(1);
+    expect(paris.monthly.map((m) => m.month)).toEqual(['2026-11']);
+    const utc = computeFinances(quotes, purchases, 'month', now, 'UTC');
+    expect(utc.orders.count).toBe(0);
+    expect(computeFinances(quotes, [], 'all', now, 'UTC').monthly.map((m) => m.month)).toEqual(['2026-10']);
+    // Un achat (date seule) reste dans son mois calendaire quel que soit le fuseau
+    expect(computeFinances([], purchases, 'all', now, 'Pacific/Honolulu').monthly.map((m) => m.month)).toEqual(['2026-11']);
+  });
   it('sans commande : zéros partout, pas de NaN', () => {
     const r = computeFinances([], [], 'all', NOW);
     expect(r.orders).toEqual({ count: 0, revenue: 0, printingCost: 0, netMargin: 0, netMarginPct: 0 });

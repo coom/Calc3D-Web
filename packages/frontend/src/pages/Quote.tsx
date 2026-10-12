@@ -26,7 +26,8 @@ export default function Quote() {
   const { t } = useTranslation();
   const settingsQ = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const materialsQ = useQuery({ queryKey: ['materials'], queryFn: materialsApi.list });
-  const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null });
+  // staleTime 0 : un devis rechargé est toujours relu (il a pu être converti ou supprimé depuis l'Historique).
+  const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null, staleTime: 0 });
   if (settingsQ.isLoading || materialsQ.isLoading || !settingsQ.data || !materialsQ.data || (quoteId !== null && quoteQ.isLoading)) return <PageLoader />;
   if (quoteId !== null && !quoteQ.data) return <p className="text-sm text-destructive">{t('quote.loaded.notFound')}</p>;
   const first = materialsQ.data[0];
@@ -59,7 +60,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
 
   const save = useMutation({
     mutationFn: () => (initial ? quotesApi.update(initial.id, toCreateBody(form), useCurrent) : quotesApi.create(toCreateBody(form))),
-    onSuccess: (q) => { setSavedId(q.id); qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['quote', q.id] }); toast.success(t(initial ? 'quote.loaded.updated' : 'quote.actions.saved')); },
+    onSuccess: (q) => { setSavedId(q.id); qc.invalidateQueries({ queryKey: ['quotes'] }); qc.invalidateQueries({ queryKey: ['quote', q.id] }); qc.invalidateQueries({ queryKey: ['finances'] }); toast.success(t(initial ? 'quote.loaded.updated' : 'quote.actions.saved')); },
     onError: () => toast.error(t('quote.actions.saveFailed')),
   });
   const set = (patch: Partial<QuoteFormState>) => { setForm({ ...form, ...patch }); setSavedId(null); };

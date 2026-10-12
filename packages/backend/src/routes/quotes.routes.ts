@@ -50,7 +50,11 @@ function parseId(raw: unknown): number {
   return id;
 }
 
-/** Filtres de l'historique : q (projet ou client, contient, littéral), kind, status. Valeur inconnue = 400. */
+/**
+ * Filtres de l'historique : q (projet ou client, « contient »), kind, status. Valeur inconnue = 400.
+ * Sémantique assumée du « contient » : Prisma émet un LIKE SQLite sans clause ESCAPE, donc `%` et `_`
+ * tapés par l'utilisateur sont des jokers (la requête reste paramétrée : aucune injection, aucune erreur).
+ */
 function listFilters(query: Record<string, unknown>): Record<string, unknown> {
   const q = typeof query.q === 'string' ? query.q.trim() : '';
   const where: Record<string, unknown> = {};

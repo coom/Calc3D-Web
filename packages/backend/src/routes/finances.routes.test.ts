@@ -25,12 +25,14 @@ describe('GET /api/finances', () => {
     const created = (await request(qa).post('/api/quotes').send(quote)).body;
     await request(qa).post(`/api/quotes/${created.id}/convert`);
     await request(qa).post('/api/quotes').send(quote); // devis non converti : ignoré
-    await request(pa).post('/api/purchases').send({ date: new Date().toISOString().slice(0, 10), category: 'FILAMENT', description: 'Bobine', amount: 20, supplier: '', comment: '' });
+    const d = new Date(); const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    await request(pa).post('/api/purchases').send({ date: today, category: 'FILAMENT', description: 'Bobine', amount: 20, supplier: '', comment: '' });
     const qb = appAs(prisma, b, '/api/quotes', quotesRoutes);
     const other = (await request(qb).post('/api/quotes').send({ ...quote, quantity: 50 })).body;
     await request(qb).post(`/api/quotes/${other.id}/convert`);
 
-    const r = await request(appAs(prisma, a, '/api/finances', financesRoutes)).get('/api/finances?period=month');
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const r = await request(appAs(prisma, a, '/api/finances', financesRoutes)).get(`/api/finances?period=month&tz=${encodeURIComponent(tz)}`);
     expect(r.status).toBe(200);
     expect(r.body.period).toBe('month');
     expect(r.body.orders.count).toBe(1);
@@ -41,6 +43,7 @@ describe('GET /api/finances', () => {
     expect(r.body.costBreakdown.find((c: { key: string }) => c.key === 'filament').amount).toBeCloseTo(created.filamentCost, 6);
     expect((await request(appAs(prisma, a, '/api/finances', financesRoutes)).get('/api/finances')).body.period).toBe('all');
     expect((await request(appAs(prisma, a, '/api/finances', financesRoutes)).get('/api/finances?period=week')).status).toBe(400);
+    expect((await request(appAs(prisma, a, '/api/finances', financesRoutes)).get('/api/finances?tz=Mars/Olympus')).status).toBe(400);
     const empty = await request(appAs(prisma, await createTestUser(prisma, 'c'), '/api/finances', financesRoutes)).get('/api/finances');
     expect(empty.body.orders).toEqual({ count: 0, revenue: 0, printingCost: 0, netMargin: 0, netMarginPct: 0 });
   });

@@ -65,23 +65,27 @@ describe('/api/quotes', () => {
     const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b');
     const appA = appAs(prisma, a, '/api/quotes', quotesRoutes); const appB = appAs(prisma, b, '/api/quotes', quotesRoutes);
     await request(appA).post('/api/quotes').send({ ...body, projectName: 'Alpha 100%', customer: 'ACME' });
+    await request(appA).post('/api/quotes').send({ ...body, projectName: 'Alpha 100x', customer: 'Nobody', status: 'ON_HOLD' });
     await request(appA).post('/api/quotes').send({ ...body, projectName: 'Beta_2', customer: 'Zed', status: 'DONE' });
     const c = await request(appA).post('/api/quotes').send({ ...body, projectName: 'Gamma', customer: 'ACME' });
     await request(appA).post(`/api/quotes/${c.body.id}/convert`);
     await request(appB).post('/api/quotes').send({ ...body, projectName: 'Secret' });
 
     const all = await request(appA).get('/api/quotes');
-    expect(all.status).toBe(200); expect(all.body.total).toBe(3);
-    expect(all.body.items.map((x: { projectName: string }) => x.projectName)).toEqual(['Gamma', 'Beta_2', 'Alpha 100%']);
+    expect(all.status).toBe(200); expect(all.body.total).toBe(4);
+    expect(all.body.items.map((x: { projectName: string }) => x.projectName)).toEqual(['Gamma', 'Beta_2', 'Alpha 100x', 'Alpha 100%']);
     expect(JSON.stringify(all.body)).not.toContain('Secret');
     expect((await request(appA).get('/api/quotes?q=acme')).body.total).toBe(2);
-    expect((await request(appA).get('/api/quotes?q=100%25')).body.items.map((x: { projectName: string }) => x.projectName)).toEqual(['Alpha 100%']);
+    // Sémantique assumée (LIKE SQLite via Prisma) : % et _ sont des jokers ; aucune erreur, aucune injection.
+    expect((await request(appA).get('/api/quotes?q=100%25')).body.items.map((x: { projectName: string }) => x.projectName).sort()).toEqual(['Alpha 100%', 'Alpha 100x']);
+    expect((await request(appA).get('/api/quotes?q=100x')).body.total).toBe(1);
     expect((await request(appA).get('/api/quotes?q=a_2')).body.total).toBe(1);
     expect((await request(appA).get('/api/quotes?q=[')).status).toBe(200);
+    expect((await request(appA).get("/api/quotes?q=';DROP TABLE Quote;--")).status).toBe(200);
     expect((await request(appA).get('/api/quotes?kind=ORDER')).body.items.map((x: { projectName: string }) => x.projectName)).toEqual(['Gamma']);
     expect((await request(appA).get('/api/quotes?status=DONE')).body.total).toBe(1);
     expect((await request(appA).get('/api/quotes?status=FINI')).status).toBe(400);
-    const p2 = await request(appA).get('/api/quotes?limit=2&page=2');
+    const p2 = await request(appA).get('/api/quotes?limit=3&page=2');
     expect(p2.body.items).toHaveLength(1); expect(p2.body.page).toBe(2);
     expect((await request(appA).get('/api/quotes?limit=500')).status).toBe(400);
   });
