@@ -5,6 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Props { result: QuoteResult | null; settings: PricingSettings; input: QuoteInput }
 
+const Row = ({ label, value, strong }: { label: string; value: string; strong?: boolean }) => (
+  <div className={`flex justify-between gap-4 py-1 text-sm ${strong ? 'font-semibold' : ''}`}><span>{label}</span><span className="font-mono-data tabular-nums">{value}</span></div>
+);
+const Sep = () => <hr className="my-1 border-border" />;
+
 /** Décomposition du calcul, même ordre que la page Devis de l'application bureau. result null = formulaire en erreur. */
 export function QuoteResultPanel({ result, settings, input }: Props) {
   const { t, i18n } = useTranslation();
@@ -14,10 +19,6 @@ export function QuoteResultPanel({ result, settings, input }: Props) {
     return <Card><CardHeader><CardTitle className="text-sm font-medium">{t('quote.result.title')}</CardTitle></CardHeader><CardContent><p className="text-sm text-muted-foreground">{t('quote.result.invalid')}</p></CardContent></Card>;
   }
   const r = result;
-  const Row = ({ label, value, strong }: { label: string; value: string; strong?: boolean }) => (
-    <div className={`flex justify-between gap-4 py-1 text-sm ${strong ? 'font-semibold' : ''}`}><span>{label}</span><span className="font-mono-data tabular-nums">{value}</span></div>
-  );
-  const Sep = () => <hr className="my-1 border-border" />;
   return (
     <Card>
       <CardHeader><CardTitle className="text-sm font-medium">{t('quote.result.title')}</CardTitle></CardHeader>
