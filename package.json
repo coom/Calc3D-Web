@@ -6,8 +6,8 @@
     "dev:backend": "pnpm --filter @calc3d/backend run dev",
     "dev:frontend": "pnpm --filter @calc3d/frontend run dev",
     "build": "pnpm -r run build",
-    "db:generate": "pnpm --filter @calc3d/backend exec prisma generate",
-    "db:push": "pnpm --filter @calc3d/backend exec prisma db push",
+    "db:generate": "pnpm --filter @calc3d/backend run db:generate",
+    "db:push": "pnpm --filter @calc3d/backend run db:push",
     "lint": "eslint .",
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck"
@@ -20,5 +20,8 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.61.0"
   },
-  "engines": { "node": ">=20.0.0", "pnpm": ">=9.0.0" }
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  }
 }

@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int       @id @default(autoincrement())
+  username           String    @unique
+  passwordHash       String?
+  displayName        String
+  role               String    @default("user")
+  enabled            Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  lastLoginAt        DateTime?
+  mfaEnabled         Boolean   @default(false)
+  mfaSecret          String?
+  mfaPendingSecret   String?
+  mfaRecoveryCodes   String?
+  mfaRequired        Boolean   @default(false)
+  mustChangePassword Boolean   @default(false)
+  language           String?
+
+  refreshTokens  RefreshToken[]
+  trustedDevices TrustedDevice[]
+}
+
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  family     String?
+  replacedBy String?
+}
+
+model TrustedDevice {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  selector     String   @unique
+  verifierHash String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastUsedAt   DateTime @default(now())
+  userAgent    String?
+  ipAddress    String?
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id       Int      @id @default(autoincrement())
+  at       DateTime @default(now())
+  userId   Int
+  username String
+  action   String
+  detail   String?
+  ip       String?
+
+  @@index([at])
+}
+
+model WebLogin {
+  id        Int      @id @default(autoincrement())
+  username  String
+  userId    Int?
+  ip        String
+  country   String?
+  success   Boolean
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([username, createdAt])
+}
