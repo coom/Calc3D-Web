@@ -1,0 +1,45 @@
+{
+  "namespace": "publicQuote",
+  "keys": {
+    "en": {
+      "from": "Quote from {{name}}",
+      "invalid": "This link is no longer valid.",
+      "intro": "Please review the quote below. You can accept or decline it; your answer is sent to {{name}}.",
+      "accept": "Accept the quote",
+      "refuse": "Decline the quote",
+      "commentLabel": "Comment (optional)",
+      "confirmAccept": "Confirm that you accept this quote?",
+      "confirmRefuse": "Confirm that you decline this quote?",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "sending": "Sending…",
+      "answered": {
+        "ACCEPTED": "You accepted this quote on {{date}}.",
+        "REFUSED": "You declined this quote on {{date}}."
+      },
+      "already": "This quote has already been answered.",
+      "failed": "Could not send your answer. Please try again.",
+      "print": "Print"
+    },
+    "fr": {
+      "from": "Devis de {{name}}",
+      "invalid": "Ce lien n'est plus valide.",
+      "intro": "Merci de vérifier le devis ci-dessous. Vous pouvez l'accepter ou le refuser ; votre réponse est transmise à {{name}}.",
+      "accept": "Accepter le devis",
+      "refuse": "Refuser le devis",
+      "commentLabel": "Commentaire (facultatif)",
+      "confirmAccept": "Confirmer l'acceptation de ce devis ?",
+      "confirmRefuse": "Confirmer le refus de ce devis ?",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "sending": "Envoi…",
+      "answered": {
+        "ACCEPTED": "Vous avez accepté ce devis le {{date}}.",
+        "REFUSED": "Vous avez refusé ce devis le {{date}}."
+      },
+      "already": "Ce devis a déjà reçu une réponse.",
+      "failed": "Impossible d'envoyer votre réponse. Réessayez.",
+      "print": "Imprimer"
+    }
+  }
+}
