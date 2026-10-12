@@ -6,3 +6,6 @@ export * from './pricing/types.js';
 export * from './pricing/compute-quote.js';
 export * from './types/settings.js';
 export * from './types/quotes.js';
+export * from './types/purchases.js';
+export * from './finances/types.js';
+export * from './finances/compute-finances.js';
