@@ -14,10 +14,9 @@ type NavItem = { to: string; icon: React.ComponentType<{ className?: string }>; 
 const navSections: { label: string; adminOnly?: boolean; items: NavItem[] }[] = [
   { label: 'nav.work', items: [
     { to: '/', icon: FileText, label: 'nav.quote' },
-    // Lot 2 : masqués tant que les pages n'existent pas (un lien de menu doit mener quelque part).
-    { to: '/history', icon: History, label: 'nav.history', comingSoon: true },
-    { to: '/purchases', icon: ShoppingCart, label: 'nav.purchases', comingSoon: true },
-    { to: '/finances', icon: PieChart, label: 'nav.finances', comingSoon: true },
+    { to: '/history', icon: History, label: 'nav.history' },
+    { to: '/purchases', icon: ShoppingCart, label: 'nav.purchases' },
+    { to: '/finances', icon: PieChart, label: 'nav.finances' },
   ] },
   { label: 'nav.admin', adminOnly: true, items: [
     { to: '/journal', icon: BookOpenText, label: 'nav.journal', adminOnly: true },

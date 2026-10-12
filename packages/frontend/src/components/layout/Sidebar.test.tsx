@@ -29,12 +29,10 @@ describe('Sidebar', () => {
     expect(screen.getByRole('link', { name: 'Quote' })).toBeInTheDocument();
   });
 
-  it('does not list pages that do not exist yet (history, purchases, finances come with lot 2)', () => {
+  it('lists the four workshop pages', () => {
     setViewportWidth(1280);
     setup();
-    for (const name of ['History', 'Purchases', 'Finances']) expect(screen.queryByRole('link', { name })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Quote' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Audit log' })).toBeInTheDocument();
+    for (const name of ['Quote', 'History', 'Purchases', 'Finances']) expect(screen.getByRole('link', { name })).toBeInTheDocument();
   });
 
   it('hides the administration section from a plain user', () => {
