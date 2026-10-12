@@ -15,7 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { JournalRetentionCard } from '@/components/settings/JournalRetentionCard';
-import { Users, Plus, Trash2, Check, Lock, KeyRound } from 'lucide-react';
+import { PricingSettingsForm } from '@/components/settings/PricingSettingsForm';
+import { MaterialsCard } from '@/components/settings/MaterialsCard';
+import { settingsApi } from '@/api/settings.api';
+import { Users, Plus, Trash2, Check, Lock, KeyRound, Calculator, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES, setLanguage } from '@/i18n';
@@ -27,16 +30,28 @@ export default function Settings() {
   return (
     <div className="space-y-5">
       <h1 className="text-xl font-semibold">{t('settings.title')}</h1>
-      <Tabs defaultValue="account">
+      <Tabs defaultValue="pricing">
         <TabsList>
+          <TabsTrigger value="pricing"><Calculator className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.pricing')}</TabsTrigger>
+          <TabsTrigger value="materials"><Layers className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.materials')}</TabsTrigger>
           <TabsTrigger value="account"><Lock className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.account')}</TabsTrigger>
           {isAdmin && <TabsTrigger value="users"><Users className="h-3.5 w-3.5 mr-1" /> {t('settings.tabs.users')}</TabsTrigger>}
         </TabsList>
+        <TabsContent value="pricing" className="mt-4"><PricingTab /></TabsContent>
+        <TabsContent value="materials" className="mt-4"><MaterialsCard /></TabsContent>
         <TabsContent value="account" className="mt-4"><AccountTab /></TabsContent>
         {isAdmin && <TabsContent value="users" className="mt-4"><UsersTab /></TabsContent>}
       </Tabs>
     </div>
   );
+}
+
+/** Paramètres de tarification de l'utilisateur courant ; le formulaire garde son état local, onSaved met le cache à jour. */
+function PricingTab() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
+  if (isLoading || !data) return <PageLoader />;
+  return <PricingSettingsForm key="settings" settings={data} onSaved={(s) => qc.setQueryData(['settings'], s)} />;
 }
 
 function AccountTab() {

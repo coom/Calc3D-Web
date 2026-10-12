@@ -1,0 +1,41 @@
+{
+  "namespace": "settings",
+  "keys": {
+    "en": {
+      "tabs": { "pricing": "Pricing", "materials": "Materials" },
+      "pricing": {
+        "title": "Pricing settings", "subtitle": "Reused for every new quote",
+        "currencySymbol": "Currency symbol", "electricityPricePerKwh": "Electricity price (per kWh)", "printerPowerW": "Printer power (W)", "averageLoadPct": "Average load (%)",
+        "hourlyRatePreparation": "Preparation hourly rate", "hourlyRatePostProcessing": "Post-processing hourly rate", "hourlyRateDesign": "Design / modeling hourly rate", "hourlyRatePackaging": "Packaging / shipping hourly rate",
+        "pricingMode": "Pricing mode", "modeMarkup": "Markup", "modeTargetMargin": "Target margin", "pricingPct": "Pricing percentage (%)",
+        "contingencyPct": "Failure / contingency rate (%)", "vatPct": "VAT (%) — 0 if not applicable",
+        "printerPurchasePrice": "Printer purchase price", "printerLifetimeHours": "Printer lifespan (h)", "maintenancePct": "Maintenance (% of price)", "wearCostPerHour": "Printer wear parts (per hour of printing)",
+        "defaultFixedCosts": "Default other fixed costs", "floorPrice": "Floor price — minimum sale",
+        "roundToEuro": "Round the final price up to the next euro", "pdfShowCostBreakdown": "Show the cost price breakdown on the PDF quote",
+        "save": "Save settings", "saved": "Settings saved.", "saveFailed": "Could not save settings.", "invalidNumber": "Invalid number", "targetMarginTooHigh": "Target margin must be below 100 %."
+      },
+      "materials": {
+        "title": "Material price catalog (per kg)", "name": "Material", "pricePerKg": "Price / kg", "add": "Add", "remove": "Remove", "newName": "New material name",
+        "duplicate": "This material already exists.", "saved": "Catalog saved.", "saveFailed": "Could not save the catalog.", "confirmRemove": "Remove material \"{{name}}\"?"
+      }
+    },
+    "fr": {
+      "tabs": { "pricing": "Tarification", "materials": "Matières" },
+      "pricing": {
+        "title": "Paramètres de tarification", "subtitle": "Réutilisés pour chaque nouveau devis",
+        "currencySymbol": "Symbole de devise", "electricityPricePerKwh": "Prix de l'électricité (par kWh)", "printerPowerW": "Puissance de l'imprimante (W)", "averageLoadPct": "Charge moyenne (%)",
+        "hourlyRatePreparation": "Tarif horaire préparation", "hourlyRatePostProcessing": "Tarif horaire post-traitement", "hourlyRateDesign": "Tarif horaire conception / modélisation", "hourlyRatePackaging": "Tarif horaire emballage / expédition",
+        "pricingMode": "Mode de tarification", "modeMarkup": "Surcoût (markup)", "modeTargetMargin": "Marge cible", "pricingPct": "Pourcentage de tarification (%)",
+        "contingencyPct": "Taux d'échec / aléas (%)", "vatPct": "TVA (%) — 0 si non applicable",
+        "printerPurchasePrice": "Prix d'achat de l'imprimante", "printerLifetimeHours": "Durée de vie de l'imprimante (h)", "maintenancePct": "Maintenance (% du prix)", "wearCostPerHour": "Usure des pièces de l'imprimante (par heure d'impression)",
+        "defaultFixedCosts": "Autres coûts fixes par défaut", "floorPrice": "Prix plancher — vente minimum",
+        "roundToEuro": "Arrondir le prix final à l'euro supérieur", "pdfShowCostBreakdown": "Afficher le détail du coût de revient sur le devis PDF",
+        "save": "Enregistrer les paramètres", "saved": "Paramètres enregistrés.", "saveFailed": "Impossible d'enregistrer les paramètres.", "invalidNumber": "Nombre invalide", "targetMarginTooHigh": "La marge cible doit être inférieure à 100 %."
+      },
+      "materials": {
+        "title": "Catalogue des prix par matière (par kg)", "name": "Matière", "pricePerKg": "Prix / kg", "add": "Ajouter", "remove": "Supprimer", "newName": "Nom de la nouvelle matière",
+        "duplicate": "Cette matière existe déjà.", "saved": "Catalogue enregistré.", "saveFailed": "Impossible d'enregistrer le catalogue.", "confirmRemove": "Supprimer la matière « {{name}} » ?"
+      }
+    }
+  }
+}

@@ -86,7 +86,9 @@
     "title": "Paramètres",
     "tabs": {
       "account": "Compte",
-      "users": "Utilisateurs"
+      "users": "Utilisateurs",
+      "pricing": "Tarification",
+      "materials": "Matières"
     },
     "account": {
       "changePassword": "Changer le mot de passe",
@@ -226,6 +228,49 @@
         "failed": "Impossible d'enregistrer l'adresse de la carte"
       },
       "roleUser": "Utilisateur"
+    },
+    "pricing": {
+      "title": "Paramètres de tarification",
+      "subtitle": "Réutilisés pour chaque nouveau devis",
+      "currencySymbol": "Symbole de devise",
+      "electricityPricePerKwh": "Prix de l'électricité (par kWh)",
+      "printerPowerW": "Puissance de l'imprimante (W)",
+      "averageLoadPct": "Charge moyenne (%)",
+      "hourlyRatePreparation": "Tarif horaire préparation",
+      "hourlyRatePostProcessing": "Tarif horaire post-traitement",
+      "hourlyRateDesign": "Tarif horaire conception / modélisation",
+      "hourlyRatePackaging": "Tarif horaire emballage / expédition",
+      "pricingMode": "Mode de tarification",
+      "modeMarkup": "Surcoût (markup)",
+      "modeTargetMargin": "Marge cible",
+      "pricingPct": "Pourcentage de tarification (%)",
+      "contingencyPct": "Taux d'échec / aléas (%)",
+      "vatPct": "TVA (%) — 0 si non applicable",
+      "printerPurchasePrice": "Prix d'achat de l'imprimante",
+      "printerLifetimeHours": "Durée de vie de l'imprimante (h)",
+      "maintenancePct": "Maintenance (% du prix)",
+      "wearCostPerHour": "Usure des pièces de l'imprimante (par heure d'impression)",
+      "defaultFixedCosts": "Autres coûts fixes par défaut",
+      "floorPrice": "Prix plancher — vente minimum",
+      "roundToEuro": "Arrondir le prix final à l'euro supérieur",
+      "pdfShowCostBreakdown": "Afficher le détail du coût de revient sur le devis PDF",
+      "save": "Enregistrer les paramètres",
+      "saved": "Paramètres enregistrés.",
+      "saveFailed": "Impossible d'enregistrer les paramètres.",
+      "invalidNumber": "Nombre invalide",
+      "targetMarginTooHigh": "La marge cible doit être inférieure à 100 %."
+    },
+    "materials": {
+      "title": "Catalogue des prix par matière (par kg)",
+      "name": "Matière",
+      "pricePerKg": "Prix / kg",
+      "add": "Ajouter",
+      "remove": "Supprimer",
+      "newName": "Nom de la nouvelle matière",
+      "duplicate": "Cette matière existe déjà.",
+      "saved": "Catalogue enregistré.",
+      "saveFailed": "Impossible d'enregistrer le catalogue.",
+      "confirmRemove": "Supprimer la matière « {{name}} » ?"
     }
   },
   "audit": {

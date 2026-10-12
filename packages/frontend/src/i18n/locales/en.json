@@ -86,7 +86,9 @@
     "title": "Settings",
     "tabs": {
       "account": "Account",
-      "users": "Users"
+      "users": "Users",
+      "pricing": "Pricing",
+      "materials": "Materials"
     },
     "account": {
       "changePassword": "Change Password",
@@ -226,6 +228,49 @@
         "failed": "Could not save the map address"
       },
       "roleUser": "User"
+    },
+    "pricing": {
+      "title": "Pricing settings",
+      "subtitle": "Reused for every new quote",
+      "currencySymbol": "Currency symbol",
+      "electricityPricePerKwh": "Electricity price (per kWh)",
+      "printerPowerW": "Printer power (W)",
+      "averageLoadPct": "Average load (%)",
+      "hourlyRatePreparation": "Preparation hourly rate",
+      "hourlyRatePostProcessing": "Post-processing hourly rate",
+      "hourlyRateDesign": "Design / modeling hourly rate",
+      "hourlyRatePackaging": "Packaging / shipping hourly rate",
+      "pricingMode": "Pricing mode",
+      "modeMarkup": "Markup",
+      "modeTargetMargin": "Target margin",
+      "pricingPct": "Pricing percentage (%)",
+      "contingencyPct": "Failure / contingency rate (%)",
+      "vatPct": "VAT (%) — 0 if not applicable",
+      "printerPurchasePrice": "Printer purchase price",
+      "printerLifetimeHours": "Printer lifespan (h)",
+      "maintenancePct": "Maintenance (% of price)",
+      "wearCostPerHour": "Printer wear parts (per hour of printing)",
+      "defaultFixedCosts": "Default other fixed costs",
+      "floorPrice": "Floor price — minimum sale",
+      "roundToEuro": "Round the final price up to the next euro",
+      "pdfShowCostBreakdown": "Show the cost price breakdown on the PDF quote",
+      "save": "Save settings",
+      "saved": "Settings saved.",
+      "saveFailed": "Could not save settings.",
+      "invalidNumber": "Invalid number",
+      "targetMarginTooHigh": "Target margin must be below 100 %."
+    },
+    "materials": {
+      "title": "Material price catalog (per kg)",
+      "name": "Material",
+      "pricePerKg": "Price / kg",
+      "add": "Add",
+      "remove": "Remove",
+      "newName": "New material name",
+      "duplicate": "This material already exists.",
+      "saved": "Catalog saved.",
+      "saveFailed": "Could not save the catalog.",
+      "confirmRemove": "Remove material \"{{name}}\"?"
     }
   },
   "audit": {
