@@ -583,5 +583,25 @@
       "fixedCosts": "Consumables / additional parts",
       "contingency": "Contingency / failure surcharge ({{pct}} %)"
     }
+  },
+  "desktopImport": {
+    "tab": "Import",
+    "title": "Import from the desktop app",
+    "intro": "Pick the files from your CalculateurPrix folder. Settings and the material catalog are replaced; quotes and purchases are matched by their desktop Id, so importing twice never creates duplicates.",
+    "config": "config.json (settings and catalog)",
+    "historique": "historique.csv (quotes and orders)",
+    "achats": "achats.csv (purchases)",
+    "run": "Import",
+    "running": "Importing…",
+    "pickOne": "Pick at least one file.",
+    "failed": "Import failed: {{reason}}",
+    "report": {
+      "title": "Import report",
+      "settings": "Settings imported, {{count}} material(s) in the catalog.",
+      "settingsSkipped": "Settings: no file.",
+      "quotes": "Quotes: {{created}} created, {{updated}} updated, {{rejected}} rejected.",
+      "purchases": "Purchases: {{created}} created, {{updated}} updated, {{rejected}} rejected.",
+      "rejectedLine": "line {{line}}: {{reason}}"
+    }
   }
 }

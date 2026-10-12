@@ -1,0 +1,45 @@
+{
+  "namespace": "desktopImport",
+  "keys": {
+    "en": {
+      "tab": "Import",
+      "title": "Import from the desktop app",
+      "intro": "Pick the files from your CalculateurPrix folder. Settings and the material catalog are replaced; quotes and purchases are matched by their desktop Id, so importing twice never creates duplicates.",
+      "config": "config.json (settings and catalog)",
+      "historique": "historique.csv (quotes and orders)",
+      "achats": "achats.csv (purchases)",
+      "run": "Import",
+      "running": "Importing…",
+      "pickOne": "Pick at least one file.",
+      "failed": "Import failed: {{reason}}",
+      "report": {
+        "title": "Import report",
+        "settings": "Settings imported, {{count}} material(s) in the catalog.",
+        "settingsSkipped": "Settings: no file.",
+        "quotes": "Quotes: {{created}} created, {{updated}} updated, {{rejected}} rejected.",
+        "purchases": "Purchases: {{created}} created, {{updated}} updated, {{rejected}} rejected.",
+        "rejectedLine": "line {{line}}: {{reason}}"
+      }
+    },
+    "fr": {
+      "tab": "Import",
+      "title": "Importer depuis l'application bureau",
+      "intro": "Choisis les fichiers de ton dossier CalculateurPrix. Les paramètres et le catalogue sont remplacés ; les devis et achats sont reconnus par leur Id bureau, un second import ne crée donc jamais de doublon.",
+      "config": "config.json (paramètres et catalogue)",
+      "historique": "historique.csv (devis et commandes)",
+      "achats": "achats.csv (achats)",
+      "run": "Importer",
+      "running": "Import en cours…",
+      "pickOne": "Choisis au moins un fichier.",
+      "failed": "Import échoué : {{reason}}",
+      "report": {
+        "title": "Rapport d'import",
+        "settings": "Paramètres importés, {{count}} matière(s) au catalogue.",
+        "settingsSkipped": "Paramètres : aucun fichier.",
+        "quotes": "Devis : {{created}} créés, {{updated}} mis à jour, {{rejected}} rejetés.",
+        "purchases": "Achats : {{created}} créés, {{updated}} mis à jour, {{rejected}} rejetés.",
+        "rejectedLine": "ligne {{line}} : {{reason}}"
+      }
+    }
+  }
+}
