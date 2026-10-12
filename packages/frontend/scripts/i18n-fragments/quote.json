@@ -1,0 +1,47 @@
+{
+  "namespace": "quote",
+  "keys": {
+    "en": {
+      "title": "Quote", "subtitle": "Create a quote and calculate the final price",
+      "project": { "title": "Project information", "projectName": "Project / part name", "customer": "Customer", "kind": "Type", "status": "Status", "dueDate": "Due date", "quantity": "Quantity" },
+      "kinds": { "QUOTE": "Quote", "ORDER": "Order" },
+      "statuses": { "PENDING": "Pending", "SCHEDULED": "Scheduled", "IN_PROGRESS": "In progress", "DONE": "Done", "ON_HOLD": "On hold" },
+      "filament": { "title": "Filament (one line per material / color used)", "material": "Material", "weightG": "Weight (g)", "pricePerKg": "Price / kg", "wastePct": "Waste (%)", "cost": "Cost", "addLine": "Add line", "removeLine": "Remove line" },
+      "time": { "title": "Printing and labor", "printHours": "Print time — h", "printMinutes": "minutes", "prepHours": "Preparation time (h)", "postHours": "Post-processing time (h)", "designHours": "Design / modeling time (h)", "packagingHours": "Packaging / shipping time (h)" },
+      "options": { "title": "Order options", "consumables": "Consumables / additional parts", "discountPct": "Discount (%)", "shippingCost": "Shipping cost", "comment": "Comment" },
+      "result": {
+        "title": "Result", "filament": "Filament (total weight {{weight}} g)", "electricity": "Electricity ({{hours}} h, {{kwh}} kWh)",
+        "laborPrep": "Preparation labor", "laborPost": "Post-processing labor", "laborDesign": "Design / modeling labor", "laborPackaging": "Packaging / shipping labor",
+        "depreciation": "Printer depreciation", "maintenance": "Printer maintenance", "wear": "Printer wear parts", "fixedCosts": "Consumables / fixed costs",
+        "subtotal": "SUBTOTAL (cost price)", "contingency": "Contingency / failure surcharge ({{pct}} %)", "costAfterContingency": "Cost after surcharge",
+        "pricingMode": "Pricing mode", "unitPriceExclTax": "Selling price excl. tax (per unit)", "quantity": "Quantity", "totalExclTax": "Selling price excl. tax (order total)",
+        "discount": "Discount ({{pct}} %)", "shipping": "Shipping", "vat": "VAT ({{pct}} %)", "rounding": "Rounded up to the next euro",
+        "pricePerGram": "Unit price per g (excl. tax)", "pricePerHour": "Unit price per hour (excl. tax)", "finalPrice": "FINAL PRICE",
+        "floorApplied": "Floor price applied (calculated: {{price}})", "invalid": "Fix the highlighted fields to see the price."
+      },
+      "actions": { "save": "Save to history", "saving": "Saving…", "saved": "Quote saved.", "saveFailed": "Could not save the quote.", "new": "New quote", "export": "Export / Print (PDF)", "exportLater": "Available after saving (lot 3)" },
+      "errors": { "invalidNumber": "Invalid number", "quantityMin": "Quantity must be a whole number ≥ 1", "minutesRange": "Minutes must be between 0 and 59" }
+    },
+    "fr": {
+      "title": "Devis", "subtitle": "Crée un devis et calcule le prix final",
+      "project": { "title": "Informations projet", "projectName": "Nom du projet / pièce", "customer": "Client", "kind": "Type", "status": "Statut", "dueDate": "Date souhaitée", "quantity": "Quantité" },
+      "kinds": { "QUOTE": "Devis", "ORDER": "Commande" },
+      "statuses": { "PENDING": "En attente", "SCHEDULED": "Programmé", "IN_PROGRESS": "En cours", "DONE": "Terminé", "ON_HOLD": "En pause" },
+      "filament": { "title": "Filament (une ligne par matière / couleur utilisée)", "material": "Matière", "weightG": "Poids (g)", "pricePerKg": "Prix / kg", "wastePct": "Pertes (%)", "cost": "Coût", "addLine": "Ajouter une ligne", "removeLine": "Supprimer la ligne" },
+      "time": { "title": "Impression et main d'œuvre", "printHours": "Durée d'impression — h", "printMinutes": "minutes", "prepHours": "Temps de préparation (h)", "postHours": "Temps de post-traitement (h)", "designHours": "Temps de conception / modélisation (h)", "packagingHours": "Temps d'emballage / expédition (h)" },
+      "options": { "title": "Options de commande", "consumables": "Consommables / pièces additionnelles", "discountPct": "Remise (%)", "shippingCost": "Frais de port", "comment": "Commentaire" },
+      "result": {
+        "title": "Résultat", "filament": "Filament (poids total {{weight}} g)", "electricity": "Électricité ({{hours}} h, {{kwh}} kWh)",
+        "laborPrep": "Main d'œuvre préparation", "laborPost": "Main d'œuvre post-traitement", "laborDesign": "Main d'œuvre conception / modélisation", "laborPackaging": "Main d'œuvre emballage / expédition",
+        "depreciation": "Amortissement imprimante", "maintenance": "Maintenance imprimante", "wear": "Usure pièces imprimante", "fixedCosts": "Consommables / coûts fixes",
+        "subtotal": "SOUS-TOTAL (coût de revient)", "contingency": "Majoration aléas / échec ({{pct}} %)", "costAfterContingency": "Coût après majoration",
+        "pricingMode": "Mode de tarification", "unitPriceExclTax": "Prix de vente HT (unitaire)", "quantity": "Quantité", "totalExclTax": "Prix de vente HT (total commande)",
+        "discount": "Remise ({{pct}} %)", "shipping": "Frais de port", "vat": "TVA ({{pct}} %)", "rounding": "Arrondi à l'euro supérieur",
+        "pricePerGram": "Prix unitaire au gramme (HT)", "pricePerHour": "Prix unitaire à l'heure (HT)", "finalPrice": "PRIX FINAL",
+        "floorApplied": "Prix plancher appliqué (calculé : {{price}})", "invalid": "Corrige les champs en erreur pour voir le prix."
+      },
+      "actions": { "save": "Enregistrer dans l'historique", "saving": "Enregistrement…", "saved": "Devis enregistré.", "saveFailed": "Impossible d'enregistrer le devis.", "new": "Nouveau devis", "export": "Exporter / Imprimer (PDF)", "exportLater": "Disponible après enregistrement (lot 3)" },
+      "errors": { "invalidNumber": "Nombre invalide", "quantityMin": "La quantité doit être un entier ≥ 1", "minutesRange": "Les minutes doivent être entre 0 et 59" }
+    }
+  }
+}

@@ -14,7 +14,7 @@ const Journal = lazy(() => import('@/pages/Journal'));
 const Audit = lazy(() => import('@/pages/Audit'));
 const Settings = lazy(() => import('@/pages/Settings'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
-// Tâche 8 : const Quote = lazy(() => import('@/pages/Quote')); et <Route path="/" element={<Quote />} />
+const Quote = lazy(() => import('@/pages/Quote'));
 // Lot 2 : /history, /purchases, /finances
 
 export function App() {
@@ -27,7 +27,7 @@ export function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/setup" element={<SetupPage />} />
             <Route element={<AppLayout />}>
-              <Route path="/" element={<NotFound />} />
+              <Route path="/" element={<Quote />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/audit" element={<Audit />} />
               <Route path="/settings" element={<Settings />} />

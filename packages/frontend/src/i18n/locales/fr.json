@@ -312,5 +312,98 @@
       "trusted_device": "appareil de confiance",
       "mfa": "2FA"
     }
+  },
+  "quote": {
+    "title": "Devis",
+    "subtitle": "Crée un devis et calcule le prix final",
+    "project": {
+      "title": "Informations projet",
+      "projectName": "Nom du projet / pièce",
+      "customer": "Client",
+      "kind": "Type",
+      "status": "Statut",
+      "dueDate": "Date souhaitée",
+      "quantity": "Quantité"
+    },
+    "kinds": {
+      "QUOTE": "Devis",
+      "ORDER": "Commande"
+    },
+    "statuses": {
+      "PENDING": "En attente",
+      "SCHEDULED": "Programmé",
+      "IN_PROGRESS": "En cours",
+      "DONE": "Terminé",
+      "ON_HOLD": "En pause"
+    },
+    "filament": {
+      "title": "Filament (une ligne par matière / couleur utilisée)",
+      "material": "Matière",
+      "weightG": "Poids (g)",
+      "pricePerKg": "Prix / kg",
+      "wastePct": "Pertes (%)",
+      "cost": "Coût",
+      "addLine": "Ajouter une ligne",
+      "removeLine": "Supprimer la ligne"
+    },
+    "time": {
+      "title": "Impression et main d'œuvre",
+      "printHours": "Durée d'impression — h",
+      "printMinutes": "minutes",
+      "prepHours": "Temps de préparation (h)",
+      "postHours": "Temps de post-traitement (h)",
+      "designHours": "Temps de conception / modélisation (h)",
+      "packagingHours": "Temps d'emballage / expédition (h)"
+    },
+    "options": {
+      "title": "Options de commande",
+      "consumables": "Consommables / pièces additionnelles",
+      "discountPct": "Remise (%)",
+      "shippingCost": "Frais de port",
+      "comment": "Commentaire"
+    },
+    "result": {
+      "title": "Résultat",
+      "filament": "Filament (poids total {{weight}} g)",
+      "electricity": "Électricité ({{hours}} h, {{kwh}} kWh)",
+      "laborPrep": "Main d'œuvre préparation",
+      "laborPost": "Main d'œuvre post-traitement",
+      "laborDesign": "Main d'œuvre conception / modélisation",
+      "laborPackaging": "Main d'œuvre emballage / expédition",
+      "depreciation": "Amortissement imprimante",
+      "maintenance": "Maintenance imprimante",
+      "wear": "Usure pièces imprimante",
+      "fixedCosts": "Consommables / coûts fixes",
+      "subtotal": "SOUS-TOTAL (coût de revient)",
+      "contingency": "Majoration aléas / échec ({{pct}} %)",
+      "costAfterContingency": "Coût après majoration",
+      "pricingMode": "Mode de tarification",
+      "unitPriceExclTax": "Prix de vente HT (unitaire)",
+      "quantity": "Quantité",
+      "totalExclTax": "Prix de vente HT (total commande)",
+      "discount": "Remise ({{pct}} %)",
+      "shipping": "Frais de port",
+      "vat": "TVA ({{pct}} %)",
+      "rounding": "Arrondi à l'euro supérieur",
+      "pricePerGram": "Prix unitaire au gramme (HT)",
+      "pricePerHour": "Prix unitaire à l'heure (HT)",
+      "finalPrice": "PRIX FINAL",
+      "floorApplied": "Prix plancher appliqué (calculé : {{price}})",
+      "invalid": "Corrige les champs en erreur pour voir le prix."
+    },
+    "actions": {
+      "save": "Enregistrer dans l'historique",
+      "saving": "Enregistrement…",
+      "saved": "Devis enregistré.",
+      "saveFailed": "Impossible d'enregistrer le devis.",
+      "new": "Nouveau devis",
+      "export": "Exporter / Imprimer (PDF)",
+      "exportLater": "Disponible après enregistrement (lot 3)"
+    },
+    "errors": {
+      "invalidNumber": "Nombre invalide",
+      "quantityMin": "La quantité doit être un entier ≥ 1",
+      "minutesRange": "Les minutes doivent être entre 0 et 59"
+    }
   }
 }
