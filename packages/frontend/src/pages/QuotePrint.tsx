@@ -9,7 +9,8 @@ import { formatMoney, formatNumber } from '@/lib/number';
 import { PageLoader } from '@/components/shared/LoadingSpinner';
 
 const PRINT_CSS = `
-  .print-page { font-family: 'Segoe UI', Arial, sans-serif; color: #111827; background: #fff; margin: 40px; max-width: 800px; }
+  html, body { background: #fff !important; color: #111827; }
+  .print-page { font-family: 'Segoe UI', Arial, sans-serif; color: #111827; background: #fff; margin: 40px; padding-bottom: 24px; max-width: 800px; }
   .print-page h1 { font-size: 22px; margin-bottom: 0; } .print-page h3 { font-size: 15px; margin: 18px 0 8px; }
   .print-page .sous-titre { color: #6B7280; font-size: 13px; margin: 2px 0 24px; }
   .print-page table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }

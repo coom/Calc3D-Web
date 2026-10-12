@@ -5,6 +5,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+### Corrigé
+- Page d'impression : fond de page blanc hors du cadre (le thème sombre de l'application rendait la note « prix plancher appliqué » illisible à l'écran).
+
 ## [0.3.0] - 2026-10-12 — lot 3
 
 ### Ajouté
