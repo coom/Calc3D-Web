@@ -19,7 +19,8 @@
       },
       "already": "This quote has already been answered.",
       "failed": "Could not send your answer. Please try again.",
-      "print": "Print"
+      "print": "Print",
+      "unavailable": "The service is temporarily unavailable. Please try again in a few minutes."
     },
     "fr": {
       "from": "Devis de {{name}}",
@@ -39,7 +40,8 @@
       },
       "already": "Ce devis a déjà reçu une réponse.",
       "failed": "Impossible d'envoyer votre réponse. Réessayez.",
-      "print": "Imprimer"
+      "print": "Imprimer",
+      "unavailable": "Le service est momentanément indisponible. Réessayez dans quelques minutes."
     }
   }
 }

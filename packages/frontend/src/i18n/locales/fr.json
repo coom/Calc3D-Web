@@ -622,7 +622,8 @@
     },
     "already": "Ce devis a déjà reçu une réponse.",
     "failed": "Impossible d'envoyer votre réponse. Réessayez.",
-    "print": "Imprimer"
+    "print": "Imprimer",
+    "unavailable": "Le service est momentanément indisponible. Réessayez dans quelques minutes."
   },
   "share": {
     "title": "Client",

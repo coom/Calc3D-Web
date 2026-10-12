@@ -67,4 +67,15 @@ describe('API publique du devis', () => {
     const r = await request(a).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED' });
     expect(r.status).toBe(200); expect(calls).toHaveLength(1);
   });
+  it('deux réponses simultanées : exactement un 200 et un 409, la première réponse reste (I1)', async () => {
+    const u = await createTestUser(prisma, 'alice'); await seedShared(u.id);
+    const a = app();
+    const [r1, r2] = await Promise.all([
+      request(a).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED' }),
+      request(a).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'REFUSED' }),
+    ]);
+    expect([r1.status, r2.status].sort()).toEqual([200, 409]);
+    const winner = r1.status === 200 ? r1.body.clientResponse : r2.body.clientResponse;
+    expect((await request(a).get(`/api/public/quotes/${TOKEN}`)).body.clientResponse).toBe(winner);
+  });
 });

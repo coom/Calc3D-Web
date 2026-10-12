@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { newShareToken, shareUrl } from '../quotes/share-service.js';
 import { isSmtpEnabled, sendMail, type TransportFactory } from '../mail/mailer.js';
 import { quoteEmail } from '../mail/templates.js';
+import { logger } from '../utils/logger.js';
 
 export const quoteShareRoutes: Router = Router();
 const wrap = (fn: (req: Request, res: Response) => Promise<void>) => (req: Request, res: Response, next: NextFunction) => { fn(req, res).catch(next); };
@@ -57,6 +58,7 @@ quoteShareRoutes.post('/:id/share/email', wrap(async (req, res) => {
   const owner = await prisma.user.findUnique({ where: { id: scope.userId }, select: { displayName: true, language: true } });
   const { token, hash } = newShareToken(); const url = shareUrl(token);
   await sendMail(prisma, { to: parsed.data.to, ...quoteEmail(owner?.language, { projectName: existing.projectName, ownerName: owner?.displayName ?? '', url, message: parsed.data.message }) }, req.app.locals.mailFactory as TransportFactory | undefined);
-  await prisma.quote.update({ where: { id }, data: { shareTokenHash: hash, sharedAt: new Date(), clientEmail: parsed.data.to.toLowerCase(), clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null } });
+  const w = await prisma.quote.updateMany({ where: { id, ...scope, clientResponse: null }, data: { shareTokenHash: hash, sharedAt: new Date(), clientEmail: parsed.data.to.toLowerCase(), clientRespondedAt: null, clientComment: '', responseSeenAt: null } });
+  if (w.count === 0) { logger.error({ quoteId: id }, 'share e-mail sent but quote changed or vanished before the new link was stored'); throw new AppError(409, 'Quote changed during sending; regenerate the link', undefined, 'already_answered'); }
   res.json({ url });
 }));

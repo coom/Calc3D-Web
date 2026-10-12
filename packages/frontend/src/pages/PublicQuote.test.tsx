@@ -49,4 +49,10 @@ describe('page publique du devis', () => {
     expect(await screen.findByText(/déjà reçu une réponse/)).toBeInTheDocument();
     expect(await screen.findByText(/Vous avez accepté ce devis le/)).toBeInTheDocument();
   });
+  it('429 ou erreur serveur : message « indisponible », pas « lien invalide » (I3)', async () => {
+    get.mockRejectedValue({ response: { status: 429 } });
+    renderPage('busy');
+    expect(await screen.findByText(/momentanément indisponible/, {}, { timeout: 4000 })).toBeInTheDocument();
+    expect(screen.queryByText(/Ce lien n'est plus valide/)).not.toBeInTheDocument();
+  });
 });

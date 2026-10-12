@@ -43,9 +43,12 @@ publicRoutes.post('/quotes/:token/respond', wrap(async (req, res) => {
   if (!parsed.success) throw new AppError(400, 'Invalid response', undefined, 'validation');
   const prisma = req.app.locals.prisma;
   const row = await findShared(prisma, String(req.params.token));
-  if (row.clientResponse !== null) throw new AppError(409, 'This quote has already been answered', undefined, 'already_answered');
   const comment = (parsed.data.comment ?? '').slice(0, 2000);
-  const updated = await prisma.quote.update({ where: { id: row.id }, data: { clientResponse: parsed.data.decision, clientRespondedAt: new Date(), clientComment: comment, responseSeenAt: null } });
+  // Écriture conditionnelle : deux réponses simultanées ne peuvent pas toutes deux passer (la première gagne, la seconde reçoit 409).
+  // Pas de ownerScope ici par construction : la route est publique, l'accès est prouvé par le jeton haché (unique).
+  const r = await prisma.quote.updateMany({ where: { id: row.id, shareTokenHash: row.shareTokenHash, clientResponse: null }, data: { clientResponse: parsed.data.decision, clientRespondedAt: new Date(), clientComment: comment, responseSeenAt: null } });
+  if (r.count === 0) throw new AppError(409, 'This quote has already been answered', undefined, 'already_answered');
+  const updated = (await prisma.quote.findUnique({ where: { id: row.id } }))!;
   const notify = req.app.locals.notifyOwnerOfResponse as ((prisma: PrismaClient, quote: Quote) => Promise<void>) | undefined;
   if (notify) notify(prisma, updated).catch((err: unknown) => logger.error({ err, quoteId: updated.id }, 'owner notification failed'));
   res.json(await publicDto(prisma, updated));

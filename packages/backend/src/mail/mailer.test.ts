@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeEach, vi } from 'vitest';
 import { testPrisma } from '../test-db.js';
-import { isSmtpEnabled, sendMail, type TransportFactory } from './mailer.js';
+import { isSmtpEnabled, sendMail, transportOptions, type TransportFactory } from './mailer.js';
 import { encrypt } from '../utils/crypto.js';
 
 const prisma = testPrisma();
@@ -23,9 +23,15 @@ describe('mailer', () => {
     const sent: unknown[] = []; const opts: unknown[] = [];
     const factory: TransportFactory = (o) => { opts.push(o); return { sendMail: async (m) => { sent.push(m); } }; };
     await sendMail(prisma, msg, factory);
-    expect(opts[0]).toEqual({ host: 'smtp.x', port: 465, secure: true, auth: { user: 'u', pass: 'p4ss' } });
+    expect(opts[0]).toMatchObject({ host: 'smtp.x', port: 465, secure: true, auth: { user: 'u', pass: 'p4ss' } });
     expect(sent[0]).toMatchObject({ from: '"Calc3D" <calc@x.fr>', to: 'c@x.fr', subject: 'S' });
     const failing: TransportFactory = () => ({ sendMail: async () => { throw new Error('ECONNREFUSED 1.2.3.4:465'); } });
     await expect(sendMail(prisma, msg, failing)).rejects.toMatchObject({ statusCode: 502, code: 'smtp_failed', details: 'ECONNREFUSED 1.2.3.4:465' });
+  });
+  it('le transport porte des délais bornés (hôte filtré → échec en moins d\'une minute, I2)', async () => {
+    const row = await prisma.smtpSettings.create({ data: { id: 1, host: 'smtp.x', enabled: true } });
+    const o = transportOptions(row);
+    expect(o.connectionTimeout).toBe(10_000); expect(o.greetingTimeout).toBe(10_000); expect(o.socketTimeout).toBe(30_000);
+    expect(o.auth).toBeUndefined();
   });
 });

@@ -21,7 +21,7 @@ export default function PublicQuote() {
   const { token = '' } = useParams();
   const { t, i18n } = useTranslation();
   const qc = useQueryClient();
-  const q = useQuery({ queryKey: ['public-quote', token], queryFn: () => publicApi.get(token), retry: false });
+  const q = useQuery({ queryKey: ['public-quote', token], queryFn: () => publicApi.get(token), retry: (count, e) => (e as ApiError)?.response?.status !== 404 && count < 1, retryDelay: 800 });
   const [comment, setComment] = useState('');
   const [pending, setPending] = useState<ClientResponse | null>(null);
   const [error, setError] = useState('');
@@ -36,7 +36,11 @@ export default function PublicQuote() {
   });
   useEffect(() => { if (q.data) document.title = t('print.title', { name: q.data.projectName }); }, [q.data, t]);
 
-  if (q.isError) return <p style={{ fontFamily: 'sans-serif', padding: 40 }}>{t('publicQuote.invalid')}</p>;
+  if (q.isError) {
+    // Seul le 404 signifie « lien mort » ; limiteur (429), panne ou réseau ne doivent pas pousser le propriétaire à régénérer un lien valide.
+    const status = (q.error as ApiError)?.response?.status;
+    return <p style={{ fontFamily: 'sans-serif', padding: 40 }}>{t(status === 404 ? 'publicQuote.invalid' : 'publicQuote.unavailable')}</p>;
+  }
   if (!q.data) return <PageLoader />;
   const d = q.data;
   return (

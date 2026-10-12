@@ -18,6 +18,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 ### Modifié
 - Invariant réseau : le backend ne fait aucun appel sortant **hormis SMTP** vers l'hôte configuré par l'admin.
 - Page d'impression : le titre du document reprend le nom du devis (nom du PDF enregistré).
+- Réponse du client atomique (écriture conditionnelle) : deux réponses simultanées donnent un 200 et un 409, la première reste.
+- Transport SMTP avec délais bornés (connexion et salutation 10 s, socket 30 s) ; les envois d'e-mail attendent jusqu'à 45 s côté client.
+- Page publique : seul le 404 affiche « lien invalide » ; limiteur, panne ou réseau affichent « service momentanément indisponible ».
 
 ### Corrigé
 - Page d'impression : fond de page blanc hors du cadre (le thème sombre de l'application rendait la note « prix plancher appliqué » illisible à l'écran).

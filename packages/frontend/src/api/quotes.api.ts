@@ -11,7 +11,8 @@ export const quotesApi = {
   // Partage client (lot 4). Le jeton en clair n'est renvoyé qu'à la génération.
   share: (id: number): Promise<{ url: string }> => api.post(`/quotes/${id}/share`).then((r) => r.data),
   unshare: (id: number): Promise<void> => api.delete(`/quotes/${id}/share`).then(() => undefined),
-  shareByEmail: (id: number, body: { to: string; message: string }): Promise<{ url: string }> => api.post(`/quotes/${id}/share/email`, body).then((r) => r.data),
+  /** Délai long : l'envoi SMTP peut prendre jusqu'à ~40 s avant d'échouer (délais du transport). */
+  shareByEmail: (id: number, body: { to: string; message: string }): Promise<{ url: string }> => api.post(`/quotes/${id}/share/email`, body, { timeout: 45_000 }).then((r) => r.data),
   markSeen: (id: number): Promise<QuoteDto> => api.post(`/quotes/${id}/response/seen`).then((r) => r.data),
   unseenCount: (): Promise<{ count: number }> => api.get('/quotes/unseen-count').then((r) => r.data),
 };

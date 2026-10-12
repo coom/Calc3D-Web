@@ -622,7 +622,8 @@
     },
     "already": "This quote has already been answered.",
     "failed": "Could not send your answer. Please try again.",
-    "print": "Print"
+    "print": "Print",
+    "unavailable": "The service is temporarily unavailable. Please try again in a few minutes."
   },
   "share": {
     "title": "Customer",

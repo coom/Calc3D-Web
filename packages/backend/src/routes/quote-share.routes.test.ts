@@ -98,4 +98,14 @@ describe('routes de partage (propriétaire)', () => {
     await prisma.quote.update({ where: { id: q.id }, data: { clientResponse: 'ACCEPTED', clientRespondedAt: new Date() } });
     expect((await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: '' })).body.code).toBe('already_answered');
   });
+  it('envoi par e-mail : autre utilisateur et admin → 404 (I4)', async () => {
+    const u = await createTestUser(prisma, 'alice'); const v = await createTestUser(prisma, 'bob'); const adm = await createTestUser(prisma, 'root', 'admin');
+    const q = await seedQuote(u.id);
+    await prisma.smtpSettings.create({ data: { id: 1, host: 'smtp.x', fromAddress: 'calc@x.fr', enabled: true } });
+    for (const other of [v, adm]) {
+      const a = app(other); a.locals.mailFactory = () => ({ sendMail: async () => { throw new Error('ne doit pas être appelé'); } });
+      expect((await request(a).post(`/api/quotes/${q.id}/share/email`).send({ to: 'c@x.fr', message: '' })).status).toBe(404);
+    }
+    expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.shareTokenHash).toBeNull();
+  });
 });
