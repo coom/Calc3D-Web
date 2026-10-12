@@ -298,6 +298,7 @@ authRoutes.get('/me', authMiddleware, async (req: Request, res: Response, next) 
         mfaEnabled: user.mfaEnabled,
         mfaRequired: user.mfaRequired,
         language: user.language,
+        email: user.email,
       },
     });
   } catch (err) { next(err); }

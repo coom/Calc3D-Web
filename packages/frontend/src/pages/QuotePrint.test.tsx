@@ -10,7 +10,7 @@ vi.mock('@/api/quotes.api', () => ({ quotesApi: { get: (id: number) => get(id) }
 vi.mock('@/api/settings.api', () => ({ settingsApi: { get: () => settings() } }));
 
 const quote = {
-  id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '', legacyId: null, projectName: 'Boîtier <b>', customer: 'ACME & Co', kind: 'QUOTE', status: 'PENDING', dueDate: '2026-11-15', comment: 'Fragile',
+  id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '', legacyId: null, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '', projectName: 'Boîtier <b>', customer: 'ACME & Co', kind: 'QUOTE', status: 'PENDING', dueDate: '2026-11-15', comment: 'Fragile',
   filamentLines: [{ material: 'PLA', weightG: 100, pricePerKg: 18, wastePct: 10 }], printHours: 5, printMinutes: 0, prepHours: 1, postHours: 0, designHours: 2, packagingHours: 0.25, quantity: 2, consumables: 1.5, discountPct: 10, shippingCost: 6.5,
   settingsSnapshot: { ...DEFAULT_PRICING_SETTINGS, contingencyPct: 10, vatPct: 20, pricingMode: 'TARGET_MARGIN', pricingPct: 30 },
   filamentWeightG: 100, filamentCost: 1.98, printTimeH: 5, energyKwh: 2.7, electricityCost: 0.53, laborPrep: 12.31, laborPost: 0, laborDesign: 60, laborPackaging: 3.08, depreciation: 2.26, maintenance: 0.11, wear: 1, fixedCosts: 1.5, subtotal: 82.77, contingency: 8.28, costAfterContingency: 91.05,

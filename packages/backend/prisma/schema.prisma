@@ -25,6 +25,7 @@ model User {
   mfaRequired        Boolean   @default(false)
   mustChangePassword Boolean   @default(false)
   language           String?
+  email              String    @default("")
 
   refreshTokens  RefreshToken[]
   trustedDevices TrustedDevice[]
@@ -135,6 +136,13 @@ model Quote {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   legacyId         String?
+  shareTokenHash     String?   @unique
+  sharedAt           DateTime?
+  clientResponse     String?
+  clientRespondedAt  DateTime?
+  clientComment      String    @default("")
+  responseSeenAt     DateTime?
+  clientEmail        String    @default("")
 
   projectName      String   @default("")
   customer         String   @default("")
@@ -190,6 +198,7 @@ model Quote {
   @@index([userId, createdAt])
   @@index([userId, kind])
   @@index([userId, status])
+  @@index([userId, clientResponse])
 }
 
 /// Achats réels (lot 2) ; le modèle est créé maintenant pour figer le schéma.
@@ -208,4 +217,17 @@ model Purchase {
 
   @@unique([userId, legacyId])
   @@index([userId, date])
+}
+
+model SmtpSettings {
+  id          Int      @id @default(1)
+  host        String   @default("")
+  port        Int      @default(587)
+  secure      Boolean  @default(false)
+  username    String   @default("")
+  passwordEnc String   @default("")
+  fromAddress String   @default("")
+  fromName    String   @default("")
+  enabled     Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
 }

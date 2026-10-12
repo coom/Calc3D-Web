@@ -15,6 +15,8 @@ import { journalRoutes } from './routes/journal.routes.js';
 import { settingsRoutes } from './routes/settings.routes.js';
 import { materialsRoutes } from './routes/materials.routes.js';
 import { quotesRoutes } from './routes/quotes.routes.js';
+import { quoteShareRoutes } from './routes/quote-share.routes.js';
+import { accountRoutes } from './routes/account.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
 import { importRoutes } from './routes/import.routes.js';
@@ -46,7 +48,10 @@ export function createApp(): Express {
   app.use('/api/journal', journalRoutes);
   app.use('/api/settings', settingsRoutes);
   app.use('/api/materials', materialsRoutes);
+  // Partage client : monté avant quotesRoutes, sinon /unseen-count serait capturé par GET /:id.
+  app.use('/api/quotes', quoteShareRoutes);
   app.use('/api/quotes', quotesRoutes);
+  app.use('/api/account', accountRoutes);
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
   app.use('/api/import', importRoutes);

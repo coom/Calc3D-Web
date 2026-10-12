@@ -55,7 +55,7 @@ describe('page Devis', () => {
   });
 
   const loaded = {
-    id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '2026-10-01T10:00:00Z', legacyId: null,
+    id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '2026-10-01T10:00:00Z', legacyId: null, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '',
     projectName: 'Ancien', customer: 'ACME', kind: 'QUOTE', status: 'PENDING', dueDate: null, comment: '',
     filamentLines: [{ material: 'PLA', weightG: 100, pricePerKg: 18, wastePct: 10 }],
     printHours: 5, printMinutes: 0, prepHours: 1, postHours: 0.5, designHours: 2, packagingHours: 0.25,
