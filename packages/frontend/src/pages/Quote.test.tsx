@@ -8,7 +8,8 @@ import { DEFAULT_PRICING_SETTINGS } from '@calc3d/common';
 const create = vi.fn(); const get = vi.fn(); const update = vi.fn();
 vi.mock('@/api/settings.api', () => ({ settingsApi: { get: () => Promise.resolve({ ...DEFAULT_PRICING_SETTINGS, wearCostPerHour: 0.15, hourlyRateDesign: 30, hourlyRatePackaging: 10, floorPrice: 0, pdfShowCostBreakdown: true }) } }));
 vi.mock('@/api/materials.api', () => ({ materialsApi: { list: () => Promise.resolve([{ id: 1, name: 'PLA', pricePerKg: 18, sortOrder: 0 }, { id: 2, name: 'PETG', pricePerKg: 20, sortOrder: 1 }]) } }));
-vi.mock('@/api/quotes.api', () => ({ quotesApi: { create: (b: unknown) => create(b), get: (id: number) => get(id), update: (id: number, b: unknown, cur: boolean) => update(id, b, cur) } }));
+vi.mock('@/api/quotes.api', () => ({ quotesApi: { create: (b: unknown) => create(b), get: (id: number) => get(id), update: (id: number, b: unknown, cur: boolean) => update(id, b, cur), markSeen: vi.fn(() => Promise.resolve({})), share: vi.fn(), unshare: vi.fn(), shareByEmail: vi.fn(), convert: vi.fn() } }));
+vi.mock('@/api/smtp.api', () => ({ smtpApi: { status: () => Promise.resolve({ enabled: false }) } }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 function renderPage(initial = '/') {

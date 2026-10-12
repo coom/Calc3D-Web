@@ -623,5 +623,45 @@
     "already": "Ce devis a déjà reçu une réponse.",
     "failed": "Impossible d'envoyer votre réponse. Réessayez.",
     "print": "Imprimer"
+  },
+  "share": {
+    "title": "Client",
+    "notShared": "Pas encore partagé.",
+    "sharedSince": "Lien actif depuis le {{date}}.",
+    "generate": "Générer le lien",
+    "regenerate": "Régénérer le lien",
+    "revoke": "Révoquer le lien",
+    "copy": "Copier",
+    "copied": "Lien copié.",
+    "showOnce": "Ce lien n'est affiché qu'une seule fois. Copie-le maintenant ; régénère-le si tu le perds.",
+    "regenerateConfirm": "Régénérer le lien ? Le lien actuel cesse de fonctionner et la réponse déjà reçue est effacée.",
+    "revokeConfirm": "Révoquer le lien ? Le client ne pourra plus ouvrir le devis.",
+    "email": "Envoyer par e-mail",
+    "emailHint": "L'envoi génère un nouveau lien ; le précédent cesse de fonctionner.",
+    "emailTo": "E-mail du client",
+    "emailMessage": "Message (facultatif)",
+    "emailSend": "Envoyer",
+    "emailSent": "E-mail envoyé à {{to}}.",
+    "emailDisabled": "Aucun serveur SMTP configuré (demande à un administrateur).",
+    "emailFailed": "E-mail non envoyé : {{reason}}",
+    "response": {
+      "title": "Réponse du client",
+      "none": "Pas encore de réponse.",
+      "ACCEPTED": "Accepté",
+      "REFUSED": "Refusé",
+      "PENDING": "En attente de réponse",
+      "on": "le {{date}}",
+      "comment": "Commentaire :",
+      "convert": "Convertir en commande",
+      "unseen": "Nouveau"
+    },
+    "filter": {
+      "label": "Réponse client",
+      "all": "Toutes",
+      "ACCEPTED": "Acceptés",
+      "REFUSED": "Refusés",
+      "PENDING": "En attente de réponse",
+      "NONE": "Non partagés"
+    }
   }
 }

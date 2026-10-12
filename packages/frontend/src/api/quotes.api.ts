@@ -8,4 +8,10 @@ export const quotesApi = {
   update: (id: number, body: CreateQuoteBody, useCurrentSettings = false): Promise<QuoteDto> => api.put(`/quotes/${id}`, body, { params: useCurrentSettings ? { useCurrentSettings: '1' } : {} }).then((r) => r.data),
   convert: (id: number): Promise<QuoteDto> => api.post(`/quotes/${id}/convert`).then((r) => r.data),
   remove: (id: number): Promise<void> => api.delete(`/quotes/${id}`).then(() => undefined),
+  // Partage client (lot 4). Le jeton en clair n'est renvoyé qu'à la génération.
+  share: (id: number): Promise<{ url: string }> => api.post(`/quotes/${id}/share`).then((r) => r.data),
+  unshare: (id: number): Promise<void> => api.delete(`/quotes/${id}/share`).then(() => undefined),
+  shareByEmail: (id: number, body: { to: string; message: string }): Promise<{ url: string }> => api.post(`/quotes/${id}/share/email`, body).then((r) => r.data),
+  markSeen: (id: number): Promise<QuoteDto> => api.post(`/quotes/${id}/response/seen`).then((r) => r.data),
+  unseenCount: (): Promise<{ count: number }> => api.get('/quotes/unseen-count').then((r) => r.data),
 };

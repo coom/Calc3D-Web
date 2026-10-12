@@ -623,5 +623,45 @@
     "already": "This quote has already been answered.",
     "failed": "Could not send your answer. Please try again.",
     "print": "Print"
+  },
+  "share": {
+    "title": "Customer",
+    "notShared": "Not shared yet.",
+    "sharedSince": "Link active since {{date}}.",
+    "generate": "Generate the link",
+    "regenerate": "Regenerate the link",
+    "revoke": "Revoke the link",
+    "copy": "Copy",
+    "copied": "Link copied.",
+    "showOnce": "This link is shown only once. Copy it now; regenerate it if you lose it.",
+    "regenerateConfirm": "Regenerate the link? The current link stops working and any answer already received is cleared.",
+    "revokeConfirm": "Revoke the link? The customer will no longer be able to open the quote.",
+    "email": "Send by e-mail",
+    "emailHint": "Sending generates a fresh link; the previous one stops working.",
+    "emailTo": "Customer e-mail",
+    "emailMessage": "Message (optional)",
+    "emailSend": "Send",
+    "emailSent": "E-mail sent to {{to}}.",
+    "emailDisabled": "No SMTP server configured (ask an administrator).",
+    "emailFailed": "E-mail not sent: {{reason}}",
+    "response": {
+      "title": "Customer answer",
+      "none": "No answer yet.",
+      "ACCEPTED": "Accepted",
+      "REFUSED": "Declined",
+      "PENDING": "Awaiting answer",
+      "on": "on {{date}}",
+      "comment": "Comment:",
+      "convert": "Convert to order",
+      "unseen": "New"
+    },
+    "filter": {
+      "label": "Customer answer",
+      "all": "All",
+      "ACCEPTED": "Accepted",
+      "REFUSED": "Declined",
+      "PENDING": "Awaiting answer",
+      "NONE": "Not shared"
+    }
   }
 }

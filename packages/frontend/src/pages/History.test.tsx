@@ -19,7 +19,7 @@ function renderPage() {
 
 describe('page Historique', () => {
   beforeAll(async () => { await i18n.changeLanguage('fr'); });
-  beforeEach(() => { list.mockReset(); convert.mockReset(); remove.mockReset(); list.mockResolvedValue({ total: 2, page: 1, limit: 50, items: [item({}), item({ id: 2, createdAt: '2026-09-15T10:00:00Z', projectName: 'Support', kind: 'ORDER', status: 'DONE' })] }); });
+  beforeEach(() => { list.mockReset(); convert.mockReset(); remove.mockReset(); list.mockResolvedValue({ total: 2, page: 1, limit: 50, items: [item({ shared: true, sharedAt: '2026-10-04T10:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-05T10:00:00Z', clientComment: '', responseSeenAt: null, clientEmail: '' }), item({ id: 2, createdAt: '2026-09-15T10:00:00Z', projectName: 'Support', kind: 'ORDER', status: 'DONE' })] }); });
 
   it('groupe par mois, affiche les lignes, replie un mois', async () => {
     renderPage();
@@ -61,5 +61,12 @@ describe('page Historique', () => {
     await waitFor(() => expect(remove).toHaveBeenCalledWith(1));
     fireEvent.click(screen.getAllByRole('button', { name: /Charger dans Devis/ })[0]);
     expect(await screen.findByText('QUOTE PAGE')).toBeInTheDocument();
+  });
+  it('affiche le badge de réponse et filtre par réponse client', async () => {
+    renderPage();
+    expect(await screen.findByText('Accepté')).toBeInTheDocument();
+    expect(screen.getByText('Nouveau')).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText(/Réponse client/), { target: { value: 'REFUSED' } });
+    await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ response: 'REFUSED', page: 1 })));
   });
 });

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Pencil, Repeat, Trash2 } from 'lucide-react';
-import { QUOTE_KINDS, QUOTE_STATUSES, type QuoteDto, type QuoteKind, type QuoteStatus } from '@calc3d/common';
+import { QUOTE_KINDS, QUOTE_STATUSES, RESPONSE_FILTERS, type QuoteDto, type QuoteKind, type QuoteStatus, type ResponseFilter } from '@calc3d/common';
 import { quotesApi } from '@/api/quotes.api';
 import { settingsApi } from '@/api/settings.api';
 import { formatDate } from '@/lib/dates';
@@ -16,6 +16,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { EmptyState } from '@/components/shared/EmptyState';
 import { MonthGroups } from '@/components/shared/MonthGroups';
+import { ResponseBadge } from '@/components/quote/ResponseBadge';
 
 const LIMIT = 50;
 const selectClass = 'flex h-8 rounded-md border border-input bg-background px-2 text-sm';
@@ -25,9 +26,9 @@ export default function History() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [q, setQ] = useState(''); const [kind, setKind] = useState<QuoteKind | ''>(''); const [status, setStatus] = useState<QuoteStatus | ''>(''); const [page, setPage] = useState(1);
+  const [q, setQ] = useState(''); const [kind, setKind] = useState<QuoteKind | ''>(''); const [status, setStatus] = useState<QuoteStatus | ''>(''); const [response, setResponse] = useState<ResponseFilter | ''>(''); const [page, setPage] = useState(1);
   const [toDelete, setToDelete] = useState<QuoteDto | null>(null);
-  const params = { q: q || undefined, kind: kind || undefined, status: status || undefined, page, limit: LIMIT };
+  const params = { q: q || undefined, kind: kind || undefined, status: status || undefined, response: response || undefined, page, limit: LIMIT };
   const { data } = useQuery({ queryKey: ['quotes', params], queryFn: () => quotesApi.list(params) });
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const currency = settings?.currencySymbol ?? '€';
@@ -49,17 +50,21 @@ export default function History() {
         <select aria-label={t('history.cols.status')} className={selectClass} value={status} onChange={(e) => { setStatus(e.target.value as QuoteStatus | ''); reset(); }}>
           <option value="">{t('history.allStatuses')}</option>{QUOTE_STATUSES.map((s) => <option key={s} value={s}>{t(`quote.statuses.${s}`)}</option>)}
         </select>
+        <select aria-label={t('share.filter.label')} className={selectClass} value={response} onChange={(e) => { setResponse(e.target.value as ResponseFilter | ''); reset(); }}>
+          <option value="">{t('share.filter.all')}</option>{RESPONSE_FILTERS.map((r) => <option key={r} value={r}>{t(`share.filter.${r}`)}</option>)}
+        </select>
       </div>
       <Card><CardContent className="p-4">
         {data && data.items.length === 0 ? <EmptyState title={t('history.empty')} /> : (
           <div className="overflow-x-auto">
             <MonthGroups items={data?.items ?? []} dateOf={(x) => x.createdAt} countLabel={(n) => t('history.count', { count: n })} renderItem={(x) => (
-              <div key={x.id} onDoubleClick={() => navigate(`/?quote=${x.id}`)} className="grid min-w-[46rem] grid-cols-[6rem_minmax(0,1fr)_minmax(0,1fr)_5.5rem_7rem_3rem_7rem_auto] items-center gap-2 border-t px-3 py-2 text-sm">
+              <div key={x.id} onDoubleClick={() => navigate(`/?quote=${x.id}`)} className="grid min-w-[56rem] grid-cols-[6rem_minmax(0,1fr)_minmax(0,1fr)_5.5rem_7rem_9rem_3rem_7rem_auto] items-center gap-2 border-t px-3 py-2 text-sm">
                 <span className="text-xs text-muted-foreground">{formatDate(x.createdAt, i18n.language)}</span>
                 <span className="truncate font-medium">{x.projectName || '—'}</span>
                 <span className="truncate">{x.customer}</span>
                 <Badge variant={x.kind === 'ORDER' ? 'default' : 'outline'}>{t(`quote.kinds.${x.kind}`)}</Badge>
                 <span className="text-xs">{t(`quote.statuses.${x.status}`)}</span>
+                <span><ResponseBadge quote={x} /></span>
                 <span className="text-right text-xs">{x.quantity}</span>
                 <span className="text-right font-mono-data">{formatMoney(x.finalPrice, currency, i18n.language)}</span>
                 <span className="flex gap-0.5">
