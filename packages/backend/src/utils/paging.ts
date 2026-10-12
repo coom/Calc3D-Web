@@ -7,3 +7,10 @@ export function parseListPage(query: Record<string, unknown>): { page: number; l
   if (!Number.isInteger(page) || page < 1 || !Number.isInteger(limit) || limit < 1 || limit > 200) throw new AppError(400, 'Invalid pagination');
   return { page, limit, skip: (page - 1) * limit };
 }
+
+/** Identifiant de ressource dans l'URL : entier ≥ 1, sinon 400. */
+export function parseId(raw: unknown): number {
+  const id = Number(raw);
+  if (!Number.isInteger(id) || id < 1) throw new AppError(400, 'Invalid id');
+  return id;
+}

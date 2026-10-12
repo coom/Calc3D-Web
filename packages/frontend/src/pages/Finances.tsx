@@ -22,11 +22,12 @@ const Kpi = ({ title, value, sub }: { title: string; value: string; sub: string 
 export default function Finances() {
   const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<FinancesPeriod>('all');
-  const { data } = useQuery({ queryKey: ['finances', period], queryFn: () => financesApi.get(period) });
+  const { data, isError } = useQuery({ queryKey: ['finances', period], queryFn: () => financesApi.get(period), retry: false });
   const { data: settings } = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const cur = settings?.currencySymbol ?? '€';
   const loc = i18n.language;
   const money = (v: number) => formatMoney(v, cur, loc);
+  if (isError) return <p className="text-sm text-destructive">{t('finances.loadError')}</p>;
   if (!data) return <PageLoader />;
   const maxMonthly = Math.max(0, ...data.monthly.flatMap((m) => [m.revenue, m.printingCost, m.purchases]));
   const maxCost = Math.max(0, ...data.costBreakdown.map((c) => c.amount));

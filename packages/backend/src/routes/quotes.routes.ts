@@ -2,7 +2,7 @@ import { Router, type Request, type Response, type NextFunction } from 'express'
 import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, type PricingSettings, type QuoteInput, type QuoteKind, type QuoteStatus } from '@calc3d/common';
 import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
-import { parseListPage } from '../utils/paging.js';
+import { parseListPage, parseId } from '../utils/paging.js';
 import { getOrCreateSettings } from '../settings/settings-service.js';
 import { createQuoteSchema, quoteInputSchema } from '../quotes/quote.schema.js';
 import { buildQuoteData, toQuoteDto } from '../quotes/quote-mapper.js';
@@ -43,12 +43,6 @@ quotesRoutes.post('/', wrap(async (req, res) => {
   const row = await req.app.locals.prisma.quote.create({ data: buildQuoteData(userId, parsed.data, settings, result) });
   res.status(201).json(toQuoteDto(row));
 }));
-
-function parseId(raw: unknown): number {
-  const id = Number(raw);
-  if (!Number.isInteger(id) || id < 1) throw new AppError(400, 'Invalid id');
-  return id;
-}
 
 /**
  * Filtres de l'historique : q (projet ou client, « contient »), kind, status. Valeur inconnue = 400.
@@ -96,7 +90,7 @@ quotesRoutes.put('/:id', wrap(async (req, res) => {
   const settings: PricingSettings = req.query.useCurrentSettings === '1' ? await currentPricingSettings(req) : (JSON.parse(existing.settingsSnapshot) as PricingSettings);
   const result = safeCompute(settings, parsed.data);
   const { userId: _keep, ...data } = buildQuoteData(scope.userId, parsed.data, settings, result);
-  const row = await prisma.quote.update({ where: { id }, data });
+  const row = await prisma.quote.update({ where: { id, ...scope }, data });
   res.json(toQuoteDto(row));
 }));
 
@@ -106,7 +100,7 @@ quotesRoutes.post('/:id/convert', wrap(async (req, res) => {
   const existing = await prisma.quote.findFirst({ where: { id, ...ownerScope(req) } });
   if (!existing) throw new AppError(404, 'Quote not found');
   if (existing.kind === 'ORDER') throw new AppError(409, 'This quote is already an order', undefined, 'already_order');
-  const row = await prisma.quote.update({ where: { id }, data: { kind: 'ORDER' } });
+  const row = await prisma.quote.update({ where: { id, ...ownerScope(req) }, data: { kind: 'ORDER' } });
   res.json(toQuoteDto(row));
 }));
 

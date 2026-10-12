@@ -413,7 +413,8 @@
       "useCurrent": "Recalculer avec mes paramètres actuels",
       "update": "Mettre à jour ce devis",
       "updated": "Devis mis à jour.",
-      "notFound": "Ce devis n'existe pas ou ne t'appartient pas."
+      "notFound": "Ce devis n'existe pas ou ne t'appartient pas.",
+      "loadError": "Impossible de charger ce devis (erreur réseau ou serveur)."
     }
   },
   "history": {
@@ -489,7 +490,8 @@
       "title": "Coût d'impression modélisé (devis) vs achats réels",
       "modeled": "Coût d'impression modélisé (devis)",
       "actual": "Achats réels"
-    }
+    },
+    "loadError": "Impossible de charger les finances (erreur réseau ou serveur)."
   },
   "purchases": {
     "title": "Achats",

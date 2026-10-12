@@ -85,4 +85,13 @@ describe('page Devis', () => {
     fireEvent.click(screen.getByRole('button', { name: /Mettre à jour ce devis/ }));
     await waitFor(() => expect(update).toHaveBeenCalledWith(7, expect.anything(), true));
   });
+
+  it('?quote= invalide affiche « introuvable » au lieu d\'ouvrir un devis vierge ; une erreur serveur affiche un message distinct', async () => {
+    renderPage('/?quote=abc');
+    expect(await screen.findByText(/n'existe pas ou ne t'appartient pas/)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Nom du projet/)).not.toBeInTheDocument();
+    get.mockRejectedValue({ response: { status: 500 } });
+    renderPage('/?quote=9');
+    expect(await screen.findByText(/Impossible de charger ce devis/)).toBeInTheDocument();
+  });
 });

@@ -1,7 +1,25 @@
 {
   "namespace": "quote",
   "keys": {
-    "en": { "loaded": { "banner": "This quote uses the settings (rates, electricity, depreciation…) saved when it was created, not your current Settings.", "useCurrent": "Recalculate with my current settings", "update": "Update this quote", "updated": "Quote updated.", "notFound": "This quote does not exist or is not yours." } },
-    "fr": { "loaded": { "banner": "Ce devis utilise les paramètres (tarifs, électricité, amortissement…) enregistrés au moment de sa création, pas tes Paramètres actuels.", "useCurrent": "Recalculer avec mes paramètres actuels", "update": "Mettre à jour ce devis", "updated": "Devis mis à jour.", "notFound": "Ce devis n'existe pas ou ne t'appartient pas." } }
+    "en": {
+      "loaded": {
+        "banner": "This quote uses the settings (rates, electricity, depreciation…) saved when it was created, not your current Settings.",
+        "useCurrent": "Recalculate with my current settings",
+        "update": "Update this quote",
+        "updated": "Quote updated.",
+        "notFound": "This quote does not exist or is not yours.",
+        "loadError": "Could not load this quote (network or server error)."
+      }
+    },
+    "fr": {
+      "loaded": {
+        "banner": "Ce devis utilise les paramètres (tarifs, électricité, amortissement…) enregistrés au moment de sa création, pas tes Paramètres actuels.",
+        "useCurrent": "Recalculer avec mes paramètres actuels",
+        "update": "Mettre à jour ce devis",
+        "updated": "Devis mis à jour.",
+        "notFound": "Ce devis n'existe pas ou ne t'appartient pas.",
+        "loadError": "Impossible de charger ce devis (erreur réseau ou serveur)."
+      }
+    }
   }
 }

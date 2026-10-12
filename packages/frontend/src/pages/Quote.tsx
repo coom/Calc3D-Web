@@ -22,14 +22,21 @@ import { emptyQuoteForm, quoteFormFromDto, toQuoteInput, toCreateBody, type Quot
 /** Page Devis. Avec `?quote=<id>`, charge un devis existant (mode « devis chargé », paramètres d'origine). */
 export default function Quote() {
   const [params] = useSearchParams();
-  const quoteId = Number(params.get('quote')) || null;
+  // ?quote=<entier ≥ 1> ; toute autre valeur présente est traitée comme un devis introuvable, jamais comme un nouveau devis.
+  const rawQuote = params.get('quote');
+  const quoteId = rawQuote !== null && /^\d+$/.test(rawQuote) && Number(rawQuote) >= 1 ? Number(rawQuote) : null;
+  const invalidParam = rawQuote !== null && quoteId === null;
   const { t } = useTranslation();
   const settingsQ = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const materialsQ = useQuery({ queryKey: ['materials'], queryFn: materialsApi.list });
   // staleTime 0 : un devis rechargé est toujours relu (il a pu être converti ou supprimé depuis l'Historique).
-  const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null, staleTime: 0 });
+  const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null, staleTime: 0, retry: false });
+  if (invalidParam) return <p className="text-sm text-destructive">{t('quote.loaded.notFound')}</p>;
   if (settingsQ.isLoading || materialsQ.isLoading || !settingsQ.data || !materialsQ.data || (quoteId !== null && quoteQ.isLoading)) return <PageLoader />;
-  if (quoteId !== null && !quoteQ.data) return <p className="text-sm text-destructive">{t('quote.loaded.notFound')}</p>;
+  if (quoteId !== null && !quoteQ.data) {
+    const status = (quoteQ.error as { response?: { status?: number } } | null)?.response?.status;
+    return <p className="text-sm text-destructive">{t(status === 404 || status === 400 ? 'quote.loaded.notFound' : 'quote.loaded.loadError')}</p>;
+  }
   const first = materialsQ.data[0];
   return <QuoteEditor key={quoteQ.data?.id ?? `new-${first?.id ?? 'none'}`} settings={settingsQ.data} materials={materialsQ.data} defaultMaterial={first?.name ?? 'PLA'} defaultPrice={first ? String(first.pricePerKg) : ''} initial={quoteQ.data ?? null} />;
 }

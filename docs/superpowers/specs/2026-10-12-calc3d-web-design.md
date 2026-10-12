@@ -274,7 +274,8 @@ Audit, Journal pour l'admin), `/quotes/:id/print` (page PDF).
   contre le catalogue (même logique que `Resolve-MatiereGcode`).
 - **Historique** et **Achats** : tableaux groupés par mois, repliables, recherche et
   filtres, actions (charger, convertir, supprimer avec confirmation). Pagination côté
-  serveur par mois.
+  serveur par pages de 50 lignes (un mois peut chevaucher deux pages ; le compteur
+  d'un groupe est celui de la page affichée).
 - **Finances** : indicateurs et barres proportionnelles reprenant les cinq blocs de la
   page bureau ; graphiques en composants shadcn/Tailwind simples (barres horizontales),
   pas de bibliothèque de graphiques.

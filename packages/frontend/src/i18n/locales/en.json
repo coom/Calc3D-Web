@@ -413,7 +413,8 @@
       "useCurrent": "Recalculate with my current settings",
       "update": "Update this quote",
       "updated": "Quote updated.",
-      "notFound": "This quote does not exist or is not yours."
+      "notFound": "This quote does not exist or is not yours.",
+      "loadError": "Could not load this quote (network or server error)."
     }
   },
   "history": {
@@ -489,7 +490,8 @@
       "title": "Modeled printing cost (quotes) vs actual purchases",
       "modeled": "Modeled printing cost (quotes)",
       "actual": "Actual purchases"
-    }
+    },
+    "loadError": "Could not load finances (network or server error)."
   },
   "purchases": {
     "title": "Purchases",

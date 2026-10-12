@@ -2,19 +2,13 @@ import { Router, type Request, type Response, type NextFunction } from 'express'
 import { PURCHASE_CATEGORIES, type PurchaseCategory } from '@calc3d/common';
 import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
-import { parseListPage } from '../utils/paging.js';
+import { parseListPage, parseId } from '../utils/paging.js';
 import { purchaseBodySchema } from '../purchases/purchase.schema.js';
 import { buildPurchaseData, toPurchaseDto } from '../purchases/purchase-mapper.js';
 
 export const purchasesRoutes: Router = Router();
 const wrap = (fn: (req: Request, res: Response) => Promise<void>) => (req: Request, res: Response, next: NextFunction) => { fn(req, res).catch(next); };
 const issues = (e: { issues: { path: PropertyKey[]; message: string }[] }) => e.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ');
-
-function parseId(raw: unknown): number {
-  const id = Number(raw);
-  if (!Number.isInteger(id) || id < 1) throw new AppError(400, 'Invalid id');
-  return id;
-}
 
 purchasesRoutes.get('/', wrap(async (req, res) => {
   const { page, limit, skip } = parseListPage(req.query);
@@ -46,7 +40,7 @@ purchasesRoutes.put('/:id', wrap(async (req, res) => {
   const existing = await prisma.purchase.findFirst({ where: { id, ...scope } });
   if (!existing) throw new AppError(404, 'Purchase not found');
   const { userId: _keep, ...data } = buildPurchaseData(scope.userId, parsed.data);
-  res.json(toPurchaseDto(await prisma.purchase.update({ where: { id }, data })));
+  res.json(toPurchaseDto(await prisma.purchase.update({ where: { id, ...scope }, data })));
 }));
 
 purchasesRoutes.delete('/:id', wrap(async (req, res) => {

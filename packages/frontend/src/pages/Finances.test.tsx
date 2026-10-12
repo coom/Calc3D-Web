@@ -55,4 +55,10 @@ describe('page Finances', () => {
     expect(screen.getByText(/Aucun achat enregistré/)).toBeInTheDocument();
     expect(document.body.textContent).not.toMatch(/NaN/);
   });
+
+  it('affiche un message si le chargement échoue, pas un spinner infini', async () => {
+    get.mockRejectedValue(new Error('down'));
+    renderPage();
+    expect(await screen.findByText(/Impossible de charger les finances/)).toBeInTheDocument();
+  });
 });
