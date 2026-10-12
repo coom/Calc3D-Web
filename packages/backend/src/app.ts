@@ -14,6 +14,7 @@ import { auditRoutes } from './routes/audit.routes.js';
 import { journalRoutes } from './routes/journal.routes.js';
 import { settingsRoutes } from './routes/settings.routes.js';
 import { materialsRoutes } from './routes/materials.routes.js';
+import { quotesRoutes } from './routes/quotes.routes.js';
 
 export function createApp(): Express {
   const app = express();
@@ -40,6 +41,7 @@ export function createApp(): Express {
   app.use('/api/journal', journalRoutes);
   app.use('/api/settings', settingsRoutes);
   app.use('/api/materials', materialsRoutes);
+  app.use('/api/quotes', quotesRoutes);
 
   app.use(errorHandler);
   return app;
