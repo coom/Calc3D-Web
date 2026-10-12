@@ -407,6 +407,125 @@
       "invalidNumber": "Nombre invalide",
       "quantityMin": "La quantité doit être un entier ≥ 1",
       "minutesRange": "Les minutes doivent être entre 0 et 59"
+    },
+    "loaded": {
+      "banner": "Ce devis utilise les paramètres (tarifs, électricité, amortissement…) enregistrés au moment de sa création, pas tes Paramètres actuels.",
+      "useCurrent": "Recalculer avec mes paramètres actuels",
+      "update": "Mettre à jour ce devis",
+      "updated": "Devis mis à jour.",
+      "notFound": "Ce devis n'existe pas ou ne t'appartient pas."
+    }
+  },
+  "history": {
+    "title": "Historique",
+    "subtitle": "Tes devis et commandes, groupés par mois",
+    "search": "Recherche (projet / client)",
+    "allKinds": "Tous les types",
+    "allStatuses": "Tous les statuts",
+    "count": "{{count}} devis",
+    "empty": "Aucun devis ne correspond à ces filtres.",
+    "hint": "Double-clique une ligne pour la charger dans la page Devis.",
+    "cols": {
+      "date": "Date",
+      "project": "Projet",
+      "customer": "Client",
+      "kind": "Type",
+      "status": "Statut",
+      "quantity": "Qté",
+      "price": "Prix final"
+    },
+    "load": "Charger dans Devis",
+    "convert": "Convertir en commande",
+    "delete": "Supprimer",
+    "converted": "Devis converti en commande.",
+    "alreadyOrder": "Cette ligne est déjà une commande.",
+    "deleteTitle": "Supprimer le devis",
+    "deleteDescription": "Supprimer définitivement le devis « {{name}} » de l'historique ?",
+    "deleted": "Devis supprimé.",
+    "actionFailed": "L'action a échoué."
+  },
+  "finances": {
+    "title": "Finances",
+    "subtitle": "Revenu généré, dépenses et marge sur les commandes confirmées",
+    "period": "Période",
+    "periods": {
+      "all": "Tout",
+      "12m": "12 derniers mois",
+      "year": "Cette année",
+      "month": "Ce mois-ci"
+    },
+    "kpi": {
+      "revenue": "REVENU TOTAL",
+      "orders": "{{count}} commande(s)",
+      "printingCost": "COÛTS D'IMPRESSION",
+      "printingCostSub": "Filament, élec, MO, amortissement…",
+      "margin": "MARGE NETTE (après coûts d'impression)",
+      "marginSub": "{{pct}} % du revenu",
+      "purchases": "ACHATS RÉELS",
+      "purchasesSub": "{{count}} achat(s) · écart vs coûts d'impression : {{gap}}"
+    },
+    "breakdown": {
+      "title": "Répartition du coût d'impression par poste (commandes)",
+      "empty": "Aucune commande sur la période sélectionnée.",
+      "filament": "Filament",
+      "electricity": "Électricité",
+      "labor": "Main d'œuvre (toutes tâches)",
+      "printer": "Amortissement, maintenance et usure imprimante",
+      "fixedCosts": "Consommables / autres coûts fixes",
+      "contingency": "Majoration aléas / échec"
+    },
+    "monthly": {
+      "title": "Évolution mensuelle : revenu vs coûts vs achats",
+      "empty": "Aucune commande ou aucun achat sur la période sélectionnée.",
+      "revenue": "Revenu",
+      "printingCost": "Coût d'impression",
+      "purchases": "Achats réels"
+    },
+    "categories": {
+      "title": "Répartition des achats réels par catégorie",
+      "empty": "Aucun achat enregistré sur la période sélectionnée."
+    },
+    "comparison": {
+      "title": "Coût d'impression modélisé (devis) vs achats réels",
+      "modeled": "Coût d'impression modélisé (devis)",
+      "actual": "Achats réels"
+    }
+  },
+  "purchases": {
+    "title": "Achats",
+    "subtitle": "Enregistre tes achats réels (filament, pièces, maintenance…)",
+    "new": "Nouvel achat",
+    "date": "Date",
+    "category": "Catégorie",
+    "description": "Description",
+    "amount": "Montant",
+    "supplier": "Fournisseur",
+    "comment": "Commentaire",
+    "save": "Enregistrer l'achat",
+    "categories": {
+      "FILAMENT": "Filament / consommables",
+      "SPARE_PARTS": "Pièces détachées",
+      "MAINTENANCE": "Maintenance / réparation",
+      "HARDWARE": "Matériel / équipement",
+      "TOOLS": "Outillage",
+      "OTHER": "Autre"
+    },
+    "listTitle": "Historique des achats",
+    "search": "Recherche (description / fournisseur)",
+    "allCategories": "Toutes les catégories",
+    "filterCategory": "Filtre catégorie",
+    "count": "{{count}} achat(s)",
+    "empty": "Aucun achat ne correspond à ces filtres.",
+    "delete": "Supprimer",
+    "deleteTitle": "Supprimer l'achat",
+    "deleteDescription": "Supprimer définitivement l'achat « {{name}} » ?",
+    "saved": "Achat enregistré.",
+    "deleted": "Achat supprimé.",
+    "failed": "L'action a échoué.",
+    "errors": {
+      "description": "Renseigne une description.",
+      "amount": "Le montant doit être supérieur à 0.",
+      "date": "Renseigne une date."
     }
   }
 }

@@ -1,0 +1,23 @@
+{
+  "namespace": "finances",
+  "keys": {
+    "en": {
+      "title": "Finances", "subtitle": "Revenue, expenses and margin on confirmed orders", "period": "Period",
+      "periods": { "all": "All", "12m": "Last 12 months", "year": "This year", "month": "This month" },
+      "kpi": { "revenue": "TOTAL REVENUE", "orders": "{{count}} order(s)", "printingCost": "PRINTING COSTS", "printingCostSub": "Filament, electricity, labor, depreciation…", "margin": "NET MARGIN (after printing costs)", "marginSub": "{{pct}} % of revenue", "purchases": "ACTUAL PURCHASES", "purchasesSub": "{{count}} purchase(s) · gap vs printing costs: {{gap}}" },
+      "breakdown": { "title": "Printing cost breakdown by item (orders)", "empty": "No order in the selected period.", "filament": "Filament", "electricity": "Electricity", "labor": "Labor (all tasks)", "printer": "Printer depreciation, maintenance and wear", "fixedCosts": "Consumables / other fixed costs", "contingency": "Contingency / failure surcharge" },
+      "monthly": { "title": "Monthly trend: revenue vs costs vs purchases", "empty": "No order or purchase in the selected period.", "revenue": "Revenue", "printingCost": "Printing cost", "purchases": "Actual purchases" },
+      "categories": { "title": "Actual purchases by category", "empty": "No purchase recorded in the selected period." },
+      "comparison": { "title": "Modeled printing cost (quotes) vs actual purchases", "modeled": "Modeled printing cost (quotes)", "actual": "Actual purchases" }
+    },
+    "fr": {
+      "title": "Finances", "subtitle": "Revenu généré, dépenses et marge sur les commandes confirmées", "period": "Période",
+      "periods": { "all": "Tout", "12m": "12 derniers mois", "year": "Cette année", "month": "Ce mois-ci" },
+      "kpi": { "revenue": "REVENU TOTAL", "orders": "{{count}} commande(s)", "printingCost": "COÛTS D'IMPRESSION", "printingCostSub": "Filament, élec, MO, amortissement…", "margin": "MARGE NETTE (après coûts d'impression)", "marginSub": "{{pct}} % du revenu", "purchases": "ACHATS RÉELS", "purchasesSub": "{{count}} achat(s) · écart vs coûts d'impression : {{gap}}" },
+      "breakdown": { "title": "Répartition du coût d'impression par poste (commandes)", "empty": "Aucune commande sur la période sélectionnée.", "filament": "Filament", "electricity": "Électricité", "labor": "Main d'œuvre (toutes tâches)", "printer": "Amortissement, maintenance et usure imprimante", "fixedCosts": "Consommables / autres coûts fixes", "contingency": "Majoration aléas / échec" },
+      "monthly": { "title": "Évolution mensuelle : revenu vs coûts vs achats", "empty": "Aucune commande ou aucun achat sur la période sélectionnée.", "revenue": "Revenu", "printingCost": "Coût d'impression", "purchases": "Achats réels" },
+      "categories": { "title": "Répartition des achats réels par catégorie", "empty": "Aucun achat enregistré sur la période sélectionnée." },
+      "comparison": { "title": "Coût d'impression modélisé (devis) vs achats réels", "modeled": "Coût d'impression modélisé (devis)", "actual": "Achats réels" }
+    }
+  }
+}

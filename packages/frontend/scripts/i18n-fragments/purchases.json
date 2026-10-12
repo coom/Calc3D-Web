@@ -1,0 +1,21 @@
+{
+  "namespace": "purchases",
+  "keys": {
+    "en": {
+      "title": "Purchases", "subtitle": "Record your actual purchases (filament, parts, maintenance…)", "new": "New purchase",
+      "date": "Date", "category": "Category", "description": "Description", "amount": "Amount", "supplier": "Supplier", "comment": "Comment", "save": "Save purchase",
+      "categories": { "FILAMENT": "Filament / consumables", "SPARE_PARTS": "Spare parts", "MAINTENANCE": "Maintenance / repair", "HARDWARE": "Hardware / equipment", "TOOLS": "Tools", "OTHER": "Other" },
+      "listTitle": "Purchase history", "search": "Search (description / supplier)", "allCategories": "All categories", "filterCategory": "Category filter", "count": "{{count}} purchase(s)", "empty": "No purchase matches these filters.",
+      "delete": "Delete", "deleteTitle": "Delete purchase", "deleteDescription": "Permanently delete purchase \"{{name}}\"?", "saved": "Purchase saved.", "deleted": "Purchase deleted.", "failed": "The action failed.",
+      "errors": { "description": "Enter a description.", "amount": "Amount must be greater than 0.", "date": "Enter a date." }
+    },
+    "fr": {
+      "title": "Achats", "subtitle": "Enregistre tes achats réels (filament, pièces, maintenance…)", "new": "Nouvel achat",
+      "date": "Date", "category": "Catégorie", "description": "Description", "amount": "Montant", "supplier": "Fournisseur", "comment": "Commentaire", "save": "Enregistrer l'achat",
+      "categories": { "FILAMENT": "Filament / consommables", "SPARE_PARTS": "Pièces détachées", "MAINTENANCE": "Maintenance / réparation", "HARDWARE": "Matériel / équipement", "TOOLS": "Outillage", "OTHER": "Autre" },
+      "listTitle": "Historique des achats", "search": "Recherche (description / fournisseur)", "allCategories": "Toutes les catégories", "filterCategory": "Filtre catégorie", "count": "{{count}} achat(s)", "empty": "Aucun achat ne correspond à ces filtres.",
+      "delete": "Supprimer", "deleteTitle": "Supprimer l'achat", "deleteDescription": "Supprimer définitivement l'achat « {{name}} » ?", "saved": "Achat enregistré.", "deleted": "Achat supprimé.", "failed": "L'action a échoué.",
+      "errors": { "description": "Renseigne une description.", "amount": "Le montant doit être supérieur à 0.", "date": "Renseigne une date." }
+    }
+  }
+}

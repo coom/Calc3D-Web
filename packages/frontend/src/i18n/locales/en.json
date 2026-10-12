@@ -407,6 +407,125 @@
       "invalidNumber": "Invalid number",
       "quantityMin": "Quantity must be a whole number ≥ 1",
       "minutesRange": "Minutes must be between 0 and 59"
+    },
+    "loaded": {
+      "banner": "This quote uses the settings (rates, electricity, depreciation…) saved when it was created, not your current Settings.",
+      "useCurrent": "Recalculate with my current settings",
+      "update": "Update this quote",
+      "updated": "Quote updated.",
+      "notFound": "This quote does not exist or is not yours."
+    }
+  },
+  "history": {
+    "title": "History",
+    "subtitle": "Your quotes and orders, grouped by month",
+    "search": "Search (project / customer)",
+    "allKinds": "All types",
+    "allStatuses": "All statuses",
+    "count": "{{count}} quote(s)",
+    "empty": "No quote matches these filters.",
+    "hint": "Double-click a row to load it into the Quote page.",
+    "cols": {
+      "date": "Date",
+      "project": "Project",
+      "customer": "Customer",
+      "kind": "Type",
+      "status": "Status",
+      "quantity": "Qty",
+      "price": "Final price"
+    },
+    "load": "Load into Quote",
+    "convert": "Convert to order",
+    "delete": "Delete",
+    "converted": "Quote converted to order.",
+    "alreadyOrder": "This row is already an order.",
+    "deleteTitle": "Delete quote",
+    "deleteDescription": "Permanently delete quote \"{{name}}\" from history?",
+    "deleted": "Quote deleted.",
+    "actionFailed": "The action failed."
+  },
+  "finances": {
+    "title": "Finances",
+    "subtitle": "Revenue, expenses and margin on confirmed orders",
+    "period": "Period",
+    "periods": {
+      "all": "All",
+      "12m": "Last 12 months",
+      "year": "This year",
+      "month": "This month"
+    },
+    "kpi": {
+      "revenue": "TOTAL REVENUE",
+      "orders": "{{count}} order(s)",
+      "printingCost": "PRINTING COSTS",
+      "printingCostSub": "Filament, electricity, labor, depreciation…",
+      "margin": "NET MARGIN (after printing costs)",
+      "marginSub": "{{pct}} % of revenue",
+      "purchases": "ACTUAL PURCHASES",
+      "purchasesSub": "{{count}} purchase(s) · gap vs printing costs: {{gap}}"
+    },
+    "breakdown": {
+      "title": "Printing cost breakdown by item (orders)",
+      "empty": "No order in the selected period.",
+      "filament": "Filament",
+      "electricity": "Electricity",
+      "labor": "Labor (all tasks)",
+      "printer": "Printer depreciation, maintenance and wear",
+      "fixedCosts": "Consumables / other fixed costs",
+      "contingency": "Contingency / failure surcharge"
+    },
+    "monthly": {
+      "title": "Monthly trend: revenue vs costs vs purchases",
+      "empty": "No order or purchase in the selected period.",
+      "revenue": "Revenue",
+      "printingCost": "Printing cost",
+      "purchases": "Actual purchases"
+    },
+    "categories": {
+      "title": "Actual purchases by category",
+      "empty": "No purchase recorded in the selected period."
+    },
+    "comparison": {
+      "title": "Modeled printing cost (quotes) vs actual purchases",
+      "modeled": "Modeled printing cost (quotes)",
+      "actual": "Actual purchases"
+    }
+  },
+  "purchases": {
+    "title": "Purchases",
+    "subtitle": "Record your actual purchases (filament, parts, maintenance…)",
+    "new": "New purchase",
+    "date": "Date",
+    "category": "Category",
+    "description": "Description",
+    "amount": "Amount",
+    "supplier": "Supplier",
+    "comment": "Comment",
+    "save": "Save purchase",
+    "categories": {
+      "FILAMENT": "Filament / consumables",
+      "SPARE_PARTS": "Spare parts",
+      "MAINTENANCE": "Maintenance / repair",
+      "HARDWARE": "Hardware / equipment",
+      "TOOLS": "Tools",
+      "OTHER": "Other"
+    },
+    "listTitle": "Purchase history",
+    "search": "Search (description / supplier)",
+    "allCategories": "All categories",
+    "filterCategory": "Category filter",
+    "count": "{{count}} purchase(s)",
+    "empty": "No purchase matches these filters.",
+    "delete": "Delete",
+    "deleteTitle": "Delete purchase",
+    "deleteDescription": "Permanently delete purchase \"{{name}}\"?",
+    "saved": "Purchase saved.",
+    "deleted": "Purchase deleted.",
+    "failed": "The action failed.",
+    "errors": {
+      "description": "Enter a description.",
+      "amount": "Amount must be greater than 0.",
+      "date": "Enter a date."
     }
   }
 }

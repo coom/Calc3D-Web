@@ -1,0 +1,19 @@
+{
+  "namespace": "history",
+  "keys": {
+    "en": {
+      "title": "History", "subtitle": "Your quotes and orders, grouped by month", "search": "Search (project / customer)", "allKinds": "All types", "allStatuses": "All statuses",
+      "count": "{{count}} quote(s)", "empty": "No quote matches these filters.", "hint": "Double-click a row to load it into the Quote page.",
+      "cols": { "date": "Date", "project": "Project", "customer": "Customer", "kind": "Type", "status": "Status", "quantity": "Qty", "price": "Final price" },
+      "load": "Load into Quote", "convert": "Convert to order", "delete": "Delete", "converted": "Quote converted to order.", "alreadyOrder": "This row is already an order.",
+      "deleteTitle": "Delete quote", "deleteDescription": "Permanently delete quote \"{{name}}\" from history?", "deleted": "Quote deleted.", "actionFailed": "The action failed."
+    },
+    "fr": {
+      "title": "Historique", "subtitle": "Tes devis et commandes, groupés par mois", "search": "Recherche (projet / client)", "allKinds": "Tous les types", "allStatuses": "Tous les statuts",
+      "count": "{{count}} devis", "empty": "Aucun devis ne correspond à ces filtres.", "hint": "Double-clique une ligne pour la charger dans la page Devis.",
+      "cols": { "date": "Date", "project": "Projet", "customer": "Client", "kind": "Type", "status": "Statut", "quantity": "Qté", "price": "Prix final" },
+      "load": "Charger dans Devis", "convert": "Convertir en commande", "delete": "Supprimer", "converted": "Devis converti en commande.", "alreadyOrder": "Cette ligne est déjà une commande.",
+      "deleteTitle": "Supprimer le devis", "deleteDescription": "Supprimer définitivement le devis « {{name}} » de l'historique ?", "deleted": "Devis supprimé.", "actionFailed": "L'action a échoué."
+    }
+  }
+}
