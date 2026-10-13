@@ -22,5 +22,6 @@ export function toPublicQuoteDto(q: QuoteDto, opts: PublicQuoteOptions): PublicQ
     vatPct: q.settingsSnapshot.vatPct, vatAmount: q.vatAmount, roundingApplied: q.roundingApplied, roundingAmount: q.roundingAmount, floorApplied: q.floorApplied, priceBeforeFloor: q.priceBeforeFloor, finalPrice: q.finalPrice,
     currencySymbol: opts.currencySymbol, ownerDisplayName: opts.ownerDisplayName,
     clientResponse: q.clientResponse, clientRespondedAt: q.clientRespondedAt,
+    paymentMethod: q.paymentMethod, paypal: opts.paypal,
   };
 }

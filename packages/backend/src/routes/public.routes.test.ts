@@ -48,6 +48,30 @@ describe('API publique du devis', () => {
     expect(again.status).toBe(409); expect(again.body.code).toBe('already_answered');
     expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.clientResponse).toBe('ACCEPTED');
   });
+  it("paiement : PayPal non proposé → paypal null, moyen refusé (400) ; proposé → coordonnées exposées, choix enregistré avec l'acceptation", async () => {
+    const u = await createTestUser(prisma, 'alice');
+    await prisma.userSettings.create({ data: { userId: u.id, paypalEnabled: false, paypalHandle: 'g3d', paypalEmail: 'g@x.fr' } });
+    const q = await seedShared(u.id);
+    const off = await request(app()).get(`/api/public/quotes/${TOKEN}`);
+    expect(off.body.paypal).toBeNull(); expect(off.body.paymentMethod).toBeNull(); expect(JSON.stringify(off.body)).not.toMatch(/g3d|g@x\.fr|paypalEnabled/);
+    expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED', paymentMethod: 'PAYPAL' })).status).toBe(400);
+    expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.clientResponse).toBeNull();
+    await prisma.userSettings.update({ where: { userId: u.id }, data: { paypalEnabled: true } });
+    expect((await request(app()).get(`/api/public/quotes/${TOKEN}`)).body.paypal).toEqual({ handle: 'g3d', email: 'g@x.fr' });
+    expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED', paymentMethod: 'CHEQUE' })).status).toBe(400);
+    expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'REFUSED', paymentMethod: 'PAYPAL' })).status).toBe(400);
+    const r = await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED', paymentMethod: 'PAYPAL' });
+    expect(r.status).toBe(200); expect(r.body).toMatchObject({ clientResponse: 'ACCEPTED', paymentMethod: 'PAYPAL', paypal: { handle: 'g3d', email: 'g@x.fr' } });
+    expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.paymentMethod).toBe('PAYPAL');
+  });
+  it('paiement : acceptation sans moyen de paiement alors que PayPal est proposé → 400 ; liquide enregistré', async () => {
+    const u = await createTestUser(prisma, 'alice');
+    await prisma.userSettings.create({ data: { userId: u.id, paypalEnabled: true, paypalHandle: 'g3d' } });
+    const q = await seedShared(u.id);
+    expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED' })).status).toBe(400);
+    expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED', paymentMethod: 'CASH' })).body.paymentMethod).toBe('CASH');
+    expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.paymentMethod).toBe('CASH');
+  });
   it('devis converti en commande : toujours consultable, kind ORDER ; devis supprimé : 404', async () => {
     const u = await createTestUser(prisma, 'alice');
     const q = await seedShared(u.id, { kind: 'ORDER' });

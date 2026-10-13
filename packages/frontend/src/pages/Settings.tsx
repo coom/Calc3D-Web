@@ -19,6 +19,7 @@ import { MaterialsCard } from '@/components/settings/MaterialsCard';
 import { DesktopImportCard } from '@/components/settings/DesktopImportCard';
 import { SmtpSettingsCard } from '@/components/settings/SmtpSettingsCard';
 import { EmailCard } from '@/components/settings/EmailCard';
+import { PaypalCard } from '@/components/settings/PaypalCard';
 import { AddUserDialog } from '@/components/settings/AddUserDialog';
 import { EditUserDialog } from '@/components/settings/EditUserDialog';
 import { ResetPasswordDialog } from '@/components/settings/ResetPasswordDialog';
@@ -102,6 +103,7 @@ function AccountTab() {
     <div className="max-w-md space-y-4">
       <LanguageCard />
       <EmailCard />
+      <PaypalCard />
 
       <Card>
         <CardHeader>

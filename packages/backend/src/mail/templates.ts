@@ -1,4 +1,4 @@
-import type { ClientResponse } from '@calc3d/common';
+import type { ClientResponse, PaymentMethod } from '@calc3d/common';
 
 export interface MailContent { subject: string; text: string; html: string }
 type Lang = 'fr' | 'en';
@@ -11,11 +11,13 @@ const T = {
     quoteSubject: (p: string, o: string) => `Devis ${p} – ${o}`, quoteIntro: (o: string) => `${o} vous a envoyé un devis.`, open: 'Consulter le devis et répondre', personal: 'Ce lien est personnel : ne le transmettez pas.',
     respSubject: (p: string, d: ClientResponse, c: string) => `Devis ${p} : ${d === 'ACCEPTED' ? 'accepté' : 'refusé'} par ${c || 'le client'}`,
     respIntro: (c: string, d: ClientResponse) => `${c || 'Le client'} a ${d === 'ACCEPTED' ? 'accepté' : 'refusé'} le devis.`, comment: 'Commentaire :', openQuote: 'Ouvrir le devis',
+    payment: (m: PaymentMethod) => `Paiement : ${m === 'PAYPAL' ? 'PayPal' : 'en liquide'}`,
   },
   en: {
     quoteSubject: (p: string, o: string) => `Quote ${p} – ${o}`, quoteIntro: (o: string) => `${o} sent you a quote.`, open: 'View the quote and answer', personal: 'This link is personal: please do not forward it.',
     respSubject: (p: string, d: ClientResponse, c: string) => `Quote ${p}: ${d === 'ACCEPTED' ? 'accepted' : 'declined'} by ${c || 'the customer'}`,
     respIntro: (c: string, d: ClientResponse) => `${c || 'The customer'} ${d === 'ACCEPTED' ? 'accepted' : 'declined'} the quote.`, comment: 'Comment:', openQuote: 'Open the quote',
+    payment: (m: PaymentMethod) => `Payment: ${m === 'PAYPAL' ? 'PayPal' : 'cash'}`,
   },
 };
 
@@ -29,11 +31,12 @@ export function quoteEmail(l: string | null | undefined, p: { projectName: strin
 }
 
 /** Notification au propriétaire après la réponse du client. */
-export function responseEmail(l: string | null | undefined, p: { projectName: string; customer: string; decision: ClientResponse; comment: string; quoteUrl: string }): MailContent {
+export function responseEmail(l: string | null | undefined, p: { projectName: string; customer: string; decision: ClientResponse; comment: string; quoteUrl: string; paymentMethod?: PaymentMethod | null }): MailContent {
   const s = T[lang(l)];
   const subject = s.respSubject(p.projectName, p.decision, p.customer);
-  const text = [s.respIntro(p.customer, p.decision), p.comment ? `${s.comment}\n${p.comment}` : '', `${s.openQuote} : ${p.quoteUrl}`].filter(Boolean).join('\n\n');
-  const html = wrap(esc(subject), `<p>${esc(s.respIntro(p.customer, p.decision))}</p>${p.comment ? `<p><strong>${esc(s.comment)}</strong></p><p style="white-space:pre-wrap">${esc(p.comment)}</p>` : ''}<p><a href="${esc(p.quoteUrl)}">${esc(s.openQuote)}</a></p>`);
+  const payment = p.paymentMethod ? s.payment(p.paymentMethod) : '';
+  const text = [s.respIntro(p.customer, p.decision), payment, p.comment ? `${s.comment}\n${p.comment}` : '', `${s.openQuote} : ${p.quoteUrl}`].filter(Boolean).join('\n\n');
+  const html = wrap(esc(subject), `<p>${esc(s.respIntro(p.customer, p.decision))}</p>${payment ? `<p>${esc(payment)}</p>` : ''}${p.comment ? `<p><strong>${esc(s.comment)}</strong></p><p style="white-space:pre-wrap">${esc(p.comment)}</p>` : ''}<p><a href="${esc(p.quoteUrl)}">${esc(s.openQuote)}</a></p>`);
   return { subject, text, html };
 }
 

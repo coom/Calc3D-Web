@@ -1,4 +1,4 @@
-import type { ClientResponse, QuoteKind, QuoteStatus } from '../constants.js';
+import type { ClientResponse, PaymentMethod, QuoteKind, QuoteStatus } from '../constants.js';
 import type { FilamentLine } from '../pricing/types.js';
 
 /** Ligne du détail du coût de revient, libellée côté client par sa clé i18n. */
@@ -14,6 +14,10 @@ export interface PublicQuoteDto {
   vatPct: number; vatAmount: number; roundingApplied: boolean; roundingAmount: number; floorApplied: boolean; priceBeforeFloor: number; finalPrice: number;
   currencySymbol: string; ownerDisplayName: string;
   clientResponse: ClientResponse | null; clientRespondedAt: string | null;
+  paymentMethod: PaymentMethod | null;
+  /** Coordonnées PayPal du propriétaire, seulement s'il a activé le paiement PayPal ; sinon null et aucun choix n'est proposé. */
+  paypal: PublicPaypalInfo | null;
 }
-export interface PublicQuoteOptions { showCostBreakdown: boolean; currencySymbol: string; ownerDisplayName: string }
-export interface PublicRespondBody { decision: ClientResponse; comment?: string }
+export interface PublicPaypalInfo { handle: string; email: string }
+export interface PublicQuoteOptions { showCostBreakdown: boolean; currencySymbol: string; ownerDisplayName: string; paypal: PublicPaypalInfo | null }
+export interface PublicRespondBody { decision: ClientResponse; comment?: string; paymentMethod?: PaymentMethod }

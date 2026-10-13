@@ -709,5 +709,31 @@
     "test": "Envoyer le test",
     "testOk": "E-mail de test envoyé.",
     "testFailed": "Test échoué : {{reason}}"
+  },
+  "paypal": {
+    "settings": {
+      "title": "Paiement PayPal",
+      "intro": "Quand un client accepte un devis, il choisit entre liquide et PayPal. Avec PayPal, la page du devis affiche un lien « Payer par PayPal » vers votre pseudo PayPal.Me (lien direct avec le montant) ou votre adresse e-mail PayPal.",
+      "enabled": "Proposer le paiement PayPal aux clients",
+      "handle": "Pseudo PayPal.Me",
+      "handleHint": "La partie après paypal.me/ (lettres et chiffres).",
+      "email": "Adresse e-mail PayPal",
+      "needsOne": "Saisissez un pseudo PayPal.Me ou une adresse e-mail pour activer PayPal.",
+      "save": "Enregistrer",
+      "saved": "Paramètres PayPal enregistrés.",
+      "failed": "Impossible d'enregistrer : {{reason}}"
+    },
+    "method": {
+      "CASH": "Liquide",
+      "PAYPAL": "PayPal"
+    },
+    "chooseLabel": "Comment souhaitez-vous régler ?",
+    "cashNote": "Paiement en liquide à la remise.",
+    "payButton": "Payer par PayPal",
+    "emailIntro": "Envoyez un paiement entre proches à cette adresse PayPal :",
+    "copy": "Copier",
+    "copied": "Adresse copiée.",
+    "openPaypal": "Ouvrir PayPal pour envoyer le paiement",
+    "ownerLine": "Paiement : {{method}}"
   }
 }

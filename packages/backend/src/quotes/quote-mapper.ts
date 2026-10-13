@@ -1,5 +1,5 @@
 import type { Quote } from '../../generated/prisma/index.js';
-import type { CreateQuoteBody, PricingSettings, QuoteResult, QuoteDto, QuoteKind, QuoteStatus, FilamentLine, FinanceQuoteRow, ClientResponse } from '@calc3d/common';
+import type { CreateQuoteBody, PricingSettings, QuoteResult, QuoteDto, QuoteKind, QuoteStatus, FilamentLine, FinanceQuoteRow, ClientResponse, PaymentMethod } from '@calc3d/common';
 
 /** Données Prisma d'un devis à partir des entrées validées, de l'instantané de paramètres et du résultat serveur. */
 export function buildQuoteData(userId: number, body: CreateQuoteBody, settings: PricingSettings, result: QuoteResult) {
@@ -27,7 +27,7 @@ export function buildQuoteData(userId: number, body: CreateQuoteBody, settings: 
 
 /** DTO propriétaire. Le hash du jeton de partage n'est jamais exposé : seul `shared` l'indique. */
 export function toQuoteDto(row: Quote): QuoteDto {
-  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, ...rest } = row;
+  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, paymentMethod, ...rest } = row;
   return {
     ...rest,
     kind: kind as QuoteKind, status: status as QuoteStatus,
@@ -38,6 +38,7 @@ export function toQuoteDto(row: Quote): QuoteDto {
     shared: shareTokenHash !== null, sharedAt: sharedAt?.toISOString() ?? null,
     clientResponse: (clientResponse as ClientResponse | null) ?? null, clientRespondedAt: clientRespondedAt?.toISOString() ?? null,
     responseSeenAt: responseSeenAt?.toISOString() ?? null,
+    paymentMethod: (paymentMethod as PaymentMethod | null) ?? null,
   };
 }
 

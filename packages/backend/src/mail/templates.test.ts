@@ -16,6 +16,13 @@ describe("gabarits d'e-mail", () => {
     expect(responseEmail('en', { projectName: 'P', customer: 'ACME', decision: 'ACCEPTED', comment: '', quoteUrl: 'u' }).subject).toBe('Quote P: accepted by ACME');
     expect(responseEmail('fr', { projectName: 'P', customer: '', decision: 'ACCEPTED', comment: '', quoteUrl: 'u' }).subject).toBe('Devis P : accepté par le client');
   });
+  it('e-mail réponse : moyen de paiement choisi mentionné (liquide / PayPal), absent sinon', () => {
+    const base = { projectName: 'P', customer: 'ACME', decision: 'ACCEPTED' as const, comment: '', quoteUrl: 'u' };
+    expect(responseEmail('fr', { ...base, paymentMethod: 'PAYPAL' }).text).toContain('Paiement : PayPal');
+    expect(responseEmail('fr', { ...base, paymentMethod: 'CASH' }).text).toContain('Paiement : en liquide');
+    expect(responseEmail('en', { ...base, paymentMethod: 'CASH' }).text).toContain('Payment: cash');
+    expect(responseEmail('fr', base).text).not.toContain('Paiement');
+  });
 });
 
 describe("e-mail d'identifiants (création de compte, réinitialisation)", () => {

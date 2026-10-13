@@ -33,6 +33,21 @@ export const userSettingsSchema = z.object({
 });
 export type UserSettingsBody = z.infer<typeof userSettingsSchema>;
 
+/**
+ * Corps de PUT /api/settings/paypal. Pseudo PayPal.Me : lettres et chiffres seulement (il entre dans une URL) ;
+ * adresse vide ou valide, en minuscules. Activer exige au moins l'un des deux ; désactiver conserve les coordonnées.
+ */
+export const paypalSettingsSchema = z.object({
+  paypalEnabled: z.boolean(),
+  paypalHandle: z.string().trim().max(50).regex(/^[A-Za-z0-9]*$/, 'letters and digits only'),
+  paypalEmail: z.string().trim().max(200).toLowerCase().refine((v) => v === '' || z.string().email().safeParse(v).success, 'invalid email'),
+}).strict().superRefine((v, ctx) => {
+  if (v.paypalEnabled && !v.paypalHandle && !v.paypalEmail) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['paypalEnabled'], message: 'a PayPal.Me handle or an e-mail address is required to enable PayPal' });
+  }
+});
+export type PaypalSettingsBody = z.infer<typeof paypalSettingsSchema>;
+
 export const materialBodySchema = z.object({
   name: z.string().trim().min(1).max(60),
   pricePerKg: money,

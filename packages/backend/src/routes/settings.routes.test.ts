@@ -26,6 +26,22 @@ describe('GET/PUT /api/settings', () => {
     await request(appAs(prisma, a, '/api/settings', settingsRoutes)).put('/api/settings').send(body);
     expect((await request(appAs(prisma, admin, '/api/settings', settingsRoutes)).get('/api/settings')).body.roundToEuro).toBe(false);
   });
+  it('PayPal : désactivé par défaut, enregistré par utilisateur ; activer sans pseudo ni adresse, adresse invalide ou pseudo hors format → 400', async () => {
+    const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b');
+    const appA = appAs(prisma, a, '/api/settings', settingsRoutes); const appB = appAs(prisma, b, '/api/settings', settingsRoutes);
+    expect((await request(appA).get('/api/settings/paypal')).body).toEqual({ paypalEnabled: false, paypalHandle: '', paypalEmail: '' });
+    expect((await request(appA).put('/api/settings/paypal').send({ paypalEnabled: true, paypalHandle: '', paypalEmail: '' })).status).toBe(400);
+    expect((await request(appA).put('/api/settings/paypal').send({ paypalEnabled: true, paypalHandle: '', paypalEmail: 'pas-un-mail' })).status).toBe(400);
+    expect((await request(appA).put('/api/settings/paypal').send({ paypalEnabled: true, paypalHandle: 'a/b', paypalEmail: '' })).status).toBe(400);
+    expect((await request(appA).put('/api/settings/paypal').send({ paypalEnabled: true, paypalHandle: 'G3D', paypalEmail: 'G@X.fr', extra: 1 })).status).toBe(400);
+    const ok = await request(appA).put('/api/settings/paypal').send({ paypalEnabled: true, paypalHandle: ' G3D ', paypalEmail: 'G@X.fr' });
+    expect(ok.status).toBe(200); expect(ok.body).toEqual({ paypalEnabled: true, paypalHandle: 'G3D', paypalEmail: 'g@x.fr' });
+    expect((await request(appA).get('/api/settings/paypal')).body.paypalEnabled).toBe(true);
+    expect((await request(appB).get('/api/settings/paypal')).body.paypalEnabled).toBe(false);
+    // Désactiver garde les coordonnées ; les paramètres de tarification ne les exposent pas.
+    expect((await request(appA).put('/api/settings/paypal').send({ paypalEnabled: false, paypalHandle: 'G3D', paypalEmail: 'g@x.fr' })).body).toEqual({ paypalEnabled: false, paypalHandle: 'G3D', paypalEmail: 'g@x.fr' });
+    expect((await request(appA).get('/api/settings')).body).not.toHaveProperty('paypalHandle');
+  });
   it('rejette un corps incomplet, une clé inconnue, une marge cible ≥ 100 et un pourcentage négatif', async () => {
     const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/settings', settingsRoutes);
     const { pdfShowCostBreakdown: _omit, ...partial } = body;

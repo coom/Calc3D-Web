@@ -115,6 +115,9 @@ model UserSettings {
   floorPrice                Float    @default(5)
   roundToEuro               Boolean  @default(false)
   pdfShowCostBreakdown      Boolean  @default(true)
+  paypalEnabled             Boolean  @default(false)
+  paypalHandle              String   @default("")
+  paypalEmail               String   @default("")
   updatedAt                 DateTime @updatedAt
 }
 
@@ -143,6 +146,7 @@ model Quote {
   clientComment      String    @default("")
   responseSeenAt     DateTime?
   clientEmail        String    @default("")
+  paymentMethod      String?
 
   projectName      String   @default("")
   customer         String   @default("")

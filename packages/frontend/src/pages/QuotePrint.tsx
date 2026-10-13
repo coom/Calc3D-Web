@@ -21,7 +21,7 @@ export default function QuotePrint() {
   const quoteQ = useQuery({ queryKey: ['quote', quoteId], queryFn: () => quotesApi.get(quoteId!), enabled: quoteId !== null, retry: false, staleTime: 0 });
   const settingsQ = useQuery({ queryKey: ['settings'], queryFn: settingsApi.get });
   const q = quoteQ.data; const s = settingsQ.data;
-  const data = useMemo(() => (q && s ? toPublicQuoteDto(q, { showCostBreakdown: s.pdfShowCostBreakdown, currencySymbol: s.currencySymbol, ownerDisplayName: '' }) : null), [q, s]);
+  const data = useMemo(() => (q && s ? toPublicQuoteDto(q, { showCostBreakdown: s.pdfShowCostBreakdown, currencySymbol: s.currencySymbol, ownerDisplayName: '', paypal: null }) : null), [q, s]);
   useEffect(() => {
     if (!data) return;
     document.title = t('print.title', { name: data.projectName });

@@ -1,5 +1,5 @@
 import { Prisma, type PrismaClient, type UserSettings } from '../../generated/prisma/index.js';
-import { DEFAULT_MATERIALS, type PricingSettings, type UserSettingsDto, type PricingMode } from '@calc3d/common';
+import { DEFAULT_MATERIALS, type PricingSettings, type UserSettingsDto, type PricingMode, type PaypalSettingsDto, type PublicPaypalInfo } from '@calc3d/common';
 
 export function toPricingSettings(row: UserSettings): PricingSettings {
   return {
@@ -14,6 +14,21 @@ export function toPricingSettings(row: UserSettings): PricingSettings {
 
 export function toSettingsDto(row: UserSettings): UserSettingsDto {
   return { ...toPricingSettings(row), pdfShowCostBreakdown: row.pdfShowCostBreakdown };
+}
+
+export function toPaypalDto(row: UserSettings): PaypalSettingsDto {
+  return { paypalEnabled: row.paypalEnabled, paypalHandle: row.paypalHandle, paypalEmail: row.paypalEmail };
+}
+
+/** Coordonnées PayPal exposées au client : seulement si le propriétaire a activé le paiement PayPal, sinon null. */
+export function toPublicPaypal(row: Pick<UserSettings, 'paypalEnabled' | 'paypalHandle' | 'paypalEmail'>): PublicPaypalInfo | null {
+  return row.paypalEnabled ? { handle: row.paypalHandle, email: row.paypalEmail } : null;
+}
+
+/** Ligne Prisma complète (crée les défauts au besoin) pour les lecteurs qui ont besoin des colonnes hors tarification. */
+export async function getOrCreateSettingsRow(prisma: PrismaClient, userId: number): Promise<UserSettings> {
+  await getOrCreateSettings(prisma, userId);
+  return (await prisma.userSettings.findUnique({ where: { userId } }))!;
 }
 
 /**

@@ -20,6 +20,9 @@ export const DEFAULT_MATERIALS: ReadonlyArray<{ name: string; pricePerKg: number
 
 export const CLIENT_RESPONSES = ['ACCEPTED', 'REFUSED'] as const;
 export type ClientResponse = (typeof CLIENT_RESPONSES)[number];
+/** Moyen de paiement choisi par le client à l'acceptation (si le propriétaire propose PayPal). */
+export const PAYMENT_METHODS = ['CASH', 'PAYPAL'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 /** Filtre « réponse client » de la liste des devis : PENDING = partagé sans réponse, NONE = non partagé. */
 export const RESPONSE_FILTERS = ['ACCEPTED', 'REFUSED', 'PENDING', 'NONE'] as const;
 export type ResponseFilter = (typeof RESPONSE_FILTERS)[number];

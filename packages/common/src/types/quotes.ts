@@ -1,4 +1,4 @@
-import type { ClientResponse, QuoteKind, QuoteStatus, ResponseFilter } from '../constants.js';
+import type { ClientResponse, PaymentMethod, QuoteKind, QuoteStatus, ResponseFilter } from '../constants.js';
 import type { QuoteInput, QuoteResult, PricingSettings } from '../pricing/types.js';
 
 export interface QuoteProjectFields {
@@ -12,6 +12,8 @@ export interface QuoteShareFields {
   shared: boolean; sharedAt: string | null;
   clientResponse: ClientResponse | null; clientRespondedAt: string | null; clientComment: string;
   responseSeenAt: string | null; clientEmail: string;
+  /** Choisi par le client avec l'acceptation ; null si refusé, sans réponse ou PayPal non proposé. */
+  paymentMethod: PaymentMethod | null;
 }
 export interface QuoteDto extends QuoteProjectFields, QuoteInput, QuoteResult, QuoteShareFields {
   id: number; createdAt: string; updatedAt: string; legacyId: string | null;

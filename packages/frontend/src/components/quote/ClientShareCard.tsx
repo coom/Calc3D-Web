@@ -61,6 +61,7 @@ export function ClientShareCard({ quote, smtpEnabled, onChanged }: Props) {
           {quote.clientResponse ? (
             <>
               <p>{t(`share.response.${quote.clientResponse}`)} {t('share.response.on', { date: formatDate(quote.clientRespondedAt ?? '', i18n.language) })}</p>
+              {quote.paymentMethod && <p>{t('paypal.ownerLine', { method: t(`paypal.method.${quote.paymentMethod}`) })}</p>}
               {quote.clientComment && <p className="whitespace-pre-wrap text-muted-foreground"><span className="font-medium">{t('share.response.comment')}</span> {quote.clientComment}</p>}
               {quote.clientResponse === 'ACCEPTED' && quote.kind === 'QUOTE' && <Button size="sm" disabled={convert.isPending} onClick={() => convert.mutate()}><Repeat className="mr-1 h-4 w-4" />{t('share.response.convert')}</Button>}
             </>
