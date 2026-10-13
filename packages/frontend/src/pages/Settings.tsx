@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DeleteUserDialog } from '@/components/settings/DeleteUserDialog';
 import { JournalRetentionCard } from '@/components/settings/JournalRetentionCard';
+import { ReverseProxyCard } from '@/components/settings/ReverseProxyCard';
 import { PricingSettingsForm } from '@/components/settings/PricingSettingsForm';
 import { MaterialsCard } from '@/components/settings/MaterialsCard';
 import { DesktopImportCard } from '@/components/settings/DesktopImportCard';
@@ -393,6 +394,7 @@ function UsersTab() {
     <div className="space-y-4">
       <PasswordPolicyCard />
       <JournalRetentionCard />
+      <ReverseProxyCard />
 
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">{t('settings.users.subtitle')}</p>

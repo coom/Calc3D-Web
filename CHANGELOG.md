@@ -5,6 +5,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+### Corrigé
+- **IP client derrière un proxy** : le journal de connexions, l'audit et les limiteurs lisaient l'adresse du dernier proxy (WAF, par exemple SafeLine) au lieu de celle du client, car le backend ne faisait confiance qu'à un saut (le nginx intégré). Nouveau réglage admin « Proxy inverse / IP client » (Paramètres → Utilisateurs) : nombre de sauts de proxy de confiance, appliqué à chaud, avec l'IP détectée pour la requête en cours afin d'ajuster. Même solution que TS6-Manager. API : `GET/PUT /api/proxy` (admin, audité `proxy.update`).
+
 ### Ajouté
 - **Page Indicateurs** (menu Atelier) : sur 7, 30, 90 ou 365 jours, tuiles « commandes en cours » (instantané : non terminées et non payées), nouvelles commandes, commandes payées, devis acceptés / refusés / convertis, chacune avec l'écart par rapport à la période précédente, taux d'acceptation (acceptés / répondus) et taux de conversion (convertis / devis créés). Évolution par jour, semaine ou mois en colonnes groupées (HTML/CSS, aucune bibliothèque), légende, valeurs au survol et vue tableau. API : `GET /api/indicators?days=&tz=` (calcul `computeIndicators` dans common, cloisonné par utilisateur).
 - **Historique** : tri par colonne (date, projet, client, type, statut) croissant ou décroissant via les en-têtes ; trié par date, regroupement par mois comme avant, sinon liste plate. API : `GET /api/quotes?sort=&dir=`.

@@ -22,10 +22,12 @@ import { smtpRoutes } from './routes/smtp.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
 import { indicatorsRoutes } from './routes/indicators.routes.js';
+import { proxyRoutes } from './routes/proxy.routes.js';
 import { importRoutes } from './routes/import.routes.js';
 
 export function createApp(): Express {
   const app = express();
+  // Profondeur par défaut (nginx intégré) ; remplacée au démarrage par le réglage admin (index.ts) et à chaud par PUT /api/proxy.
   app.set('trust proxy', 1);
   app.use(helmet());
   app.use(cors({ origin: config.frontendUrl, credentials: true }));
@@ -60,6 +62,7 @@ export function createApp(): Express {
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
   app.use('/api/indicators', indicatorsRoutes);
+  app.use('/api/proxy', proxyRoutes);
   app.use('/api/import', importRoutes);
   app.use('/api/smtp', smtpRoutes);
 

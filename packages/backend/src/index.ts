@@ -5,6 +5,7 @@ import { notifyOwnerOfResponse } from './mail/notify.js';
 import { config } from './config.js';
 import { logger } from './utils/logger.js';
 import { purgeWebLogins } from './journal/retention.js';
+import { applyTrustHops, loadTrustHops } from './proxy/trust-proxy.js';
 
 process.on('uncaughtException', (err) => logger.error({ err }, 'uncaught exception (kept alive)'));
 process.on('unhandledRejection', (reason) => logger.error({ reason }, 'unhandled rejection (kept alive)'));
@@ -19,6 +20,8 @@ async function main() {
   app.locals.prisma = prisma;
   // Notification du propriétaire après une réponse client (public.routes.ts) ; absent en test, remplacé par un factice.
   app.locals.notifyOwnerOfResponse = notifyOwnerOfResponse;
+  // Profondeur de proxys de confiance configurée par l'admin (IP client derrière nginx et un éventuel WAF).
+  applyTrustHops(app, await loadTrustHops(prisma));
   const server = createServer(app);
 
   // Purge quotidienne du journal de connexions selon la rétention configurée.
