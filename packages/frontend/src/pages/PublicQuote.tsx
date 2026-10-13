@@ -35,6 +35,15 @@ export default function PublicQuote() {
     },
   });
   useEffect(() => { if (q.data) document.title = t('print.title', { name: q.data.projectName }); }, [q.data, t]);
+  // Le store d'interface pose la classe « dark » par défaut, même pour un client sans compte ; le document
+  // force un fond blanc et un texte noir sur body, et la boîte de confirmation (portail hors du document)
+  // héritait alors d'un fond sombre avec ce texte noir. La page client est toujours en thème clair.
+  useEffect(() => {
+    const root = document.documentElement;
+    const wasDark = root.classList.contains('dark');
+    root.classList.remove('dark');
+    return () => { if (wasDark) root.classList.add('dark'); };
+  }, []);
 
   if (q.isError) {
     // Seul le 404 signifie « lien mort » ; limiteur (429), panne ou réseau ne doivent pas pousser le propriétaire à régénérer un lien valide.

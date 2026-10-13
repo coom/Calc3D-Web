@@ -5,6 +5,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+### Corrigé
+- Page publique du devis : la boîte de confirmation (accepter / refuser) s'affichait en texte noir sur fond sombre, car le thème sombre par défaut de l'application s'appliquait aussi aux visiteurs sans compte. La page client est désormais toujours en thème clair.
+
 ## [0.4.0] - 2026-10-12 — lot 4
 
 ### Ajouté

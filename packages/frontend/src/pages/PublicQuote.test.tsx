@@ -49,6 +49,16 @@ describe('page publique du devis', () => {
     expect(await screen.findByText(/déjà reçu une réponse/)).toBeInTheDocument();
     expect(await screen.findByText(/Vous avez accepté ce devis le/)).toBeInTheDocument();
   });
+  it("retire le thème sombre pendant l'affichage et le rétablit en quittant (document blanc, boîte de confirmation lisible)", async () => {
+    get.mockResolvedValue(dto);
+    document.documentElement.classList.add('dark');
+    const { unmount } = renderPage();
+    expect(await screen.findByText('Devis de Guillaume')).toBeInTheDocument();
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
+    unmount();
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
+    document.documentElement.classList.remove('dark');
+  });
   it('429 ou erreur serveur : message « indisponible », pas « lien invalide » (I3)', async () => {
     get.mockRejectedValue({ response: { status: 429 } });
     renderPage('busy');
