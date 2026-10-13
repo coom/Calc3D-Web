@@ -25,6 +25,27 @@ Portage web multi-utilisateur de [CalculateurPrix](../CalculateurPrix), le calcu
 - **Suivi des réponses** (lot 4) : badge Accepté / Refusé / En attente et filtre dans l'Historique, compteur de réponses non lues dans la navigation, réponse et commentaire sur le devis chargé avec un bouton « Convertir en commande ». Rien n'est converti automatiquement.
 - **E-mail** (lot 4) : un admin configure le serveur SMTP dans Paramètres → E-mail (mot de passe stocké chiffré, e-mail de test). Ensuite « Envoyer par e-mail » transmet le lien au client, et tu es notifié à l'adresse saisie dans Paramètres → Compte quand le client répond.
 
+- **Comptes** (lot 5) : adresse e-mail et langue par utilisateur, e-mail de bienvenue ou de réinitialisation avec les informations de connexion et une invitation à activer le MFA ; la langue s'applique à l'interface et aux e-mails.
+- **Paiement PayPal** (lot 5) : par utilisateur, pseudo PayPal.Me et/ou adresse ; à l'acceptation, le client choisit liquide ou PayPal et obtient un lien « Payer par PayPal » avec le montant. Désactivable à tout moment.
+- **Historique** (lot 5) : tri par date, projet, client, type ou statut ; interrupteur « Payée » sur les commandes.
+- **Indicateurs** (lot 5) : sur 7, 30, 90 ou 365 jours, commandes en cours, nouvelles et payées, devis acceptés / refusés / convertis avec l'écart par rapport à la période précédente, taux d'acceptation et de conversion, évolution par jour, semaine ou mois.
+
+## Captures d'écran
+
+| **Nouveau devis** | **Devis chargé avec lien client** |
+|---|---|
+| ![Nouveau devis](screenshots/Nouveau%20Devis.png) | ![Devis chargé avec lien client](screenshots/Devis.png) |
+| **Historique** | **Indicateurs** |
+| ![Historique](screenshots/Historique.png) | ![Indicateurs](screenshots/Indicateurs.png) |
+| **Finances** | **Achats** |
+| ![Finances](screenshots/Finances.png) | ![Achats](screenshots/Achats.png) |
+| **Paramètres : tarification** | **Paramètres : matières** |
+| ![Paramètres : tarification](screenshots/Settings%201.png) | ![Paramètres : matières](screenshots/Settings%202.png) |
+| **Paramètres : utilisateurs (admin)** | **Journal de connexions (admin)** |
+| ![Paramètres : utilisateurs (admin)](screenshots/Utilisateurs.png) | ![Journal de connexions (admin)](screenshots/Connexions.png) |
+| **Journal d'audit (admin)** |  |
+| ![Journal d'audit (admin)](screenshots/Audit%20log.png) |  |
+
 ## Installation
 
 Prérequis : Docker.

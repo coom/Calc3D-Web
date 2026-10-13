@@ -25,6 +25,27 @@ Multi-user web port of [CalculateurPrix](../CalculateurPrix), the 3D printing pr
 - **Answer tracking** (lot 4): Accepted / Declined / Awaiting badge and filter in History, unread counter in the navigation, answer and comment on the loaded quote with a "Convert to order" button. Nothing is converted automatically.
 - **E-mail** (lot 4): an admin configures the SMTP server in Settings > E-mail (password stored encrypted, test e-mail). Then "Send by e-mail" sends the link to the customer, and you are notified at the address set in Settings > Account when the customer answers.
 
+- **Accounts** (lot 5): e-mail address and language per user, welcome / password-reset e-mail with the sign-in details and an invitation to enable MFA, the language applying to the interface and e-mails.
+- **PayPal payment** (lot 5): per user, a PayPal.Me handle and/or address; when accepting, the customer chooses cash or PayPal and gets a "Pay with PayPal" link with the amount. Can be disabled at any time.
+- **History** (lot 5): sort by date, project, customer, type or status; "Paid" switch on orders.
+- **Indicators** (lot 5): over 7, 30, 90 or 365 days, open orders, new and paid orders, quotes accepted / declined / converted with the change vs the previous period, acceptance and conversion rates, trend by day, week or month.
+
+## Screenshots
+
+| **New quote** | **Loaded quote with customer link** |
+|---|---|
+| ![New quote](screenshots/Nouveau%20Devis.png) | ![Loaded quote with customer link](screenshots/Devis.png) |
+| **History** | **Indicators** |
+| ![History](screenshots/Historique.png) | ![Indicators](screenshots/Indicateurs.png) |
+| **Finances** | **Purchases** |
+| ![Finances](screenshots/Finances.png) | ![Purchases](screenshots/Achats.png) |
+| **Settings: pricing** | **Settings: materials** |
+| ![Settings: pricing](screenshots/Settings%201.png) | ![Settings: materials](screenshots/Settings%202.png) |
+| **Settings: users (admin)** | **Login journal (admin)** |
+| ![Settings: users (admin)](screenshots/Utilisateurs.png) | ![Login journal (admin)](screenshots/Connexions.png) |
+| **Audit log (admin)** |  |
+| ![Audit log (admin)](screenshots/Audit%20log.png) |  |
+
 ## Installation
 
 Requirement: Docker.
