@@ -36,3 +36,44 @@ export function responseEmail(l: string | null | undefined, p: { projectName: st
   const html = wrap(esc(subject), `<p>${esc(s.respIntro(p.customer, p.decision))}</p>${p.comment ? `<p><strong>${esc(s.comment)}</strong></p><p style="white-space:pre-wrap">${esc(p.comment)}</p>` : ''}<p><a href="${esc(p.quoteUrl)}">${esc(s.openQuote)}</a></p>`);
   return { subject, text, html };
 }
+
+const C = {
+  fr: {
+    welcomeSubject: 'Votre accès à Calc3D', resetSubject: 'Votre nouveau mot de passe Calc3D', hello: (n: string) => `Bonjour ${n},`,
+    welcomeIntro: 'Un compte a été créé pour vous sur Calc3D. Voici vos informations de connexion :', resetIntro: 'Votre mot de passe Calc3D a été réinitialisé par un administrateur. Voici vos nouvelles informations de connexion :',
+    url: 'Adresse', username: 'Identifiant', password: 'Mot de passe',
+    temporary: (first: boolean) => `Ce mot de passe est temporaire : vous devrez le modifier lors de votre ${first ? 'première' : 'prochaine'} connexion.`,
+    mfaRequired: (first: boolean) => `L'authentification à deux facteurs (MFA) est obligatoire sur votre compte : vous serez invité à la configurer lors de votre ${first ? 'première' : 'prochaine'} connexion.`,
+    mfaInvite: "Pour plus de sécurité, nous vous invitons à activer l'authentification à deux facteurs (MFA) depuis Paramètres → Compte.",
+    keep: 'Conservez cet e-mail en lieu sûr et ne le transmettez pas.',
+  },
+  en: {
+    welcomeSubject: 'Your Calc3D access', resetSubject: 'Your new Calc3D password', hello: (n: string) => `Hello ${n},`,
+    welcomeIntro: 'An account has been created for you on Calc3D. Here are your sign-in details:', resetIntro: 'Your Calc3D password has been reset by an administrator. Here are your new sign-in details:',
+    url: 'Address', username: 'Username', password: 'Password',
+    temporary: (first: boolean) => `This password is temporary: you will have to change it the ${first ? 'first' : 'next'} time you sign in.`,
+    mfaRequired: (first: boolean) => `Two-factor authentication (MFA) is mandatory on your account: you will be asked to set it up the ${first ? 'first' : 'next'} time you sign in.`,
+    mfaInvite: 'For better security, we invite you to enable two-factor authentication (MFA) from Settings → Account.',
+    keep: 'Keep this e-mail in a safe place and do not forward it.',
+  },
+};
+
+export interface CredentialsEmailParams { kind: 'welcome' | 'reset'; url: string; username: string; password: string; displayName: string; mustChangePassword: boolean; mfaRequired: boolean; mfaEnabled: boolean }
+
+/**
+ * E-mail d'identifiants envoyé à l'utilisateur à la création de son compte ou après une réinitialisation par un admin.
+ * Contient le mot de passe en clair (décision de l'admin) : jamais journalisé. Mention « temporaire » si changement
+ * imposé ; MFA présenté comme obligatoire si exigé, comme invitation sinon, rien s'il est déjà activé.
+ */
+export function credentialsEmail(l: string | null | undefined, p: CredentialsEmailParams): MailContent {
+  const s = C[lang(l)]; const first = p.kind === 'welcome';
+  const subject = first ? s.welcomeSubject : s.resetSubject;
+  const notes = [p.mustChangePassword ? s.temporary(first) : '', p.mfaRequired ? s.mfaRequired(first) : (p.mfaEnabled ? '' : s.mfaInvite), s.keep].filter(Boolean);
+  const text = [s.hello(p.displayName), first ? s.welcomeIntro : s.resetIntro, `${s.url} : ${p.url}\n${s.username} : ${p.username}\n${s.password} : ${p.password}`, ...notes].join('\n\n');
+  const html = wrap(esc(subject), `<p>${esc(s.hello(p.displayName))}</p><p>${esc(first ? s.welcomeIntro : s.resetIntro)}</p>`
+    + `<table style="border-collapse:collapse"><tr><td style="padding:2px 12px 2px 0;color:#6B7280">${esc(s.url)}</td><td><a href="${esc(p.url)}">${esc(p.url)}</a></td></tr>`
+    + `<tr><td style="padding:2px 12px 2px 0;color:#6B7280">${esc(s.username)}</td><td><code>${esc(p.username)}</code></td></tr>`
+    + `<tr><td style="padding:2px 12px 2px 0;color:#6B7280">${esc(s.password)}</td><td><code>${esc(p.password)}</code></td></tr></table>`
+    + notes.map((n) => `<p>${esc(n)}</p>`).join(''));
+  return { subject, text, html };
+}

@@ -23,3 +23,7 @@ export type ClientResponse = (typeof CLIENT_RESPONSES)[number];
 /** Filtre « réponse client » de la liste des devis : PENDING = partagé sans réponse, NONE = non partagé. */
 export const RESPONSE_FILTERS = ['ACCEPTED', 'REFUSED', 'PENDING', 'NONE'] as const;
 export type ResponseFilter = (typeof RESPONSE_FILTERS)[number];
+
+/** Langues de l'interface et des e-mails (traductions disponibles dans le frontend et dans `mail/templates.ts`). */
+export const USER_LANGUAGES = ['fr', 'en'] as const;
+export type UserLanguage = (typeof USER_LANGUAGES)[number];

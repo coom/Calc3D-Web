@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { DeleteUserDialog } from '@/components/settings/DeleteUserDialog';
 import { JournalRetentionCard } from '@/components/settings/JournalRetentionCard';
 import { PricingSettingsForm } from '@/components/settings/PricingSettingsForm';
@@ -20,8 +19,13 @@ import { MaterialsCard } from '@/components/settings/MaterialsCard';
 import { DesktopImportCard } from '@/components/settings/DesktopImportCard';
 import { SmtpSettingsCard } from '@/components/settings/SmtpSettingsCard';
 import { EmailCard } from '@/components/settings/EmailCard';
+import { AddUserDialog } from '@/components/settings/AddUserDialog';
+import { EditUserDialog } from '@/components/settings/EditUserDialog';
+import { ResetPasswordDialog } from '@/components/settings/ResetPasswordDialog';
+import { smtpApi } from '@/api/smtp.api';
+import type { CreateUserBody, MailOutcome, UserRow } from '@/api/users.api';
 import { settingsApi } from '@/api/settings.api';
-import { Users, Plus, Trash2, Check, Lock, KeyRound, Calculator, Layers, Upload, Mail } from 'lucide-react';
+import { Users, Plus, Trash2, Check, Lock, KeyRound, Pencil, Calculator, Layers, Upload, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { LANGUAGES, setLanguage } from '@/i18n';
@@ -301,30 +305,48 @@ function MfaCard() {
 }
 
 
+/** Onglet Utilisateurs (admin) : liste, ajout, modification (nom, e-mail, langue), réinitialisation de mot de passe, MFA, suppression. */
 function UsersTab() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const qc = useQueryClient();
   const { data: users, isLoading } = useQuery({ queryKey: ['users'], queryFn: usersApi.list });
-  const createUser = useMutation({ mutationFn: (data: any) => usersApi.create(data), onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }) });
-  const updateUser = useMutation({ mutationFn: ({ id, data }: { id: number; data: any }) => usersApi.update(id, data), onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }) });
+  const { data: smtp } = useQuery({ queryKey: ['smtp-status'], queryFn: smtpApi.status });
+  const smtpEnabled = !!smtp?.enabled;
+  const createUser = useMutation({ mutationFn: (data: CreateUserBody) => usersApi.create(data), onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }) });
+  const updateUser = useMutation({ mutationFn: ({ id, data }: { id: number; data: Parameters<typeof usersApi.update>[1] }) => usersApi.update(id, data), onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }) });
   const deleteUser = useMutation({ mutationFn: (id: number) => usersApi.delete(id), onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }) });
 
   const [showAdd, setShowAdd] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [resetPwUserId, setResetPwUserId] = useState<number | null>(null);
-  const [resetPwValue, setResetPwValue] = useState('');
-  const [resetPwMustChange, setResetPwMustChange] = useState(false);
-  const emptyForm = { username: '', password: '', displayName: '', role: 'user', mfaRequired: false, mustChangePassword: false };
-  const [form, setForm] = useState(emptyForm);
+  const [editUser, setEditUser] = useState<UserRow | null>(null);
+  const [resetUser, setResetUser] = useState<UserRow | null>(null);
 
   const userList = useMemo(() => (Array.isArray(users) ? users : []), [users]);
 
   if (isLoading) return <PageLoader />;
 
-  const handleCreate = () => {
-    createUser.mutate(form, {
-      onSuccess: () => { toast.success(t('settings.users.toastCreated')); setShowAdd(false); setForm(emptyForm); },
-      onError: () => toast.error(t('settings.users.toastCreateFailed')),
+  // Le compte est créé ou modifié même si l'e-mail échoue : succès, puis avertissement avec la raison.
+  const reportMail = (r: MailOutcome | undefined, email: string, failedKey: string) => {
+    if (!r) return;
+    if (r.emailSent) toast.success(t('settings.users.toastEmailSent', { email }));
+    else if (r.emailError !== undefined) toast.warning(t(failedKey, { reason: r.emailError }));
+  };
+  const errorMessage = (e: unknown, fallback: string) => {
+    const code = (e as { response?: { data?: { code?: string } } })?.response?.data?.code;
+    return code === 'smtp_disabled' ? t('settings.users.notifyNeedsSmtp') : fallback;
+  };
+
+  const handleCreate = (body: CreateUserBody) => {
+    createUser.mutate(body, {
+      onSuccess: (r) => { toast.success(t('settings.users.toastCreated')); setShowAdd(false); if (body.notify) reportMail(r, body.email ?? '', 'settings.users.toastCreatedEmailFailed'); },
+      onError: (e) => toast.error(errorMessage(e, t('settings.users.toastCreateFailed'))),
+    });
+  };
+
+  const handleEdit = (id: number, data: { displayName: string; email: string; language: string | null }) => {
+    updateUser.mutate({ id, data }, {
+      onSuccess: () => { toast.success(t('settings.users.toastUpdated')); setEditUser(null); },
+      onError: () => toast.error(t('settings.users.toastUpdateFailed')),
     });
   };
 
@@ -356,14 +378,12 @@ function UsersTab() {
     });
   };
 
-  const handleResetPassword = () => {
-    if (!resetPwUserId || resetPwValue.length < 6) {
-      toast.error(t('settings.users.passwordMinError'));
-      return;
-    }
-    updateUser.mutate({ id: resetPwUserId, data: { password: resetPwValue, mustChangePassword: resetPwMustChange } }, {
-      onSuccess: () => { toast.success(t('settings.users.toastPasswordReset')); setResetPwUserId(null); setResetPwValue(''); setResetPwMustChange(false); },
-      onError: () => toast.error(t('settings.users.toastPasswordResetFailed')),
+  const handleResetPassword = (id: number, data: { password: string; mustChangePassword: boolean; notify: boolean }) => {
+    if (data.password.length < 6) { toast.error(t('settings.users.passwordMinError')); return; }
+    const email = userList.find((u) => u.id === id)?.email ?? '';
+    updateUser.mutate({ id, data }, {
+      onSuccess: (r) => { toast.success(t('settings.users.toastPasswordReset')); setResetUser(null); if (data.notify) reportMail(r, email, 'settings.users.toastResetEmailFailed'); },
+      onError: (e) => toast.error(errorMessage(e, t('settings.users.toastPasswordResetFailed'))),
     });
   };
 
@@ -384,18 +404,22 @@ function UsersTab() {
               <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.colUsername')}</th>
               <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.colDisplayName')}</th>
               <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.colRole')}</th>
+              <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.colLanguage')}</th>
               <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.colStatus')}</th>
               <th className="h-10 px-3 text-left font-medium text-muted-foreground">{t('settings.users.col2fa')}</th>
               <th className="h-10 px-3 text-right font-medium text-muted-foreground">{t('settings.users.colActions')}</th>
             </tr>
           </thead>
           <tbody>
-            {userList.map((u: any) => {
+            {userList.map((u) => {
               const isProtected = u.username === 'admin';
               return (
                 <tr key={u.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
                   <td className="px-3 py-2.5 font-mono-data text-xs">{u.username}</td>
-                  <td className="px-3 py-2.5">{u.displayName}</td>
+                  <td className="px-3 py-2.5">
+                    <div>{u.displayName}</div>
+                    {u.email && <div className="text-[10px] text-muted-foreground">{u.email}</div>}
+                  </td>
                   <td className="px-3 py-2.5">
                     {isProtected ? (
                       <Badge variant="default" className="text-[10px] capitalize">{u.role}</Badge>
@@ -411,6 +435,7 @@ function UsersTab() {
                       </Select>
                     )}
                   </td>
+                  <td className="px-3 py-2.5 text-xs uppercase text-muted-foreground">{u.language ?? '-'}</td>
                   <td className="px-3 py-2.5">
                     {isProtected ? (
                       <span className="inline-flex items-center gap-1 text-xs text-emerald-400">
@@ -438,7 +463,10 @@ function UsersTab() {
                   </td>
                   <td className="px-3 py-2.5 text-right">
                     <div className="inline-flex items-center gap-0.5">
-                      <Button variant="ghost" size="icon" className="h-7 w-7" title={t('settings.users.resetPasswordTitle')} onClick={() => { setResetPwUserId(u.id); setResetPwValue(''); }}>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title={t('settings.users.editTooltip')} onClick={() => setEditUser(u)}>
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" title={t('settings.users.resetPasswordTitle')} onClick={() => setResetUser(u)}>
                         <KeyRound className="h-3.5 w-3.5" />
                       </Button>
                       <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => setDeleteId(u.id)} disabled={isProtected}>
@@ -453,71 +481,13 @@ function UsersTab() {
         </table>
       </div>
 
-      {/* Add User Dialog */}
-      <Dialog open={showAdd} onOpenChange={setShowAdd}>
-        <DialogContent>
-          <DialogHeader><DialogTitle>{t('settings.users.addDialogTitle')}</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <div><Label className="text-xs">{t('settings.users.username')}</Label><Input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} placeholder="johndoe" /></div>
-            <div><Label className="text-xs">{t('settings.users.displayName')}</Label><Input value={form.displayName} onChange={(e) => setForm({ ...form, displayName: e.target.value })} placeholder="John Doe" /></div>
-            <div><Label className="text-xs">{t('settings.users.password')}</Label><Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="********" /></div>
-            <div>
-              <Label className="text-xs">{t('settings.users.role')}</Label>
-              <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">{t('settings.users.roleAdmin')}</SelectItem>
-                  <SelectItem value="user">{t('settings.users.roleUser')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch checked={form.mfaRequired} onCheckedChange={(v) => setForm({ ...form, mfaRequired: v })} />
-              <Label className="text-xs font-normal">{t('settings.users.requireMfa')}</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch checked={form.mustChangePassword} onCheckedChange={(v) => setForm({ ...form, mustChangePassword: v })} />
-              <Label className="text-xs font-normal">{t('settings.users.mustChangePassword')}</Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAdd(false)}>{t('settings.users.cancel')}</Button>
-            <Button onClick={handleCreate} disabled={!form.username || !form.password}>{t('settings.users.create')}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Reset Password Dialog */}
-      <Dialog open={resetPwUserId !== null} onOpenChange={(v) => { if (!v) { setResetPwUserId(null); setResetPwValue(''); setResetPwMustChange(false); } }}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="text-sm">{t('settings.users.resetPasswordDialogTitle')}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">
-              {t('settings.users.setNewPasswordFor')} <span className="font-medium text-foreground">{userList.find((u: any) => u.id === resetPwUserId)?.username}</span>
-            </p>
-            <div>
-              <Label className="text-xs">{t('settings.users.newPassword')}</Label>
-              <Input type="password" value={resetPwValue} onChange={(e) => setResetPwValue(e.target.value)} placeholder={t('settings.users.minCharsPlaceholder')} />
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch checked={resetPwMustChange} onCheckedChange={setResetPwMustChange} />
-              <Label className="text-xs font-normal">{t('settings.users.mustChangePassword')}</Label>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => { setResetPwUserId(null); setResetPwValue(''); }}>{t('settings.users.cancel')}</Button>
-            <Button onClick={handleResetPassword} disabled={resetPwValue.length < 6 || updateUser.isPending}>
-              {updateUser.isPending ? t('settings.users.resetting') : t('settings.users.resetPassword')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <AddUserDialog open={showAdd} onOpenChange={setShowAdd} smtpEnabled={smtpEnabled} defaultLanguage={i18n.resolvedLanguage === 'en' ? 'en' : 'fr'} onSubmit={handleCreate} loading={createUser.isPending} />
+      <EditUserDialog user={editUser} onOpenChange={(o) => { if (!o) setEditUser(null); }} onSubmit={handleEdit} loading={updateUser.isPending} />
+      <ResetPasswordDialog user={resetUser} smtpEnabled={smtpEnabled} onOpenChange={(o) => { if (!o) setResetUser(null); }} onSubmit={handleResetPassword} loading={updateUser.isPending} />
 
       <DeleteUserDialog
         open={deleteId !== null}
-        username={userList.find((u: any) => u.id === deleteId)?.username ?? ''}
+        username={userList.find((u) => u.id === deleteId)?.username ?? ''}
         onOpenChange={(o) => { if (!o) setDeleteId(null); }}
         loading={deleteUser.isPending}
         onConfirm={() => { if (deleteId) deleteUser.mutate(deleteId, { onSuccess: () => { toast.success(t('settings.users.toastDeleted')); setDeleteId(null); } }); }}

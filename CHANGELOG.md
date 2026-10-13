@@ -5,6 +5,11 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+### Ajouté
+- **Utilisateurs** (admin) : adresse e-mail et langue de l'utilisateur à la création et dans une nouvelle boîte « Modifier » (nom affiché, e-mail, langue). La langue enregistrée s'applique à l'interface dès la connexion et aux e-mails ; l'utilisateur peut toujours la changer lui-même (sélecteur de l'en-tête ou Paramètres → Compte), le choix est stocké en base.
+- **Notifier par e-mail** à la création d'un compte et à la réinitialisation d'un mot de passe par l'admin : envoi, dans la langue de l'utilisateur, de l'adresse du site, de l'identifiant et du mot de passe, avec invitation à activer le MFA (présenté comme obligatoire si « Exiger le MFA » est coché) et mention « mot de passe temporaire » si « Changer le mot de passe à la prochaine connexion » est coché. Nécessite SMTP et une adresse ; le compte est créé même si l'envoi échoue (avertissement). Le mot de passe n'est jamais journalisé.
+- API : `POST /api/users` accepte `email`, `language`, `notify` et renvoie `emailSent` ; `PUT /api/users/:id` accepte `email`, `language` et `notify` (avec `password`, réponse 200 `{ emailSent }`) ; `GET /api/users` renvoie `email` et `language`.
+
 ### Corrigé
 - Page publique du devis : la boîte de confirmation (accepter / refuser) s'affichait en texte noir sur fond sombre, car le thème sombre par défaut de l'application s'appliquait aussi aux visiteurs sans compte. La page client est désormais toujours en thème clair.
 

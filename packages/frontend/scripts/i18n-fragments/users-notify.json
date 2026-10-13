@@ -1,0 +1,45 @@
+{
+  "namespace": "settings",
+  "keys": {
+    "en": {
+      "users": {
+        "email": "E-mail address",
+        "language": "Language",
+        "languageUnset": "Not set (browser language)",
+        "colLanguage": "Language",
+        "notify": "Notify by e-mail",
+        "notifyHint": "Sends the site address, username and password in the user's language, and invites them to enable MFA. If \"Change password at next sign-in\" is on, the e-mail says the password is temporary.",
+        "notifyNeedsEmail": "Enter an e-mail address to notify the user.",
+        "notifyNeedsSmtp": "SMTP is not configured (E-mail tab).",
+        "editTitle": "Edit user",
+        "editTooltip": "Edit (name, e-mail, language)",
+        "save": "Save",
+        "toastUpdated": "User updated",
+        "toastUpdateFailed": "Update failed",
+        "toastEmailSent": "E-mail sent to {{email}}",
+        "toastCreatedEmailFailed": "Account created, but the e-mail could not be sent: {{reason}}",
+        "toastResetEmailFailed": "Password reset, but the e-mail could not be sent: {{reason}}"
+      }
+    },
+    "fr": {
+      "users": {
+        "email": "Adresse e-mail",
+        "language": "Langue",
+        "languageUnset": "Non définie (langue du navigateur)",
+        "colLanguage": "Langue",
+        "notify": "Notifier par e-mail",
+        "notifyHint": "Envoie l'adresse du site, l'identifiant et le mot de passe dans la langue de l'utilisateur, et l'invite à activer le MFA. Si « Changer le mot de passe à la prochaine connexion » est coché, l'e-mail précise que le mot de passe est temporaire.",
+        "notifyNeedsEmail": "Saisissez une adresse e-mail pour notifier l'utilisateur.",
+        "notifyNeedsSmtp": "SMTP n'est pas configuré (onglet E-mail).",
+        "editTitle": "Modifier l'utilisateur",
+        "editTooltip": "Modifier (nom, e-mail, langue)",
+        "save": "Enregistrer",
+        "toastUpdated": "Utilisateur mis à jour",
+        "toastUpdateFailed": "Échec de la mise à jour",
+        "toastEmailSent": "E-mail envoyé à {{email}}",
+        "toastCreatedEmailFailed": "Compte créé, mais l'e-mail n'a pas pu être envoyé : {{reason}}",
+        "toastResetEmailFailed": "Mot de passe réinitialisé, mais l'e-mail n'a pas pu être envoyé : {{reason}}"
+      }
+    }
+  }
+}
