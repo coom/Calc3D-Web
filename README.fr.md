@@ -28,6 +28,7 @@ Portage web multi-utilisateur de [CalculateurPrix](../CalculateurPrix), le calcu
 - **Comptes** (lot 5) : adresse e-mail et langue par utilisateur, e-mail de bienvenue ou de réinitialisation avec les informations de connexion et une invitation à activer le MFA ; la langue s'applique à l'interface et aux e-mails.
 - **Paiement PayPal** (lot 5) : par utilisateur, pseudo PayPal.Me et/ou adresse ; à l'acceptation, le client choisit liquide ou PayPal et obtient un lien « Payer par PayPal » avec le montant. Désactivable à tout moment.
 - **Historique** (lot 5) : tri par date, projet, client, type ou statut ; interrupteur « Payée » sur les commandes.
+- **Image du devis** (lot 5) : « Inclure une image » sur la page Devis, depuis un fichier local ou une URL ; réduite dans le navigateur (1024 px, JPEG) et affichée sous le titre du devis, à l'impression et sur la page client, pour donner au client une idée du résultat.
 - **Indicateurs** (lot 5) : sur 7, 30, 90 ou 365 jours, commandes en cours, nouvelles et payées, devis acceptés / refusés / convertis avec l'écart par rapport à la période précédente, taux d'acceptation et de conversion, évolution par jour, semaine ou mois.
 
 ## Captures d'écran
@@ -82,7 +83,7 @@ pnpm lint && pnpm typecheck && pnpm test
 ## Données et confidentialité
 
 - Toutes les données sont dans une base SQLite, volume Docker `calc3d-data` (ou `packages/backend/data/` en local).
-- Le backend n'effectue **aucune connexion sortante** ; le frontend ne charge **aucune ressource externe** (polices système).
+- Le backend ne fait **aucun appel réseau sortant**, hormis SMTP vers l'hôte configuré par l'admin et le téléchargement d'une image d'illustration de devis à partir d'une URL saisie (adresses privées et locales refusées, images seulement, 10 Mo max) ; le frontend ne charge **aucune ressource externe** (polices système).
 - Mots de passe hachés (bcrypt), secrets TOTP chiffrés avec `ENCRYPTION_KEY`, jetons de rafraîchissement à rotation.
 
 ## Licence

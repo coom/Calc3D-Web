@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import i18n from '@/i18n';
@@ -8,7 +8,7 @@ import type { PublicQuoteDto } from '@calc3d/common';
 const get = vi.fn(); const respond = vi.fn();
 vi.mock('@/api/public.api', () => ({ publicApi: { get: (t: string) => get(t), respond: (t: string, b: unknown) => respond(t, b) } }));
 
-const dto: PublicQuoteDto = { projectName: 'Boîtier <b>', customer: 'ACME', kind: 'QUOTE', status: 'PENDING', dueDate: null, quantity: 1, comment: '', filamentLines: [{ material: 'PLA', weightG: 100, pricePerKg: 18, wastePct: 10 }], printTimeH: 5, energyKwh: 2.7, contingencyPct: 10, laborTotal: 12.31, fixedCosts: 0, costLines: null, costAfterContingency: null, unitPriceExclTax: 20, totalExclTax: 20, discountPct: 0, discountAmount: 0, shippingCost: 0, vatPct: 0, vatAmount: 0, roundingApplied: false, roundingAmount: 0, floorApplied: false, priceBeforeFloor: 20, finalPrice: 20, currencySymbol: '€', ownerDisplayName: 'Guillaume', clientResponse: null, clientRespondedAt: null, paymentMethod: null, paypal: null };
+const dto: PublicQuoteDto = { projectName: 'Boîtier <b>', customer: 'ACME', kind: 'QUOTE', status: 'PENDING', dueDate: null, quantity: 1, comment: '', filamentLines: [{ material: 'PLA', weightG: 100, pricePerKg: 18, wastePct: 10 }], printTimeH: 5, energyKwh: 2.7, contingencyPct: 10, laborTotal: 12.31, fixedCosts: 0, costLines: null, costAfterContingency: null, unitPriceExclTax: 20, totalExclTax: 20, discountPct: 0, discountAmount: 0, shippingCost: 0, vatPct: 0, vatAmount: 0, roundingApplied: false, roundingAmount: 0, floorApplied: false, priceBeforeFloor: 20, finalPrice: 20, currencySymbol: '€', ownerDisplayName: 'Guillaume', clientResponse: null, clientRespondedAt: null, paymentMethod: null, paypal: null, image: null };
 function renderPage(token = 'tok') {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(<QueryClientProvider client={qc}><MemoryRouter initialEntries={[`/q/${token}`]}><Routes><Route path="/q/:token" element={<PublicQuote />} /></Routes></MemoryRouter></QueryClientProvider>);
@@ -101,6 +101,16 @@ describe('page publique du devis', () => {
     renderPage();
     expect(await screen.findByText(/Paiement en liquide/)).toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /PayPal/ })).not.toBeInTheDocument();
+  });
+  it("image : affichée sous le titre quand le devis en a une, absente sinon", async () => {
+    get.mockResolvedValue({ ...dto, image: 'data:image/jpeg;base64,/9j/AAA' });
+    renderPage();
+    expect(await screen.findByRole('img', { name: 'Boîtier <b>' })).toHaveAttribute('src', 'data:image/jpeg;base64,/9j/AAA');
+    cleanup();
+    get.mockResolvedValue(dto);
+    renderPage('sans');
+    expect(await screen.findByText(/Devis de Guillaume/)).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
   it('429 ou erreur serveur : message « indisponible », pas « lien invalide » (I3)', async () => {
     get.mockRejectedValue({ response: { status: 429 } });

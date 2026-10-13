@@ -72,6 +72,14 @@ describe('API publique du devis', () => {
     expect((await request(app()).post(`/api/public/quotes/${TOKEN}/respond`).send({ decision: 'ACCEPTED', paymentMethod: 'CASH' })).body.paymentMethod).toBe('CASH');
     expect((await prisma.quote.findUnique({ where: { id: q.id } }))?.paymentMethod).toBe('CASH');
   });
+  it("image : la page client reçoit la data URL ; sans image, null", async () => {
+    const u = await createTestUser(prisma, 'alice');
+    const jpeg = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(12)]);
+    const q = await seedShared(u.id, { imageData: jpeg, imageMime: 'image/jpeg' });
+    expect((await request(app()).get(`/api/public/quotes/${TOKEN}`)).body.image).toBe(`data:image/jpeg;base64,${jpeg.toString('base64')}`);
+    await prisma.quote.update({ where: { id: q.id }, data: { imageData: null, imageMime: null } });
+    expect((await request(app()).get(`/api/public/quotes/${TOKEN}`)).body.image).toBeNull();
+  });
   it('devis converti en commande : toujours consultable, kind ORDER ; devis supprimé : 404', async () => {
     const u = await createTestUser(prisma, 'alice');
     const q = await seedShared(u.id, { kind: 'ORDER' });

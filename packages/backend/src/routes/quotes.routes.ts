@@ -4,6 +4,9 @@ import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, RESPONSE_FILTERS, QUOTE_SORT
 import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
 import { parseListPage, parseId } from '../utils/paging.js';
+import { parseImageDataUrl, imageDataUrl } from '../quotes/quote-image.js';
+import { fetchRemoteImage, type FetchDeps } from '../quotes/image-fetch.js';
+import rateLimit from 'express-rate-limit';
 import { getOrCreateSettings } from '../settings/settings-service.js';
 import { createQuoteSchema, quoteInputSchema } from '../quotes/quote.schema.js';
 import { buildQuoteData, toQuoteDto } from '../quotes/quote-mapper.js';
@@ -41,7 +44,8 @@ quotesRoutes.post('/', wrap(async (req, res) => {
   const { userId } = ownerScope(req);
   const settings = await currentPricingSettings(req);
   const result = safeCompute(settings, parsed.data);
-  const row = await req.app.locals.prisma.quote.create({ data: buildQuoteData(userId, parsed.data, settings, result) });
+  const image = parsed.data.image ? parseImageDataUrl(parsed.data.image) : null;
+  const row = await req.app.locals.prisma.quote.create({ data: { ...buildQuoteData(userId, parsed.data, settings, result), imageData: image, imageMime: image ? 'image/jpeg' : null } });
   res.status(201).json(toQuoteDto(row));
 }));
 
@@ -87,14 +91,27 @@ quotesRoutes.get('/', wrap(async (req, res) => {
   const where = { ...ownerScope(req), ...listFilters(req.query) };
   const orderBy = listOrder(req.query);
   const prisma = req.app.locals.prisma;
-  const [total, rows] = await Promise.all([prisma.quote.count({ where }), prisma.quote.findMany({ where, orderBy, skip, take: limit })]);
+  // `omit` : la liste ne charge jamais les images (hasImage vient de imageMime).
+  const [total, rows] = await Promise.all([prisma.quote.count({ where }), prisma.quote.findMany({ where, orderBy, skip, take: limit, omit: { imageData: true } })]);
   res.json({ items: rows.map(toQuoteDto), total, page, limit });
+}));
+
+/**
+ * POST /image/fetch { url } : le serveur télécharge l'image (garde-fous anti-SSRF dans image-fetch.ts) et la renvoie
+ * telle quelle en data URL ; le navigateur la réduit ensuite comme un fichier local. Dépendances injectables en test.
+ */
+const imageFetchLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false, message: { error: 'Too many requests' } });
+quotesRoutes.post('/image/fetch', imageFetchLimiter, wrap(async (req, res) => {
+  const url = req.body?.url;
+  if (typeof url !== 'string' || url.length === 0 || url.length > 2048) throw new AppError(400, 'Invalid URL', undefined, 'validation');
+  const { mime, data } = await fetchRemoteImage(url, req.app.locals.imageFetchDeps as FetchDeps | undefined);
+  res.json({ dataUrl: imageDataUrl(data, mime) });
 }));
 
 quotesRoutes.get('/:id', wrap(async (req, res) => {
   const row = await req.app.locals.prisma.quote.findFirst({ where: { id: parseId(req.params.id), ...ownerScope(req) } });
   if (!row) throw new AppError(404, 'Quote not found');
-  res.json(toQuoteDto(row));
+  res.json(toQuoteDto(row, true));
 }));
 
 /** Recalcul avec l'instantané du devis (tarifs de sa création) ; ?useCurrentSettings=1 remplace l'instantané par les paramètres courants. */
@@ -109,7 +126,9 @@ quotesRoutes.put('/:id', wrap(async (req, res) => {
   const settings: PricingSettings = req.query.useCurrentSettings === '1' ? await currentPricingSettings(req) : (JSON.parse(existing.settingsSnapshot) as PricingSettings);
   const result = safeCompute(settings, parsed.data);
   const { userId: _keep, ...data } = buildQuoteData(scope.userId, parsed.data, settings, result);
-  const row = await prisma.quote.update({ where: { id, ...scope }, data });
+  // Image : absente = inchangée, null = retirée, chaîne = remplacée.
+  const img = parsed.data.image === undefined ? {} : parsed.data.image === null ? { imageData: null, imageMime: null } : { imageData: parseImageDataUrl(parsed.data.image), imageMime: 'image/jpeg' };
+  const row = await prisma.quote.update({ where: { id, ...scope }, data: { ...data, ...img } });
   res.json(toQuoteDto(row));
 }));
 

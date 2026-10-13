@@ -1,0 +1,51 @@
+{
+  "namespace": "quote",
+  "keys": {
+    "en": {
+      "image": {
+        "title": "Image",
+        "include": "Include an image",
+        "hint": "Shown under the quote title (reduced to 1024 px, proportions kept) so the customer gets an idea of the result.",
+        "browse": "Browse…",
+        "urlLabel": "Image address (URL)",
+        "urlPlaceholder": "https://…",
+        "fetch": "Fetch",
+        "fetching": "Fetching…",
+        "remove": "Remove",
+        "previewAlt": "Quote image preview",
+        "errors": {
+          "prepare": "This image could not be read.",
+          "tooLarge": "Image still too heavy after reduction (400 KB maximum).",
+          "validation": "Invalid address.",
+          "blocked_address": "This address points to a private or local network: refused.",
+          "not_image": "This address does not return an image.",
+          "too_large": "Remote image too heavy (10 MB maximum).",
+          "fetch_failed": "Could not download from this address."
+        }
+      }
+    },
+    "fr": {
+      "image": {
+        "title": "Image",
+        "include": "Inclure une image",
+        "hint": "Affichée sous le titre du devis (réduite à 1024 px, proportions conservées) pour donner au client une idée du résultat.",
+        "browse": "Parcourir…",
+        "urlLabel": "Adresse de l'image (URL)",
+        "urlPlaceholder": "https://…",
+        "fetch": "Récupérer",
+        "fetching": "Récupération…",
+        "remove": "Retirer",
+        "previewAlt": "Aperçu de l'image du devis",
+        "errors": {
+          "prepare": "Impossible de lire cette image.",
+          "tooLarge": "Image encore trop lourde après réduction (400 Ko maximum).",
+          "validation": "Adresse invalide.",
+          "blocked_address": "Cette adresse pointe vers un réseau privé ou local : refusée.",
+          "not_image": "Cette adresse ne renvoie pas une image.",
+          "too_large": "Image distante trop lourde (10 Mo maximum).",
+          "fetch_failed": "Téléchargement impossible depuis cette adresse."
+        }
+      }
+    }
+  }
+}

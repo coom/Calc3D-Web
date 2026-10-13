@@ -7,8 +7,10 @@ export interface QuoteFormState {
   quantity: string; lines: FilamentLineText[];
   printHours: string; printMinutes: string; prepHours: string; postHours: string; designHours: string; packagingHours: string;
   consumables: string; discountPct: string; shippingCost: string;
+  /** Data URL JPEG de l'image d'illustration (null = aucune) ; `imageDirty` : touchée depuis le chargement, donc envoyée. */
+  image: string | null; imageDirty: boolean;
 }
-type NumericField = Exclude<keyof QuoteFormState, 'projectName' | 'customer' | 'kind' | 'status' | 'dueDate' | 'comment' | 'lines'>;
+type NumericField = Exclude<keyof QuoteFormState, 'projectName' | 'customer' | 'kind' | 'status' | 'dueDate' | 'comment' | 'lines' | 'image' | 'imageDirty'>;
 export type QuoteFormError = NumericField | `lines.${number}.${keyof Omit<FilamentLineText, 'material'>}`;
 
 export const emptyLine = (material: string, pricePerKg = ''): FilamentLineText => ({ material, weightG: '0', pricePerKg, wastePct: '10' });
@@ -19,6 +21,7 @@ export function emptyQuoteForm(defaultMaterial: string, defaultPricePerKg = ''):
     quantity: '1', lines: [emptyLine(defaultMaterial, defaultPricePerKg)],
     printHours: '0', printMinutes: '0', prepHours: '0', postHours: '0', designHours: '0', packagingHours: '0',
     consumables: '0', discountPct: '0', shippingCost: '0',
+    image: null, imageDirty: false,
   };
 }
 
@@ -62,6 +65,7 @@ export function toCreateBody(f: QuoteFormState): CreateQuoteBody {
     ...input,
     projectName: f.projectName.trim(), customer: f.customer.trim(), kind: f.kind, status: f.status,
     dueDate: f.dueDate ? f.dueDate : null, comment: f.comment,
+    ...(f.imageDirty ? { image: f.image } : {}),
   };
 }
 
@@ -73,5 +77,6 @@ export function quoteFormFromDto(q: QuoteDto): QuoteFormState {
     quantity: s(q.quantity), lines: q.filamentLines.map((l) => ({ material: l.material, weightG: s(l.weightG), pricePerKg: s(l.pricePerKg), wastePct: s(l.wastePct) })),
     printHours: s(q.printHours), printMinutes: s(q.printMinutes), prepHours: s(q.prepHours), postHours: s(q.postHours), designHours: s(q.designHours), packagingHours: s(q.packagingHours),
     consumables: s(q.consumables), discountPct: s(q.discountPct), shippingCost: s(q.shippingCost),
+    image: q.image, imageDirty: false,
   };
 }

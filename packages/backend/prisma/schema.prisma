@@ -149,6 +149,8 @@ model Quote {
   paymentMethod      String?
   paidAt             DateTime?
   convertedAt        DateTime?
+  imageData          Bytes?
+  imageMime          String?
 
   projectName      String   @default("")
   customer         String   @default("")

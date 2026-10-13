@@ -6,7 +6,11 @@ export interface QuoteProjectFields {
   /** ISO yyyy-MM-dd ou null. */
   dueDate: string | null; comment: string;
 }
-export type CreateQuoteBody = QuoteProjectFields & QuoteInput;
+/**
+ * `image` : data URL JPEG préparée par le navigateur (1024 px max, ≤ 400 Ko). Absente = inchangée (mise à jour),
+ * null = retirée, chaîne = remplacée.
+ */
+export type CreateQuoteBody = QuoteProjectFields & QuoteInput & { image?: string | null };
 /** Partage client et réponse (lot 4). `shared` remplace le hash du jeton, jamais exposé. */
 export interface QuoteShareFields {
   shared: boolean; sharedAt: string | null;
@@ -22,6 +26,8 @@ export interface QuoteShareFields {
 export interface QuoteDto extends QuoteProjectFields, QuoteInput, QuoteResult, QuoteShareFields {
   id: number; createdAt: string; updatedAt: string; legacyId: string | null;
   settingsSnapshot: PricingSettings;
+  /** `image` (data URL JPEG) n'est renseignée que par le détail (`GET /:id`) ; la liste ne la charge jamais. */
+  hasImage: boolean; image: string | null;
 }
 export interface QuoteListQuery { q?: string; kind?: QuoteKind; status?: QuoteStatus; response?: ResponseFilter; sort?: QuoteSortKey; dir?: SortDir; page: number; limit: number }
 export interface QuotePage { items: QuoteDto[]; total: number; page: number; limit: number }

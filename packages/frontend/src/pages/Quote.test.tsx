@@ -10,6 +10,7 @@ vi.mock('@/api/settings.api', () => ({ settingsApi: { get: () => Promise.resolve
 vi.mock('@/api/materials.api', () => ({ materialsApi: { list: () => Promise.resolve([{ id: 1, name: 'PLA', pricePerKg: 18, sortOrder: 0 }, { id: 2, name: 'PETG', pricePerKg: 20, sortOrder: 1 }]) } }));
 vi.mock('@/api/quotes.api', () => ({ quotesApi: { create: (b: unknown) => create(b), get: (id: number) => get(id), update: (id: number, b: unknown, cur: boolean) => update(id, b, cur), markSeen: vi.fn(() => Promise.resolve({})), share: vi.fn(), unshare: vi.fn(), shareByEmail: vi.fn(), convert: vi.fn() } }));
 vi.mock('@/api/smtp.api', () => ({ smtpApi: { status: () => Promise.resolve({ enabled: false }) } }));
+vi.mock('@/lib/image-prepare', () => ({ prepareImage: () => Promise.resolve('data:image/jpeg;base64,/9j/AAA'), ImagePrepareError: class ImagePrepareError extends Error {} }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 function renderPage(initial = '/') {
@@ -55,8 +56,21 @@ describe('page Devis', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: /Exporter/ })).toBeEnabled());
   });
 
+  it("image incluse : le corps envoyé porte la data URL préparée ; devis chargé non touché : pas de champ image", async () => {
+    create.mockResolvedValue({ id: 43 });
+    renderPage();
+    await screen.findByLabelText(/Quantité/);
+    type(/Nom du projet/, 'Boîtier'); type(/Poids \(g\)/, '50');
+    fireEvent.click(screen.getByLabelText(/Inclure une image/));
+    fireEvent.change(screen.getByTestId('image-input'), { target: { files: [new File(['x'], 'p.png', { type: 'image/png' })] } });
+    await screen.findByRole('img', { name: /Aperçu/ });
+    fireEvent.click(screen.getByRole('button', { name: /Enregistrer dans l'historique/ }));
+    await waitFor(() => expect(create).toHaveBeenCalledTimes(1));
+    expect(create.mock.calls[0][0].image).toBe('data:image/jpeg;base64,/9j/AAA');
+  });
+
   const loaded = {
-    id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '2026-10-01T10:00:00Z', legacyId: null, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null, paidAt: null, convertedAt: null,
+    id: 7, createdAt: '2026-10-01T10:00:00Z', updatedAt: '2026-10-01T10:00:00Z', legacyId: null, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null, paidAt: null, convertedAt: null, hasImage: false, image: null,
     projectName: 'Ancien', customer: 'ACME', kind: 'QUOTE', status: 'PENDING', dueDate: null, comment: '',
     filamentLines: [{ material: 'PLA', weightG: 100, pricePerKg: 18, wastePct: 10 }],
     printHours: 5, printMinutes: 0, prepHours: 1, postHours: 0.5, designHours: 2, packagingHours: 0.25,

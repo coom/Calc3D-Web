@@ -35,4 +35,6 @@ export const createQuoteSchema = quoteInputSchema.extend({
     return !Number.isNaN(d.getTime()) && d.toISOString().startsWith(s);
   }, 'dueDate must be a valid calendar date').nullable(),
   comment: z.string().max(2000),
+  // Data URL JPEG préparée par le navigateur (≤ 400 Ko → ≤ ~547 Ko encodée) ; validée en profondeur par parseImageDataUrl.
+  image: z.string().max(600_000).nullable().optional(),
 }).strict();

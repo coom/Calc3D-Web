@@ -29,7 +29,7 @@ async function findShared(prisma: PrismaClient, token: string): Promise<Quote> {
 
 async function publicDto(prisma: PrismaClient, row: Quote): Promise<PublicQuoteDto> {
   const [settings, owner] = await Promise.all([getOrCreateSettingsRow(prisma, row.userId), prisma.user.findUnique({ where: { id: row.userId }, select: { displayName: true } })]);
-  return toPublicQuoteDto(toQuoteDto(row), { showCostBreakdown: settings.pdfShowCostBreakdown, currencySymbol: settings.currencySymbol, ownerDisplayName: owner?.displayName ?? '', paypal: toPublicPaypal(settings) });
+  return toPublicQuoteDto(toQuoteDto(row, true), { showCostBreakdown: settings.pdfShowCostBreakdown, currencySymbol: settings.currencySymbol, ownerDisplayName: owner?.displayName ?? '', paypal: toPublicPaypal(settings) });
 }
 
 publicRoutes.get('/quotes/:token', wrap(async (req, res) => {

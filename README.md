@@ -28,6 +28,7 @@ Multi-user web port of [CalculateurPrix](../CalculateurPrix), the 3D printing pr
 - **Accounts** (lot 5): e-mail address and language per user, welcome / password-reset e-mail with the sign-in details and an invitation to enable MFA, the language applying to the interface and e-mails.
 - **PayPal payment** (lot 5): per user, a PayPal.Me handle and/or address; when accepting, the customer chooses cash or PayPal and gets a "Pay with PayPal" link with the amount. Can be disabled at any time.
 - **History** (lot 5): sort by date, project, customer, type or status; "Paid" switch on orders.
+- **Quote image** (lot 5): "Include an image" on the quote page, from a local file or a URL; reduced in the browser (1024 px, JPEG) and shown under the quote title, on the printout and on the customer page, so the customer gets an idea of the result.
 - **Indicators** (lot 5): over 7, 30, 90 or 365 days, open orders, new and paid orders, quotes accepted / declined / converted with the change vs the previous period, acceptance and conversion rates, trend by day, week or month.
 
 ## Screenshots
@@ -82,7 +83,7 @@ pnpm lint && pnpm typecheck && pnpm test
 ## Data and privacy
 
 - All data lives in a SQLite database, Docker volume `calc3d-data` (or `packages/backend/data/` locally).
-- The backend makes **no outbound connection**; the frontend loads **no external resource** (system fonts).
+- The backend makes **no outbound connection**, except SMTP to the host configured by the admin and the download of a quote illustration from a URL you type in (private and local addresses refused, images only, 10 MB max); the frontend loads **no external resource** (system fonts).
 - Passwords are hashed (bcrypt), TOTP secrets encrypted with `ENCRYPTION_KEY`, refresh tokens rotate.
 
 ## License

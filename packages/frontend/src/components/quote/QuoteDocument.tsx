@@ -9,6 +9,7 @@ export const DOCUMENT_CSS = `
   .print-page { font-family: 'Segoe UI', Arial, sans-serif; color: #111827; background: #fff; margin: 40px; padding-bottom: 24px; max-width: 800px; }
   .print-page h1 { font-size: 22px; margin-bottom: 0; } .print-page h3 { font-size: 15px; margin: 18px 0 8px; }
   .print-page .sous-titre { color: #6B7280; font-size: 13px; margin: 2px 0 24px; }
+  .print-page .illustration { margin: 8px 0 20px; text-align: center; } .print-page .illustration img { max-width: 100%; height: 200px; object-fit: contain; }
   .print-page table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
   .print-page th, .print-page td { text-align: left; padding: 6px 10px; font-size: 13px; border-bottom: 1px solid #E5E7EB; }
   .print-page th { background: #F9FAFB; color: #6B7280; font-weight: 600; } .print-page td.montant { text-align: right; }
@@ -45,6 +46,7 @@ export function QuoteDocument({ data, generatedAt, toolbar }: { data: PublicQuot
       {toolbar && <div className="toolbar">{toolbar}</div>}
       <h1>{t('print.title', { name: q.projectName })}</h1>
       {generatedAt && <p className="sous-titre">{t('print.generated', { date: generatedAt.toLocaleString(loc) })}</p>}
+      {q.image && <div className="illustration"><img src={q.image} alt={q.projectName} /></div>}
       <table className="info-table"><tbody>
         <tr><td>{t('print.customer')}</td><td>{q.customer}</td></tr>
         <tr><td>{t('print.dueDate')}</td><td>{q.dueDate ? formatDate(q.dueDate, loc) : '—'}</td></tr>

@@ -16,6 +16,51 @@ const body: CreateQuoteBody = {
   quantity: 1, consumables: 0, discountPct: 0, shippingCost: 0,
 };
 
+const JPEG = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(60)]);
+const IMG = `data:image/jpeg;base64,${JPEG.toString('base64')}`;
+const IMG2 = `data:image/jpeg;base64,${Buffer.concat([JPEG, Buffer.alloc(8, 1)]).toString('base64')}`;
+
+describe('/api/quotes image', () => {
+  it("création avec image : détail avec data URL et hasImage ; liste sans l'image ; mise à jour sans le champ conserve, null retire, chaîne remplace", async () => {
+    const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);
+    const c = await request(app).post('/api/quotes').send({ ...body, image: IMG });
+    expect(c.status).toBe(201); expect(c.body.hasImage).toBe(true);
+    const id = c.body.id;
+    const d = await request(app).get(`/api/quotes/${id}`);
+    expect(d.body.image).toBe(IMG); expect(d.body.hasImage).toBe(true);
+    const list = await request(app).get('/api/quotes');
+    expect(list.body.items[0]).toMatchObject({ hasImage: true, image: null }); expect(JSON.stringify(list.body)).not.toContain('base64');
+    expect((await request(app).put(`/api/quotes/${id}`).send(body)).status).toBe(200);
+    expect((await request(app).get(`/api/quotes/${id}`)).body.image).toBe(IMG);
+    expect((await request(app).put(`/api/quotes/${id}`).send({ ...body, image: IMG2 })).status).toBe(200);
+    expect((await request(app).get(`/api/quotes/${id}`)).body.image).toBe(IMG2);
+    expect((await request(app).put(`/api/quotes/${id}`).send({ ...body, image: null })).status).toBe(200);
+    expect((await request(app).get(`/api/quotes/${id}`)).body).toMatchObject({ hasImage: false, image: null });
+  });
+  it('image invalide (PNG, octets non JPEG, trop grande) → 400 validation, rien enregistré', async () => {
+    const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);
+    for (const image of [`data:image/png;base64,${JPEG.toString('base64')}`, `data:image/jpeg;base64,${Buffer.from('GIF89a').toString('base64')}`, `data:image/jpeg;base64,${Buffer.concat([JPEG, Buffer.alloc(400 * 1024)]).toString('base64')}`]) {
+      const r = await request(app).post('/api/quotes').send({ ...body, image });
+      expect(r.status, image.slice(0, 30)).toBe(400); expect(r.body.code).toBe('validation');
+    }
+    expect(await prisma.quote.count()).toBe(0);
+  });
+  it("récupération d'une image par URL : le serveur télécharge via les dépendances injectées, renvoie une data URL ; adresse privée refusée ; URL invalide 400", async () => {
+    const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);
+    const png = Buffer.from([0x89, 0x50, 0x4e, 0x47]);
+    app.locals.imageFetchDeps = {
+      lookup: async (host: string) => [{ address: host === 'intranet.local' ? '10.0.0.5' : '203.0.113.10', family: 4 }],
+      fetchImpl: async () => new Response(png, { status: 200, headers: { 'content-type': 'image/png' } }),
+    };
+    const ok = await request(app).post('/api/quotes/image/fetch').send({ url: 'https://img.example.com/a.png' });
+    expect(ok.status).toBe(200); expect(ok.body).toEqual({ dataUrl: `data:image/png;base64,${png.toString('base64')}` });
+    const blocked = await request(app).post('/api/quotes/image/fetch').send({ url: 'http://intranet.local/a.png' });
+    expect(blocked.status).toBe(400); expect(blocked.body.code).toBe('blocked_address');
+    expect((await request(app).post('/api/quotes/image/fetch').send({ url: 'ftp://x/a.png' })).status).toBe(400);
+    expect((await request(app).post('/api/quotes/image/fetch').send({})).status).toBe(400);
+  });
+});
+
 describe('/api/quotes', () => {
   it('preview calcule avec les paramètres de l\'utilisateur sans rien enregistrer', async () => {
     const a = await createTestUser(prisma, 'a'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);

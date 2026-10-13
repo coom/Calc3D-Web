@@ -5,6 +5,9 @@ Le format s'inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/).
 
 ## [Non publié]
 
+### Ajouté
+- **Image du devis** : carte « Image » sur la page Devis avec la case « Inclure une image », qui active Parcourir (fichier local) et un champ URL « Récupérer » (le serveur télécharge, avec garde-fous anti-SSRF : http(s) seulement, adresses privées et locales refusées, redirections revalidées, 10 s, images seulement, 10 Mo). L'image est réduite dans le navigateur (1024 px, JPEG ≤ 400 Ko), enregistrée avec le devis et affichée sous le titre (hauteur fixe, proportions conservées) sur l'aperçu, l'impression et la page client. API : `CreateQuoteBody.image` (data URL ; absente = inchangée, null = retirée), `POST /api/quotes/image/fetch`, `QuoteDto.hasImage` / `image`, `PublicQuoteDto.image`. Invariant réseau mis à jour (seconde exception encadrée).
+
 ### Corrigé
 - **IP client derrière un proxy** : le journal de connexions, l'audit et les limiteurs lisaient l'adresse du dernier proxy (WAF, par exemple SafeLine) au lieu de celle du client, car le backend ne faisait confiance qu'à un saut (le nginx intégré). Nouveau réglage admin « Proxy inverse / IP client » (Paramètres → Utilisateurs) : nombre de sauts de proxy de confiance, appliqué à chaud, avec l'IP détectée pour la requête en cours afin d'ajuster. Même solution que TS6-Manager. API : `GET/PUT /api/proxy` (admin, audité `proxy.update`).
 

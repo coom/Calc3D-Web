@@ -432,6 +432,27 @@
       "updated": "Devis mis à jour.",
       "notFound": "Ce devis n'existe pas ou ne t'appartient pas.",
       "loadError": "Impossible de charger ce devis (erreur réseau ou serveur)."
+    },
+    "image": {
+      "title": "Image",
+      "include": "Inclure une image",
+      "hint": "Affichée sous le titre du devis (réduite à 1024 px, proportions conservées) pour donner au client une idée du résultat.",
+      "browse": "Parcourir…",
+      "urlLabel": "Adresse de l'image (URL)",
+      "urlPlaceholder": "https://…",
+      "fetch": "Récupérer",
+      "fetching": "Récupération…",
+      "remove": "Retirer",
+      "previewAlt": "Aperçu de l'image du devis",
+      "errors": {
+        "prepare": "Impossible de lire cette image.",
+        "tooLarge": "Image encore trop lourde après réduction (400 Ko maximum).",
+        "validation": "Adresse invalide.",
+        "blocked_address": "Cette adresse pointe vers un réseau privé ou local : refusée.",
+        "not_image": "Cette adresse ne renvoie pas une image.",
+        "too_large": "Image distante trop lourde (10 Mo maximum).",
+        "fetch_failed": "Téléchargement impossible depuis cette adresse."
+      }
     }
   },
   "history": {

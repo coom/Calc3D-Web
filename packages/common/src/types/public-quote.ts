@@ -15,6 +15,8 @@ export interface PublicQuoteDto {
   currencySymbol: string; ownerDisplayName: string;
   clientResponse: ClientResponse | null; clientRespondedAt: string | null;
   paymentMethod: PaymentMethod | null;
+  /** Image d'illustration (data URL JPEG) choisie par le propriétaire, affichée sous le titre ; null sans image. */
+  image: string | null;
   /** Coordonnées PayPal du propriétaire, seulement s'il a activé le paiement PayPal ; sinon null et aucun choix n'est proposé. */
   paypal: PublicPaypalInfo | null;
 }

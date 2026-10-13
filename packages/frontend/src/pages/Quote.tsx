@@ -18,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilamentGrid } from '@/components/quote/FilamentGrid';
 import { GcodeImportButton } from '@/components/quote/GcodeImportButton';
+import { QuoteImageCard } from '@/components/quote/QuoteImageCard';
 import { ClientShareCard } from '@/components/quote/ClientShareCard';
 import { PaidToggle } from '@/components/quote/PaidToggle';
 import { QuoteResultPanel } from '@/components/quote/QuoteResultPanel';
@@ -128,6 +129,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
               {numField('quantity', t('quote.project.quantity'))}
             </CardContent>
           </Card>
+          <QuoteImageCard image={form.image} onChange={(image) => set({ image, imageDirty: true })} />
           <Card>
             <CardHeader><CardTitle className="text-sm font-medium">{t('quote.filament.title')}</CardTitle></CardHeader>
             <CardContent><FilamentGrid lines={form.lines} materials={materials} errors={errors} onChange={(lines) => set({ lines })} /></CardContent>

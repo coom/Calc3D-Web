@@ -432,6 +432,27 @@
       "updated": "Quote updated.",
       "notFound": "This quote does not exist or is not yours.",
       "loadError": "Could not load this quote (network or server error)."
+    },
+    "image": {
+      "title": "Image",
+      "include": "Include an image",
+      "hint": "Shown under the quote title (reduced to 1024 px, proportions kept) so the customer gets an idea of the result.",
+      "browse": "Browse…",
+      "urlLabel": "Image address (URL)",
+      "urlPlaceholder": "https://…",
+      "fetch": "Fetch",
+      "fetching": "Fetching…",
+      "remove": "Remove",
+      "previewAlt": "Quote image preview",
+      "errors": {
+        "prepare": "This image could not be read.",
+        "tooLarge": "Image still too heavy after reduction (400 KB maximum).",
+        "validation": "Invalid address.",
+        "blocked_address": "This address points to a private or local network: refused.",
+        "not_image": "This address does not return an image.",
+        "too_large": "Remote image too heavy (10 MB maximum).",
+        "fetch_failed": "Could not download from this address."
+      }
     }
   },
   "history": {

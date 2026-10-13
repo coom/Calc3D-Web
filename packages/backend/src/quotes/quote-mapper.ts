@@ -1,4 +1,5 @@
 import type { Quote } from '../../generated/prisma/index.js';
+import { imageDataUrl } from './quote-image.js';
 import type { CreateQuoteBody, PricingSettings, QuoteResult, QuoteDto, QuoteKind, QuoteStatus, FilamentLine, FinanceQuoteRow, ClientResponse, PaymentMethod } from '@calc3d/common';
 
 /** Données Prisma d'un devis à partir des entrées validées, de l'instantané de paramètres et du résultat serveur. */
@@ -25,9 +26,15 @@ export function buildQuoteData(userId: number, body: CreateQuoteBody, settings: 
   };
 }
 
-/** DTO propriétaire. Le hash du jeton de partage n'est jamais exposé : seul `shared` l'indique. */
-export function toQuoteDto(row: Quote): QuoteDto {
-  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, paymentMethod, paidAt, convertedAt, ...rest } = row;
+/** Ligne Prisma avec ou sans la colonne `imageData` (la liste l'omet pour ne pas charger les images). */
+export type QuoteRow = Omit<Quote, 'imageData'> & { imageData?: Uint8Array | null };
+
+/**
+ * DTO propriétaire. Le hash du jeton de partage n'est jamais exposé : seul `shared` l'indique. L'image n'est
+ * encodée (data URL) que sur demande (`withImage`, détail et page client) ; la liste renvoie seulement `hasImage`.
+ */
+export function toQuoteDto(row: QuoteRow, withImage = false): QuoteDto {
+  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, paymentMethod, paidAt, convertedAt, imageData, imageMime, ...rest } = row;
   return {
     ...rest,
     kind: kind as QuoteKind, status: status as QuoteStatus,
@@ -40,6 +47,7 @@ export function toQuoteDto(row: Quote): QuoteDto {
     responseSeenAt: responseSeenAt?.toISOString() ?? null,
     paymentMethod: (paymentMethod as PaymentMethod | null) ?? null,
     paidAt: paidAt?.toISOString() ?? null, convertedAt: convertedAt?.toISOString() ?? null,
+    hasImage: imageMime !== null, image: withImage && imageData && imageMime ? imageDataUrl(Buffer.from(imageData), imageMime) : null,
   };
 }
 
