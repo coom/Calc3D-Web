@@ -4,17 +4,10 @@ import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
 import { toFinanceRow } from '../quotes/quote-mapper.js';
 import { toFinancePurchaseRow } from '../purchases/purchase-mapper.js';
+import { parseTimeZone } from '../utils/time-zone.js';
 
 export const financesRoutes: Router = Router();
 const wrap = (fn: (req: Request, res: Response) => Promise<void>) => (req: Request, res: Response, next: NextFunction) => { fn(req, res).catch(next); };
-
-/** Fuseau IANA envoyé par le navigateur ; défaut UTC ; 400 si inconnu (Intl refuse les noms invalides). */
-function parseTimeZone(raw: unknown): string {
-  if (raw === undefined) return 'UTC';
-  const tz = String(raw);
-  if (tz.length > 64) throw new AppError(400, 'Invalid tz');
-  try { new Intl.DateTimeFormat('en-US', { timeZone: tz }); return tz; } catch { throw new AppError(400, 'Invalid tz'); }
-}
 
 /** Les montants viennent des colonnes enregistrées des commandes ; le filtrage par période est fait par computeFinances dans le fuseau du navigateur. */
 financesRoutes.get('/', wrap(async (req, res) => {

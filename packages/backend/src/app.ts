@@ -21,6 +21,7 @@ import { publicRoutes } from './routes/public.routes.js';
 import { smtpRoutes } from './routes/smtp.routes.js';
 import { purchasesRoutes } from './routes/purchases.routes.js';
 import { financesRoutes } from './routes/finances.routes.js';
+import { indicatorsRoutes } from './routes/indicators.routes.js';
 import { importRoutes } from './routes/import.routes.js';
 
 export function createApp(): Express {
@@ -58,6 +59,7 @@ export function createApp(): Express {
   app.use('/api/account', accountRoutes);
   app.use('/api/purchases', purchasesRoutes);
   app.use('/api/finances', financesRoutes);
+  app.use('/api/indicators', indicatorsRoutes);
   app.use('/api/import', importRoutes);
   app.use('/api/smtp', smtpRoutes);
 

@@ -18,6 +18,7 @@ const Quote = lazy(() => import('@/pages/Quote'));
 const History = lazy(() => import('@/pages/History'));
 const Purchases = lazy(() => import('@/pages/Purchases'));
 const Finances = lazy(() => import('@/pages/Finances'));
+const Indicators = lazy(() => import('@/pages/Indicators'));
 const QuotePrint = lazy(() => import('@/pages/QuotePrint'));
 const PublicQuote = lazy(() => import('@/pages/PublicQuote'));
 
@@ -43,6 +44,7 @@ export function App() {
               <Route path="/history" element={<History />} />
               <Route path="/purchases" element={<Purchases />} />
               <Route path="/finances" element={<Finances />} />
+              <Route path="/indicators" element={<Indicators />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/audit" element={<Audit />} />
               <Route path="/settings" element={<Settings />} />

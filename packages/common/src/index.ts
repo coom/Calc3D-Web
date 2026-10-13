@@ -16,3 +16,5 @@ export * from './types/public-quote.js';
 export * from './types/smtp.js';
 export * from './quotes/to-public-quote.js';
 export * from './quotes/paypal-link.js';
+export * from './indicators/types.js';
+export * from './indicators/compute-indicators.js';

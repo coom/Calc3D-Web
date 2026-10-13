@@ -24,7 +24,8 @@
     "quote": "Devis",
     "history": "Historique",
     "purchases": "Achats",
-    "finances": "Finances"
+    "finances": "Finances",
+    "indicators": "Indicateurs"
   },
   "notFound": {
     "heading": "Page introuvable",
@@ -751,5 +752,46 @@
     "copied": "Adresse copiée.",
     "openPaypal": "Ouvrir PayPal pour envoyer le paiement",
     "ownerLine": "Paiement : {{method}}"
+  },
+  "indicators": {
+    "title": "Indicateurs",
+    "subtitle": "Activité des devis et des commandes sur la période choisie.",
+    "period": "Période",
+    "periods": {
+      "7": "7 derniers jours",
+      "30": "30 derniers jours",
+      "90": "90 derniers jours",
+      "365": "12 derniers mois"
+    },
+    "loadError": "Impossible de charger les indicateurs.",
+    "kpi": {
+      "openOrders": "Commandes en cours",
+      "openOrdersSub": "Non terminées et non payées, à ce jour",
+      "newOrders": "Nouvelles commandes",
+      "paidOrders": "Commandes payées",
+      "accepted": "Devis acceptés",
+      "refused": "Devis refusés",
+      "converted": "Devis convertis",
+      "acceptanceRate": "Taux d'acceptation : {{pct}} %",
+      "conversionRate": "Taux de conversion : {{pct}} %",
+      "noRate": "Pas encore de taux",
+      "deltaUp": "+{{n}} vs période précédente",
+      "deltaDown": "−{{n}} vs période précédente",
+      "deltaSame": "= période précédente"
+    },
+    "charts": {
+      "quotes": "Devis",
+      "orders": "Commandes",
+      "empty": "Aucune activité sur la période.",
+      "table": "Voir les données",
+      "bucket": "Période"
+    },
+    "series": {
+      "accepted": "Acceptés",
+      "refused": "Refusés",
+      "converted": "Convertis",
+      "newOrders": "Nouvelles",
+      "paidOrders": "Payées"
+    }
   }
 }

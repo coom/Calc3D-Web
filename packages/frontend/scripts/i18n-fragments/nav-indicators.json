@@ -1,0 +1,7 @@
+{
+  "namespace": "nav",
+  "keys": {
+    "en": { "indicators": "Indicators" },
+    "fr": { "indicators": "Indicateurs" }
+  }
+}

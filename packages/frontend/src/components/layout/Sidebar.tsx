@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FileText, History, ShoppingCart, PieChart, BookOpenText, ClipboardList, Settings, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { FileText, History, ShoppingCart, PieChart, Gauge, BookOpenText, ClipboardList, Settings, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/use-sidebar';
@@ -16,6 +16,7 @@ const navSections: { label: string; adminOnly?: boolean; items: NavItem[] }[] = 
   { label: 'nav.work', items: [
     { to: '/', icon: FileText, label: 'nav.quote' },
     { to: '/history', icon: History, label: 'nav.history' },
+    { to: '/indicators', icon: Gauge, label: 'nav.indicators' },
     { to: '/purchases', icon: ShoppingCart, label: 'nav.purchases' },
     { to: '/finances', icon: PieChart, label: 'nav.finances' },
   ] },

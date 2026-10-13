@@ -24,7 +24,8 @@
     "quote": "Quote",
     "history": "History",
     "purchases": "Purchases",
-    "finances": "Finances"
+    "finances": "Finances",
+    "indicators": "Indicators"
   },
   "notFound": {
     "heading": "Page Not Found",
@@ -751,5 +752,46 @@
     "copied": "Address copied.",
     "openPaypal": "Open PayPal to send the payment",
     "ownerLine": "Payment: {{method}}"
+  },
+  "indicators": {
+    "title": "Indicators",
+    "subtitle": "Quotes and orders activity over the selected period.",
+    "period": "Period",
+    "periods": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "90": "Last 90 days",
+      "365": "Last 12 months"
+    },
+    "loadError": "Could not load the indicators.",
+    "kpi": {
+      "openOrders": "Open orders",
+      "openOrdersSub": "Not finished and not paid, as of today",
+      "newOrders": "New orders",
+      "paidOrders": "Orders paid",
+      "accepted": "Quotes accepted",
+      "refused": "Quotes declined",
+      "converted": "Quotes converted",
+      "acceptanceRate": "Acceptance rate: {{pct}} %",
+      "conversionRate": "Conversion rate: {{pct}} %",
+      "noRate": "No rate yet",
+      "deltaUp": "+{{n}} vs previous period",
+      "deltaDown": "−{{n}} vs previous period",
+      "deltaSame": "= previous period"
+    },
+    "charts": {
+      "quotes": "Quotes",
+      "orders": "Orders",
+      "empty": "No activity over the period.",
+      "table": "Show data",
+      "bucket": "Period"
+    },
+    "series": {
+      "accepted": "Accepted",
+      "refused": "Declined",
+      "converted": "Converted",
+      "newOrders": "New",
+      "paidOrders": "Paid"
+    }
   }
 }
