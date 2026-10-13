@@ -88,6 +88,16 @@ describe('/api/quotes', () => {
     const p2 = await request(appA).get('/api/quotes?limit=3&page=2');
     expect(p2.body.items).toHaveLength(1); expect(p2.body.page).toBe(2);
     expect((await request(appA).get('/api/quotes?limit=500')).status).toBe(400);
+    // Tri : projet, client, type, statut, date ; sens asc / desc ; valeur inconnue 400.
+    const names = async (qs: string) => (await request(appA).get(`/api/quotes?${qs}`)).body.items.map((x: { projectName: string }) => x.projectName);
+    expect(await names('sort=projectName&dir=asc')).toEqual(['Alpha 100%', 'Alpha 100x', 'Beta_2', 'Gamma']);
+    expect(await names('sort=projectName&dir=desc')).toEqual(['Gamma', 'Beta_2', 'Alpha 100x', 'Alpha 100%']);
+    expect((await names('sort=customer&dir=asc')).slice(0, 2).sort()).toEqual(['Alpha 100%', 'Gamma']);
+    expect((await names('sort=kind&dir=asc'))[0]).toBe('Gamma');
+    expect((await names('sort=status&dir=asc'))[0]).toBe('Beta_2');
+    expect(await names('sort=createdAt&dir=asc')).toEqual(['Alpha 100%', 'Alpha 100x', 'Beta_2', 'Gamma']);
+    expect((await request(appA).get('/api/quotes?sort=finalPrice')).status).toBe(400);
+    expect((await request(appA).get('/api/quotes?sort=projectName&dir=up')).status).toBe(400);
   });
   it('lecture : propriétaire 200, autre utilisateur et admin 404, id invalide 400', async () => {
     const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b'); const admin = await createTestUser(prisma, 'root', 'admin');
@@ -124,6 +134,21 @@ describe('/api/quotes', () => {
     const r2 = await request(app).post(`/api/quotes/${id}/convert`);
     expect(r2.status).toBe(409); expect(r2.body.code).toBe('already_order');
     expect((await prisma.quote.findUnique({ where: { id } }))?.kind).toBe('ORDER');
+    expect(r1.body.convertedAt).not.toBeNull(); expect(r1.body.paidAt).toBeNull();
+  });
+  it('payée : commande marquée puis démarquée (date ISO), devis 409 not_order, autrui 404, corps invalide 400', async () => {
+    const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b'); const app = appAs(prisma, a, '/api/quotes', quotesRoutes);
+    const quoteId = (await request(app).post('/api/quotes').send(body)).body.id;
+    const orderId = (await request(app).post('/api/quotes').send({ ...body, kind: 'ORDER' })).body.id;
+    const r = await request(app).put(`/api/quotes/${quoteId}/paid`).send({ paid: true });
+    expect(r.status).toBe(409); expect(r.body.code).toBe('not_order');
+    expect((await request(app).put(`/api/quotes/${orderId}/paid`).send({ paid: 'yes' })).status).toBe(400);
+    expect((await request(appAs(prisma, b, '/api/quotes', quotesRoutes)).put(`/api/quotes/${orderId}/paid`).send({ paid: true })).status).toBe(404);
+    const on = await request(app).put(`/api/quotes/${orderId}/paid`).send({ paid: true });
+    expect(on.status).toBe(200); expect(on.body.paidAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect((await request(app).get(`/api/quotes/${orderId}`)).body.paidAt).toBe(on.body.paidAt);
+    const off = await request(app).put(`/api/quotes/${orderId}/paid`).send({ paid: false });
+    expect(off.status).toBe(200); expect(off.body.paidAt).toBeNull();
   });
   it('suppression : autrui 404 et ligne intacte, propriétaire 204 et ligne disparue', async () => {
     const a = await createTestUser(prisma, 'a'); const b = await createTestUser(prisma, 'b'); const admin = await createTestUser(prisma, 'root', 'admin');

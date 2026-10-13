@@ -27,7 +27,7 @@ export function buildQuoteData(userId: number, body: CreateQuoteBody, settings: 
 
 /** DTO propriétaire. Le hash du jeton de partage n'est jamais exposé : seul `shared` l'indique. */
 export function toQuoteDto(row: Quote): QuoteDto {
-  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, paymentMethod, ...rest } = row;
+  const { userId: _userId, filamentLines, settingsSnapshot, dueDate, createdAt, updatedAt, kind, status, shareTokenHash, sharedAt, clientResponse, clientRespondedAt, responseSeenAt, paymentMethod, paidAt, convertedAt, ...rest } = row;
   return {
     ...rest,
     kind: kind as QuoteKind, status: status as QuoteStatus,
@@ -39,6 +39,7 @@ export function toQuoteDto(row: Quote): QuoteDto {
     clientResponse: (clientResponse as ClientResponse | null) ?? null, clientRespondedAt: clientRespondedAt?.toISOString() ?? null,
     responseSeenAt: responseSeenAt?.toISOString() ?? null,
     paymentMethod: (paymentMethod as PaymentMethod | null) ?? null,
+    paidAt: paidAt?.toISOString() ?? null, convertedAt: convertedAt?.toISOString() ?? null,
   };
 }
 

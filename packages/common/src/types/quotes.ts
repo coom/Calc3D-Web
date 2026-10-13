@@ -1,4 +1,4 @@
-import type { ClientResponse, PaymentMethod, QuoteKind, QuoteStatus, ResponseFilter } from '../constants.js';
+import type { ClientResponse, PaymentMethod, QuoteKind, QuoteSortKey, QuoteStatus, ResponseFilter, SortDir } from '../constants.js';
 import type { QuoteInput, QuoteResult, PricingSettings } from '../pricing/types.js';
 
 export interface QuoteProjectFields {
@@ -14,10 +14,14 @@ export interface QuoteShareFields {
   responseSeenAt: string | null; clientEmail: string;
   /** Choisi par le client avec l'acceptation ; null si refusé, sans réponse ou PayPal non proposé. */
   paymentMethod: PaymentMethod | null;
+  /** Commande marquée payée par le propriétaire (`PUT /:id/paid`). */
+  paidAt: string | null;
+  /** Posé par la conversion devis → commande ; null pour une commande créée directement ou convertie avant cette colonne. */
+  convertedAt: string | null;
 }
 export interface QuoteDto extends QuoteProjectFields, QuoteInput, QuoteResult, QuoteShareFields {
   id: number; createdAt: string; updatedAt: string; legacyId: string | null;
   settingsSnapshot: PricingSettings;
 }
-export interface QuoteListQuery { q?: string; kind?: QuoteKind; status?: QuoteStatus; response?: ResponseFilter; page: number; limit: number }
+export interface QuoteListQuery { q?: string; kind?: QuoteKind; status?: QuoteStatus; response?: ResponseFilter; sort?: QuoteSortKey; dir?: SortDir; page: number; limit: number }
 export interface QuotePage { items: QuoteDto[]; total: number; page: number; limit: number }

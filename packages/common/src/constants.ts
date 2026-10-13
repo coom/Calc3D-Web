@@ -23,6 +23,11 @@ export type ClientResponse = (typeof CLIENT_RESPONSES)[number];
 /** Moyen de paiement choisi par le client à l'acceptation (si le propriétaire propose PayPal). */
 export const PAYMENT_METHODS = ['CASH', 'PAYPAL'] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+/** Colonnes de tri de l'historique (`GET /api/quotes?sort=&dir=`). */
+export const QUOTE_SORT_KEYS = ['createdAt', 'projectName', 'customer', 'kind', 'status'] as const;
+export type QuoteSortKey = (typeof QUOTE_SORT_KEYS)[number];
+export const SORT_DIRS = ['asc', 'desc'] as const;
+export type SortDir = (typeof SORT_DIRS)[number];
 /** Filtre « réponse client » de la liste des devis : PENDING = partagé sans réponse, NONE = non partagé. */
 export const RESPONSE_FILTERS = ['ACCEPTED', 'REFUSED', 'PENDING', 'NONE'] as const;
 export type ResponseFilter = (typeof RESPONSE_FILTERS)[number];

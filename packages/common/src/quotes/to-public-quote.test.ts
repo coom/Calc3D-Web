@@ -8,7 +8,7 @@ const quote: QuoteDto = {
   settingsSnapshot: { ...DEFAULT_PRICING_SETTINGS, contingencyPct: 10, vatPct: 20, pricingMode: 'TARGET_MARGIN', pricingPct: 30 },
   filamentWeightG: 100, filamentCost: 1.98, printTimeH: 5, energyKwh: 2.7, electricityCost: 0.53, laborPrep: 12.31, laborPost: 0, laborDesign: 60, laborPackaging: 3.08, depreciation: 2.26, maintenance: 0.11, wear: 1, fixedCosts: 1.5, subtotal: 82.77, contingency: 8.28, costAfterContingency: 91.05,
   unitPriceExclTax: 130.07, totalExclTax: 260.14, discountAmount: 26.01, vatAmount: 48.13, priceBeforeFloor: 288.76, floorApplied: false, priceBeforeRounding: 288.76, roundingAmount: 0.24, roundingApplied: true, finalPrice: 289, pricePerGram: 1.3, pricePerHour: 26,
-  shared: true, sharedAt: '2026-10-02T00:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-03T00:00:00Z', clientComment: 'ok', responseSeenAt: null, clientEmail: 'c@x.fr', paymentMethod: 'PAYPAL',
+  shared: true, sharedAt: '2026-10-02T00:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-03T00:00:00Z', clientComment: 'ok', responseSeenAt: null, clientEmail: 'c@x.fr', paymentMethod: 'PAYPAL', paidAt: null, convertedAt: null,
 };
 const FORBIDDEN = ['paypalEnabled', 'settingsSnapshot', 'pricingMode', 'pricingPct', 'userId', 'legacyId', 'id', 'clientEmail', 'responseSeenAt', 'clientComment', 'pricePerGram', 'pricePerHour', 'subtotal', 'contingency', 'priceBeforeRounding'];
 

@@ -459,7 +459,23 @@
     "deleteTitle": "Supprimer le devis",
     "deleteDescription": "Supprimer définitivement le devis « {{name}} » de l'historique ?",
     "deleted": "Devis supprimé.",
-    "actionFailed": "L'action a échoué."
+    "actionFailed": "L'action a échoué.",
+    "sort": {
+      "date": "Date",
+      "project": "Projet",
+      "customer": "Client",
+      "kind": "Type",
+      "status": "Statut",
+      "hint": "Cliquez sur un en-tête de colonne pour trier. Trié par date, les lignes sont regroupées par mois."
+    },
+    "paid": {
+      "label": "Payée",
+      "on": "Payée le {{date}}",
+      "off": "Non payée",
+      "toastOn": "Commande marquée payée",
+      "toastOff": "Commande marquée non payée",
+      "failed": "Impossible de modifier l'état de paiement"
+    }
   },
   "finances": {
     "title": "Finances",

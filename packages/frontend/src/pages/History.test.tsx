@@ -5,7 +5,8 @@ import i18n from '@/i18n';
 import History from './History';
 
 const list = vi.fn(); const convert = vi.fn(); const remove = vi.fn();
-vi.mock('@/api/quotes.api', () => ({ quotesApi: { list: (q: unknown) => list(q), convert: (id: number) => convert(id), remove: (id: number) => remove(id) } }));
+const setPaid = vi.fn();
+vi.mock('@/api/quotes.api', () => ({ quotesApi: { list: (q: unknown) => list(q), convert: (id: number) => convert(id), remove: (id: number) => remove(id), setPaid: (id: number, paid: boolean) => setPaid(id, paid) } }));
 vi.mock('@/api/settings.api', () => ({ settingsApi: { get: () => Promise.resolve({ currencySymbol: '€' }) } }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
@@ -19,7 +20,7 @@ function renderPage() {
 
 describe('page Historique', () => {
   beforeAll(async () => { await i18n.changeLanguage('fr'); });
-  beforeEach(() => { list.mockReset(); convert.mockReset(); remove.mockReset(); list.mockResolvedValue({ total: 2, page: 1, limit: 50, items: [item({ shared: true, sharedAt: '2026-10-04T10:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-05T10:00:00Z', clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null }), item({ id: 2, createdAt: '2026-09-15T10:00:00Z', projectName: 'Support', kind: 'ORDER', status: 'DONE' })] }); });
+  beforeEach(() => { list.mockReset(); convert.mockReset(); remove.mockReset(); list.mockResolvedValue({ total: 2, page: 1, limit: 50, items: [item({ shared: true, sharedAt: '2026-10-04T10:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-05T10:00:00Z', clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null, paidAt: null, convertedAt: null }), item({ id: 2, createdAt: '2026-09-15T10:00:00Z', projectName: 'Support', kind: 'ORDER', status: 'DONE' })] }); });
 
   it('groupe par mois, affiche les lignes, replie un mois', async () => {
     renderPage();
@@ -61,6 +62,33 @@ describe('page Historique', () => {
     await waitFor(() => expect(remove).toHaveBeenCalledWith(1));
     fireEvent.click(screen.getAllByRole('button', { name: /Charger dans Devis/ })[0]);
     expect(await screen.findByText('QUOTE PAGE')).toBeInTheDocument();
+  });
+  it('tri par en-tête : projet croissant puis décroissant envoie sort/dir et passe en liste plate ; retour au tri par date regroupe par mois', async () => {
+    renderPage();
+    expect(await screen.findByText('Octobre 2026')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^Projet/ }));
+    await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'projectName', dir: 'asc', page: 1 })));
+    expect(await screen.findByText('Boîtier')).toBeInTheDocument();
+    expect(screen.queryByText('Octobre 2026')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^Projet/ }));
+    await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'projectName', dir: 'desc' })));
+    fireEvent.click(screen.getByRole('button', { name: /^Date/ }));
+    await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'createdAt', dir: 'desc' })));
+    expect(await screen.findByText('Octobre 2026')).toBeInTheDocument();
+    // Premier clic sur Date depuis le tri par défaut (desc) : passe en croissant.
+    fireEvent.click(screen.getByRole('button', { name: /^Date/ }));
+    await waitFor(() => expect(list).toHaveBeenLastCalledWith(expect.objectContaining({ sort: 'createdAt', dir: 'asc' })));
+  });
+  it('commande : interrupteur « Payée » (absent sur un devis), marque puis affiche la date', async () => {
+    setPaid.mockResolvedValue({});
+    renderPage();
+    await screen.findByText('Support');
+    expect(screen.getAllByRole('switch', { name: /Payée/ })).toHaveLength(1);
+    fireEvent.click(screen.getByRole('switch', { name: /Payée/ }));
+    await waitFor(() => expect(setPaid).toHaveBeenCalledWith(2, true));
+    list.mockResolvedValue({ total: 1, page: 1, limit: 50, items: [item({ id: 2, kind: 'ORDER', status: 'DONE', paidAt: '2026-10-06T10:00:00Z' })] });
+    renderPage();
+    expect((await screen.findAllByText(/06\/10\/2026/)).length).toBeGreaterThan(0);
   });
   it('affiche le badge de réponse et filtre par réponse client', async () => {
     renderPage();

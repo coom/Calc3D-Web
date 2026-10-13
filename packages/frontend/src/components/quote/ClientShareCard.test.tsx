@@ -7,7 +7,7 @@ import type { QuoteDto } from '@calc3d/common';
 const share = vi.fn(); const unshare = vi.fn(); const shareByEmail = vi.fn(); const convert = vi.fn();
 vi.mock('@/api/quotes.api', () => ({ quotesApi: { share: (id: number) => share(id), unshare: (id: number) => unshare(id), shareByEmail: (id: number, b: unknown) => shareByEmail(id, b), convert: (id: number) => convert(id) } }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
-const base = { id: 7, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null, kind: 'QUOTE', projectName: 'P' } as unknown as QuoteDto;
+const base = { id: 7, shared: false, sharedAt: null, clientResponse: null, clientRespondedAt: null, clientComment: '', responseSeenAt: null, clientEmail: '', paymentMethod: null, paidAt: null, convertedAt: null, kind: 'QUOTE', projectName: 'P' } as unknown as QuoteDto;
 function setup(quote: QuoteDto, smtpEnabled = false) {
   const onChanged = vi.fn(); const qc = new QueryClient();
   render(<QueryClientProvider client={qc}><ClientShareCard quote={quote} smtpEnabled={smtpEnabled} onChanged={onChanged} /></QueryClientProvider>);
@@ -37,7 +37,7 @@ describe('ClientShareCard', () => {
     expect(await screen.findByText(/la réponse déjà reçue est effacée/)).toBeInTheDocument();
   });
   it('moyen de paiement choisi par le client affiché (PayPal), absent sinon', () => {
-    setup({ ...base, shared: true, sharedAt: '2026-10-10T10:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-11T10:00:00Z', paymentMethod: 'PAYPAL' });
+    setup({ ...base, shared: true, sharedAt: '2026-10-10T10:00:00Z', clientResponse: 'ACCEPTED', clientRespondedAt: '2026-10-11T10:00:00Z', paymentMethod: 'PAYPAL', paidAt: null, convertedAt: null });
     expect(screen.getByText(/Paiement : PayPal/)).toBeInTheDocument();
   });
   it('réponse acceptée : badge, date, commentaire, bouton Convertir ; refusée : pas de conversion', async () => {
@@ -54,7 +54,7 @@ describe('ClientShareCard', () => {
   });
   it('envoi par e-mail avec SMTP : adresse préremplie, appel API, confirmation', async () => {
     shareByEmail.mockResolvedValue({ url: 'http://x/q/abc' });
-    setup({ ...base, shared: true, sharedAt: '2026-10-10T10:00:00Z', clientEmail: 'c@x.fr', paymentMethod: null }, true);
+    setup({ ...base, shared: true, sharedAt: '2026-10-10T10:00:00Z', clientEmail: 'c@x.fr', paymentMethod: null, paidAt: null, convertedAt: null }, true);
     fireEvent.click(screen.getByRole('button', { name: /Envoyer par e-mail/ }));
     expect(await screen.findByDisplayValue('c@x.fr')).toBeInTheDocument();
     fireEvent.change(screen.getByLabelText(/Message/), { target: { value: 'Bonjour' } });

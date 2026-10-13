@@ -1,5 +1,6 @@
+import { z } from 'zod';
 import { Router, type Request, type Response, type NextFunction } from 'express';
-import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, RESPONSE_FILTERS, type PricingSettings, type QuoteInput, type QuoteKind, type QuoteStatus, type ResponseFilter } from '@calc3d/common';
+import { computeQuote, QUOTE_KINDS, QUOTE_STATUSES, RESPONSE_FILTERS, QUOTE_SORT_KEYS, SORT_DIRS, type PricingSettings, type QuoteInput, type QuoteKind, type QuoteStatus, type ResponseFilter } from '@calc3d/common';
 import { AppError } from '../middleware/error-handler.js';
 import { ownerScope } from '../owner-scope.js';
 import { parseListPage, parseId } from '../utils/paging.js';
@@ -72,11 +73,21 @@ function listFilters(query: Record<string, unknown>): Record<string, unknown> {
   return where;
 }
 
+/** Tri de l'historique : `sort` parmi QUOTE_SORT_KEYS (défaut createdAt), `dir` asc / desc (défaut desc pour la date, asc sinon) ; l'id départage. */
+function listOrder(query: Record<string, unknown>): Record<string, 'asc' | 'desc'>[] {
+  const sort = query.sort === undefined ? 'createdAt' : String(query.sort);
+  if (!(QUOTE_SORT_KEYS as readonly string[]).includes(sort)) throw new AppError(400, 'Invalid sort');
+  const dir = query.dir === undefined ? (sort === 'createdAt' ? 'desc' : 'asc') : String(query.dir);
+  if (!(SORT_DIRS as readonly string[]).includes(dir)) throw new AppError(400, 'Invalid sort direction');
+  return [{ [sort]: dir as 'asc' | 'desc' }, { id: dir as 'asc' | 'desc' }];
+}
+
 quotesRoutes.get('/', wrap(async (req, res) => {
   const { page, limit, skip } = parseListPage(req.query);
   const where = { ...ownerScope(req), ...listFilters(req.query) };
+  const orderBy = listOrder(req.query);
   const prisma = req.app.locals.prisma;
-  const [total, rows] = await Promise.all([prisma.quote.count({ where }), prisma.quote.findMany({ where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], skip, take: limit })]);
+  const [total, rows] = await Promise.all([prisma.quote.count({ where }), prisma.quote.findMany({ where, orderBy, skip, take: limit })]);
   res.json({ items: rows.map(toQuoteDto), total, page, limit });
 }));
 
@@ -108,7 +119,21 @@ quotesRoutes.post('/:id/convert', wrap(async (req, res) => {
   const existing = await prisma.quote.findFirst({ where: { id, ...ownerScope(req) } });
   if (!existing) throw new AppError(404, 'Quote not found');
   if (existing.kind === 'ORDER') throw new AppError(409, 'This quote is already an order', undefined, 'already_order');
-  const row = await prisma.quote.update({ where: { id, ...ownerScope(req) }, data: { kind: 'ORDER' } });
+  const row = await prisma.quote.update({ where: { id, ...ownerScope(req) }, data: { kind: 'ORDER', convertedAt: new Date() } });
+  res.json(toQuoteDto(row));
+}));
+
+const paidSchema = z.object({ paid: z.boolean() }).strict();
+/** Marque une commande payée (date du jour) ou non payée ; un devis répond 409 not_order. */
+quotesRoutes.put('/:id/paid', wrap(async (req, res) => {
+  const parsed = paidSchema.safeParse(req.body);
+  if (!parsed.success) throw new AppError(400, 'Invalid body', undefined, 'validation');
+  const id = parseId(req.params.id);
+  const prisma = req.app.locals.prisma;
+  const existing = await prisma.quote.findFirst({ where: { id, ...ownerScope(req) } });
+  if (!existing) throw new AppError(404, 'Quote not found');
+  if (existing.kind !== 'ORDER') throw new AppError(409, 'Only an order can be marked as paid', undefined, 'not_order');
+  const row = await prisma.quote.update({ where: { id, ...ownerScope(req) }, data: { paidAt: parsed.data.paid ? new Date() : null } });
   res.json(toQuoteDto(row));
 }));
 

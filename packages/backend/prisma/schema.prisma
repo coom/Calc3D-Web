@@ -147,6 +147,8 @@ model Quote {
   responseSeenAt     DateTime?
   clientEmail        String    @default("")
   paymentMethod      String?
+  paidAt             DateTime?
+  convertedAt        DateTime?
 
   projectName      String   @default("")
   customer         String   @default("")

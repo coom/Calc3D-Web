@@ -7,6 +7,7 @@ export const quotesApi = {
   get: (id: number): Promise<QuoteDto> => api.get(`/quotes/${id}`).then((r) => r.data),
   update: (id: number, body: CreateQuoteBody, useCurrentSettings = false): Promise<QuoteDto> => api.put(`/quotes/${id}`, body, { params: useCurrentSettings ? { useCurrentSettings: '1' } : {} }).then((r) => r.data),
   convert: (id: number): Promise<QuoteDto> => api.post(`/quotes/${id}/convert`).then((r) => r.data),
+  setPaid: (id: number, paid: boolean): Promise<QuoteDto> => api.put(`/quotes/${id}/paid`, { paid }).then((r) => r.data),
   remove: (id: number): Promise<void> => api.delete(`/quotes/${id}`).then(() => undefined),
   // Partage client (lot 4). Le jeton en clair n'est renvoyé qu'à la génération.
   share: (id: number): Promise<{ url: string }> => api.post(`/quotes/${id}/share`).then((r) => r.data),

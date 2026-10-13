@@ -459,7 +459,23 @@
     "deleteTitle": "Delete quote",
     "deleteDescription": "Permanently delete quote \"{{name}}\" from history?",
     "deleted": "Quote deleted.",
-    "actionFailed": "The action failed."
+    "actionFailed": "The action failed.",
+    "sort": {
+      "date": "Date",
+      "project": "Project",
+      "customer": "Customer",
+      "kind": "Type",
+      "status": "Status",
+      "hint": "Click a column header to sort. Sorted by date, rows are grouped by month."
+    },
+    "paid": {
+      "label": "Paid",
+      "on": "Paid on {{date}}",
+      "off": "Not paid",
+      "toastOn": "Order marked as paid",
+      "toastOff": "Order marked as not paid",
+      "failed": "Could not update the payment status"
+    }
   },
   "finances": {
     "title": "Finances",

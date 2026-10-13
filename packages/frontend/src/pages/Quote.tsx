@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FilamentGrid } from '@/components/quote/FilamentGrid';
 import { GcodeImportButton } from '@/components/quote/GcodeImportButton';
 import { ClientShareCard } from '@/components/quote/ClientShareCard';
+import { PaidToggle } from '@/components/quote/PaidToggle';
 import { QuoteResultPanel } from '@/components/quote/QuoteResultPanel';
 import { emptyQuoteForm, quoteFormFromDto, toQuoteInput, toCreateBody, type QuoteFormState, type QuoteFormError } from '@/components/quote/quote-form-state';
 
@@ -111,6 +112,7 @@ function QuoteEditor({ settings, materials, defaultMaterial, defaultPrice, initi
         </div>
       )}
       {initial && <ClientShareCard quote={initial} smtpEnabled={smtp.data?.enabled ?? false} onChanged={() => { void qc.invalidateQueries({ queryKey: ['quote', initial.id] }); void qc.invalidateQueries({ queryKey: ['quotes'] }); }} />}
+      {initial?.kind === 'ORDER' && <div className="rounded-md border border-border px-3 py-2 text-sm"><PaidToggle quote={initial} onChanged={() => { void qc.invalidateQueries({ queryKey: ['quote', initial.id] }); void qc.invalidateQueries({ queryKey: ['quotes'] }); }} /></div>}
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-5">
           <Card>

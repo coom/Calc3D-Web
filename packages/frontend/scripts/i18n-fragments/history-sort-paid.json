@@ -1,0 +1,13 @@
+{
+  "namespace": "history",
+  "keys": {
+    "en": {
+      "sort": { "date": "Date", "project": "Project", "customer": "Customer", "kind": "Type", "status": "Status", "hint": "Click a column header to sort. Sorted by date, rows are grouped by month." },
+      "paid": { "label": "Paid", "on": "Paid on {{date}}", "off": "Not paid", "toastOn": "Order marked as paid", "toastOff": "Order marked as not paid", "failed": "Could not update the payment status" }
+    },
+    "fr": {
+      "sort": { "date": "Date", "project": "Projet", "customer": "Client", "kind": "Type", "status": "Statut", "hint": "Cliquez sur un en-tête de colonne pour trier. Trié par date, les lignes sont regroupées par mois." },
+      "paid": { "label": "Payée", "on": "Payée le {{date}}", "off": "Non payée", "toastOn": "Commande marquée payée", "toastOff": "Commande marquée non payée", "failed": "Impossible de modifier l'état de paiement" }
+    }
+  }
+}
